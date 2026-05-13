@@ -1,0 +1,309 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const isFr = lang === 'fr'
+
+const venue = 'EUVIP'
+const year = 2019
+const readTime = isFr ? '8 min de lecture' : '8 min read'
+const eyebrow = isFr ? 'Publication · Vision par ordinateur' : 'Publication · Computer vision'
+const backLabel = isFr ? 'articles' : 'articles'
+
+const title = isFr
+  ? "Détecter des anomalies d'écriture manuscrite par autoencodeur"
+  : 'Detecting handwriting anomalies with a convolutional autoencoder'
+
+const lede = isFr
+  ? "Détecter qu'une portion de texte manuscrit a été écrite par une autre main — sans aucune annotation, sans set d'entraînement séparé du set de test. Plutôt que de reconnaître les caractères, j'apprends le **style** d'une écriture grâce à un autoencodeur convolutionnel, et laisse l'anomalie se trahir comme un outlier."
+  : "Detecting that a portion of handwritten text was written by another hand — without any annotation, without a separate training set. Rather than recognising characters, I learn the **style** of a writer via a convolutional autoencoder, and let anomalies betray themselves as outliers."
+
+const metaTitle = isFr
+  ? "Anomalies d'écriture manuscrite par autoencodeur — Sanae Boutarfass"
+  : 'Handwriting anomalies via convolutional autoencoder — Sanae Boutarfass'
+const metaDescription = isFr
+  ? "Détection non-supervisée d'anomalies dans des échantillons manuscrits : tile splitting, transformée de Radon partielle, autoencodeur convolutionnel, shuffling batch-à-batch."
+  : 'Unsupervised handwriting anomaly detection: tile splitting, partial Radon transform, convolutional autoencoder, batch-to-batch shuffling.'
+
+const sections = isFr
+  ? {
+      problem: {
+        eyebrow: 'Le problème',
+        title: 'Une signature stylistique sans référentiel',
+        body: [
+          "La **graphologie** repose sur des mesures fines : extension des hampes verticales au-dessus et en-dessous de la ligne de base, slope des lettres, fermeture des « o », rondeur des courbes. Mais ces critères changent d'un scripteur à l'autre — il n'y a pas de référentiel absolu.",
+          "**Le cadre du problème** : un seul échantillon de texte, potentiellement contenant une anomalie (un passage écrit par une autre main), pas d'annotation, pas de set d'entraînement séparé du set de test. C'est de la **détection d'outliers en mode totalement unsupervised**, où l'algo doit lui-même apprendre une métrique appropriée.",
+        ],
+      },
+      pipeline: {
+        eyebrow: 'Pipeline',
+        title: "De l'image au signal d'anomalie",
+      },
+      method: {
+        eyebrow: 'Approche',
+        title: 'Style appris, anomalie révélée',
+        body: [
+          "L'idée : ne **pas** reconnaître les caractères. Apprendre directement les caractéristiques stylistiques globales (forme, slope, fermeture), et laisser ce qui ne s'y conforme pas se signaler tout seul.",
+        ],
+        bullets: [
+          "**Tile splitting** : l'image du texte est découpée en tuiles à partir de la ligne de base détectée par image processing. Chaque tuile contient une portion locale d'écriture.",
+          "**Transformée de Radon partielle** sur les tuiles (range π/2) : capture les variations stylistiques (slope, épaisseur, courbure) dans un espace plus abstrait que les pixels — c'est ce qui rend la méthode robuste aux variations de taille ou de position.",
+          "**Autoencodeur convolutionnel** : apprend à reconstruire les Radon projections des tuiles. Pour les tuiles outliers, la reconstruction est moins bonne — l'erreur de reconstruction sert de score d'anomalie.",
+          "**Astuce d'entraînement** : à chaque epoch, les tuiles sont permutées entre batchs. Les outliers, qui ne se reconstruisent pas bien, sont écartés ou repérés au fil des epochs. La **discrimination émerge pendant l'entraînement**, pas après.",
+        ],
+      },
+      results: {
+        eyebrow: 'Résultats',
+        title: 'Ce que la méthode permet',
+        cards: [
+          {
+            title: 'Détection sans labels',
+            body: "Aucune annotation des outliers n'est nécessaire. La méthode est entièrement unsupervised, contrairement aux approches classiques de classification qui demandent un set de référence par scripteur.",
+          },
+          {
+            title: 'Localisation spatiale',
+            body: "Les outliers ne sont pas seulement détectés comme « présents ou absents » : ils sont **localisés dans l'image** (quelle zone du texte est suspecte), grâce à la granularité des tuiles.",
+          },
+          {
+            title: 'Robuste aux variations bénignes',
+            body: "Les variations naturelles d'un même scripteur (fatigue, encre, position) restent reconstruites correctement par l'autoencodeur. Seules les vraies variations stylistiques (autre main) sortent.",
+          },
+          {
+            title: 'Validation sur compositions synthétiques',
+            body: "Tests sur des extraits manuscrits où on injecte des passages écrits par d'autres scripteurs — la méthode isole et localise les passages injectés.",
+          },
+        ],
+      },
+      contribution: {
+        eyebrow: 'Ma contribution',
+        title: 'Ce que cette publication apporte',
+        items: [
+          "**Reformulation du problème graphologique** : passer de mesures hand-crafted (extends, slope, closure) à une représentation **apprise** par un réseau profond.",
+          "**Détournement du shuffling batch-à-batch** : le mécanisme habituel d'apprentissage devient un outil de discrimination, sans changer l'architecture.",
+          "**Détection unsupervised + localisation** : la combinaison des deux est rare en outlier detection — la plupart des méthodes donnent un score global, pas une carte.",
+          "**Méthode transposable** : applicable à d'autres tâches de détection unsupervised où l'anomalie est rare (intrusion detection, forgery detection, fraud).",
+        ],
+      },
+      meta: {
+        eyebrow: 'Pour aller plus loin',
+        title: 'Conférence & contexte',
+        items: [
+          'Publié à **EUVIP 2019** (European Workshop on Visual Information Processing).',
+          "Travail mené pendant mon Master Recherche, MIA Laboratory · Université de La Rochelle.",
+          "Mots-clés : deep learning, handwriting, outlier detection, convolutional autoencoder, Radon transform.",
+        ],
+      },
+    }
+  : {
+      problem: {
+        eyebrow: 'The problem',
+        title: 'A stylistic signature without a ground truth',
+        body: [
+          '**Graphology** relies on fine-grained measures: extent of vertical strokes above and below the baseline, letter slope, closure of "o" letters, roundness of curves. But these criteria differ from one writer to another — there is no absolute reference.',
+          '**Problem setting**: one sample of text, possibly containing an anomaly (a portion written by another hand), no annotation, no separate training and test sets. This is **fully unsupervised outlier detection**, where the algorithm has to learn an appropriate metric on its own.',
+        ],
+      },
+      pipeline: {
+        eyebrow: 'Pipeline',
+        title: 'From image to anomaly signal',
+      },
+      method: {
+        eyebrow: 'Approach',
+        title: 'Learned style, self-revealing anomaly',
+        body: [
+          'The idea: do **not** recognise characters. Instead, learn global stylistic features (shape, slope, closure) directly, and let whatever does not match flag itself.',
+        ],
+        bullets: [
+          '**Tile splitting**: the text image is cut into tiles aligned on the baseline (detected by classic image processing). Each tile holds a local portion of writing.',
+          '**Partial Radon transform** on tiles (over a π/2 range): captures stylistic variations (slope, thickness, curvature) in a more abstract space than pixels — which makes the method robust to size and position shifts.',
+          '**Convolutional autoencoder**: learns to reconstruct the Radon projections of tiles. Outlier tiles reconstruct poorly — the reconstruction error becomes the anomaly score.',
+          '**Training trick**: at every epoch, tiles are shuffled across batches. Outliers, which reconstruct poorly, are discarded or flagged as epochs progress. **Discrimination emerges during training**, not after.',
+        ],
+      },
+      results: {
+        eyebrow: 'Results',
+        title: 'What the method delivers',
+        cards: [
+          {
+            title: 'Label-free detection',
+            body: 'No outlier annotation is needed. The method is fully unsupervised, in contrast with classical classification approaches that require a reference set per writer.',
+          },
+          {
+            title: 'Spatial localisation',
+            body: 'Outliers are not just detected as "present or absent": they are **localised in the image** (which area of the text is suspicious), thanks to tile granularity.',
+          },
+          {
+            title: 'Robust to benign variation',
+            body: 'Natural variations from a single writer (fatigue, ink, posture) still reconstruct well through the autoencoder. Only true stylistic variations (a different hand) stand out.',
+          },
+          {
+            title: 'Validation on synthetic compositions',
+            body: 'Tested on handwritten extracts where snippets from other writers are injected — the method isolates and locates the injected portions.',
+          },
+        ],
+      },
+      contribution: {
+        eyebrow: 'My contribution',
+        title: 'What this publication brings',
+        items: [
+          '**Reframing the graphology problem**: moving from hand-crafted measures (extents, slope, closure) to a **learned** representation via a deep network.',
+          '**Repurposing batch-to-batch shuffling**: a standard training mechanism turned into a discrimination tool, without changing the architecture.',
+          '**Unsupervised detection + localisation**: combining both is rare in outlier detection — most methods only output a global score, not a map.',
+          '**Transferable methodology**: applicable to other unsupervised detection tasks where the anomaly is rare (intrusion detection, forgery detection, fraud).',
+        ],
+      },
+      meta: {
+        eyebrow: 'More',
+        title: 'Venue & context',
+        items: [
+          'Published at **EUVIP 2019** (European Workshop on Visual Information Processing).',
+          "Work carried out during my research master's at MIA Laboratory · University of La Rochelle.",
+          'Keywords: deep learning, handwriting, outlier detection, convolutional autoencoder, Radon transform.',
+        ],
+      },
+    }
+
+function renderInline(s: string): string {
+  return s
+    .replace(/`([^`]+)`/g, '<code class="font-mono text-[0.92em] px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] border border-[var(--color-border)]">$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[var(--color-text)]">$1</strong>')
+}
+
+const pipelineSteps = isFr
+  ? [
+      { label: '1', title: 'Image texte', body: 'baseline détectée' },
+      { label: '2', title: 'Tile split', body: 'tuiles locales' },
+      { label: '3', title: 'Radon π/2', body: 'projection partielle' },
+      { label: '4', title: 'Conv autoencoder', body: 'reconstruction' },
+      { label: '5', title: 'Erreur', body: 'score d\'anomalie' },
+    ]
+  : [
+      { label: '1', title: 'Text image', body: 'baseline detected' },
+      { label: '2', title: 'Tile split', body: 'local tiles' },
+      { label: '3', title: 'Radon π/2', body: 'partial projection' },
+      { label: '4', title: 'Conv autoencoder', body: 'reconstruction' },
+      { label: '5', title: 'Error', body: 'anomaly score' },
+    ]
+---
+
+<Layout lang={lang} title={metaTitle} description={metaDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-3xl mx-auto">
+      <a
+        href={`${prefix}/articles`}
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-soft)] transition-colors inline-flex items-center gap-1.5 mb-8"
+      >
+        <span aria-hidden="true">←</span> {backLabel}
+      </a>
+
+      <div class="flex items-center gap-3 mb-4 flex-wrap">
+        <span class="eyebrow text-[var(--color-accent)]">{eyebrow}</span>
+        <span class="text-[11px] text-[var(--color-text-muted)] mono">{venue} · {year} · {readTime}</span>
+      </div>
+      <h1 class="display text-3xl md:text-5xl font-semibold tracking-tight mb-6 leading-[1.1]">
+        {title}
+      </h1>
+      <p class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed">
+        {lede}
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.problem.eyebrow} title={sections.problem.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.problem.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.pipeline.eyebrow} title={sections.pipeline.title} />
+      <div class="glass-card p-4 md:p-5 overflow-x-auto">
+        <div class="flex items-center gap-2 min-w-[560px]">
+          {pipelineSteps.map((step, i) => (
+            <>
+              <div class="flex-1 text-center">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--color-accent)]">{step.label}</div>
+                <div class="text-[12px] mono text-[var(--color-text)] mt-0.5">{step.title}</div>
+                <div class="text-[10px] mono text-[var(--color-text-muted)] mt-0.5">{step.body}</div>
+              </div>
+              {i < pipelineSteps.length - 1 && (
+                <span class="text-[var(--color-text-muted)] shrink-0" aria-hidden="true">→</span>
+              )}
+            </>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.method.eyebrow} title={sections.method.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-6">
+        {sections.method.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+      <ul class="space-y-3">
+        {sections.method.bullets.map((b) => (
+          <li class="flex gap-3 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(b)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.results.eyebrow} title={sections.results.title} />
+      <div class="grid md:grid-cols-2 gap-4">
+        {sections.results.cards.map((c) => (
+          <div class="glass-card p-5">
+            <h3 class="display text-base font-semibold tracking-tight mb-2">{c.title}</h3>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed" set:html={renderInline(c.body)}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.contribution.eyebrow} title={sections.contribution.title} />
+      <ul class="space-y-3">
+        {sections.contribution.items.map((it) => (
+          <li class="flex gap-3 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(it)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.meta.eyebrow} title={sections.meta.title} />
+      <ul class="space-y-2">
+        {sections.meta.items.map((it) => (
+          <li class="flex gap-3 text-sm md:text-base leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(it)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

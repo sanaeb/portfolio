@@ -1,0 +1,180 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import StatusBadge from '../StatusBadge.astro'
+import StatsGrid from '../StatsGrid.astro'
+import SectionHeader from '../SectionHeader.astro'
+import ProjectCard from '../ProjectCard.astro'
+import TechChip from '../TechChip.astro'
+import NowRow from '../NowRow.astro'
+import TrustBand from '../TrustBand.astro'
+import ApproachCard from '../ApproachCard.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+---
+
+<Layout lang={lang} title={t.meta.homeTitle}>
+  {/* ===== HERO ===== */}
+  <section class="relative pt-16 md:pt-24 pb-14 md:pb-20">
+    <div
+      class="absolute inset-0 -z-10 opacity-[0.04] pointer-events-none"
+      style="background-image: linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px); background-size: 64px 64px;"
+      aria-hidden="true"
+    ></div>
+    <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[var(--color-bg)] to-transparent -z-10" aria-hidden="true"></div>
+
+    <div class="max-w-5xl mx-auto text-center">
+      <div class="mb-7 inline-flex">
+        <StatusBadge label={t.status.heroBadge} />
+      </div>
+
+      <h1 class="display font-semibold tracking-[-0.045em] leading-[0.9] mb-7 text-[clamp(3.5rem,12vw,9rem)]">
+        <span class="block">Sanae</span>
+        <span class="block bg-gradient-to-r from-violet-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
+          Boutarfass.
+        </span>
+      </h1>
+
+      <p class="text-lg md:text-2xl text-[var(--color-text-secondary)] leading-snug max-w-3xl mx-auto mb-10">
+        {t.home.hero.subtitleBefore && <>{t.home.hero.subtitleBefore} </>}
+        <span class="text-[var(--color-text)] font-medium">{t.home.hero.subtitleSenior}</span>
+        {' '}{t.home.hero.subtitleAfter}<br class="hidden md:block" />
+        {' '}{t.home.hero.subtitleStats}
+      </p>
+
+      <div class="flex flex-wrap gap-3 justify-center mb-12">
+        <a href={`${prefix}/projects`} class="btn btn-primary">
+          {t.home.hero.cta}
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <div class="flex flex-wrap gap-1.5 justify-center">
+        <TechChip name="Java 17" />
+        <TechChip name="Spring Boot 3" />
+        <TechChip name="React 18" />
+        <TechChip name="TypeScript" />
+        <TechChip name="Python · FastAPI" />
+        <TechChip name="PostgreSQL" />
+        <TechChip name="Visual SLAM" />
+      </div>
+    </div>
+  </section>
+
+  {/* ===== TRUST BAND ===== */}
+  <section>
+    <div class="max-w-6xl mx-auto">
+      <TrustBand
+        eyebrow={t.home.trustBand.eyebrow}
+        items={[
+          { label: 'IEEE IPAS', detail: '2020' },
+          { label: 'IEEE MCNA', detail: '2020' },
+          { label: 'EUVIP', detail: '2019' },
+          { label: 'EUVIP', detail: '2018' },
+        ]}
+      />
+    </div>
+  </section>
+
+  {/* ===== NOW ===== */}
+  <section class="py-16 md:py-24">
+    <div class="max-w-6xl mx-auto">
+      <SectionHeader
+        eyebrow={t.home.now.eyebrow}
+        title={t.home.now.title}
+        description={t.home.now.description}
+      />
+      <NowRow lang={lang} />
+    </div>
+  </section>
+
+  {/* ===== STATS ===== */}
+  <section class="pb-16 md:pb-24">
+    <div class="max-w-6xl mx-auto">
+      <StatsGrid stats={t.home.stats as any} />
+    </div>
+  </section>
+
+  {/* ===== APPROACH ===== */}
+  <section class="pb-16 md:pb-24">
+    <div class="max-w-6xl mx-auto">
+      <SectionHeader
+        eyebrow={t.home.approach.eyebrow}
+        title={t.home.approach.title}
+      />
+      <div class="grid md:grid-cols-3 gap-5">
+        {t.home.approach.cards.map((card) => (
+          <ApproachCard
+            number={card.number}
+            title={card.title}
+            body={card.body}
+            icon={card.icon}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ===== PROJECTS PREVIEW ===== */}
+  <section class="pb-16 md:pb-24">
+    <div class="max-w-6xl mx-auto">
+      <SectionHeader
+        eyebrow={t.home.projects.eyebrow}
+        title={t.home.projects.title}
+        description={t.home.projects.description}
+        cta={{ href: `${prefix}/projects`, label: t.home.projects.cta }}
+      />
+      <div class="max-w-2xl mx-auto">
+        <ProjectCard
+          title="ApplyDesk"
+          tagline={t.projects.homeApplyDeskTagline}
+          stack={['FastAPI', 'React', 'PostgreSQL', 'Gemini']}
+          href={`${prefix}/projects/applydesk`}
+          status="wip"
+          year="2026"
+          visual="violet"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* ===== CTA ===== */}
+  <section class="pb-16 md:pb-24">
+    <div class="max-w-6xl mx-auto">
+      <div class="glass-card p-8 md:p-14 relative overflow-hidden text-center">
+        <div class="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-[var(--color-accent)] opacity-10 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-[var(--color-accent-2)] opacity-10 blur-3xl pointer-events-none"></div>
+
+        <div class="relative max-w-2xl mx-auto">
+          <div class="eyebrow mb-4">{t.home.contact.eyebrow}</div>
+          <h2 class="display text-3xl md:text-5xl font-semibold tracking-tight mb-4">
+            {t.home.contact.title}
+          </h2>
+          <p class="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed mb-8">
+            {t.home.contact.body}
+          </p>
+          <div class="flex flex-wrap gap-3 justify-center">
+            <a href="mailto:sanae.boutarfass@gmail.com" class="btn btn-primary">
+              {t.home.contact.ctaEmail}
+              <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/sanae-boutarfass-7186a14b"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-secondary"
+            >
+              {t.home.contact.ctaLinkedIn} <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,252 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import TechChip from '../TechChip.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+
+// Stack is the same in both languages (proper nouns)
+const stack: Record<string, string[]> = {
+  Backend: ['Python 3.11', 'FastAPI', 'SQLAlchemy 2.0 async', 'Pydantic 2', 'Alembic', 'Gemini 2.5'],
+  Frontend: ['React 18', 'TypeScript', 'Vite', 'TanStack Query', 'Zustand', 'sonner'],
+  Data: ['PostgreSQL (Neon)', 'JSON columns', 'Full-text search'],
+  Ops: ['Docker', 'pytest', 'vitest', 'ruff', 'eslint'],
+}
+
+const isFr = lang === 'fr'
+
+const previewEyebrow = isFr ? 'Aperçu' : 'Preview'
+const previewTitle = isFr ? 'À l’écran' : 'On screen'
+
+const shots = [
+  {
+    src: '/images/applydesk/dashboard.png',
+    alt: isFr
+      ? 'Dashboard ApplyDesk avec KPIs, pipeline funnel et activité 12 semaines'
+      : 'ApplyDesk dashboard with KPIs, pipeline funnel and 12-week activity',
+    caption: isFr
+      ? 'Dashboard — KPIs candidatures, funnel de pipeline, activité 12 semaines et sources d’offres.'
+      : 'Dashboard — application KPIs, pipeline funnel, 12-week activity and offer sources.',
+  },
+  {
+    src: '/images/applydesk/matcher.png',
+    alt: isFr
+      ? 'Drawer offre avec score de match 95% et breakdown skills / titre / lieu / fit'
+      : 'Offer drawer with 95% match score and skills / title / location / fit breakdown',
+    caption: isFr
+      ? 'Matcher IA — chaque offre est notée avec un breakdown skills, titre, lieu, fit et les compétences extraites du CV.'
+      : 'AI matcher — every offer is scored with a skills, title, location and fit breakdown plus skills extracted from the resume.',
+  },
+  {
+    src: '/images/applydesk/digest.png',
+    alt: isFr
+      ? 'Digest quotidien ApplyDesk avec verdict Postuler par offre'
+      : 'ApplyDesk daily digest with Apply verdict per offer',
+    caption: isFr
+      ? 'Digest quotidien — 5 offres triées par verdict LLM (Postuler / Vérifier / Ignorer) avec la raison du choix.'
+      : 'Daily digest — 5 offers ranked by LLM verdict (Apply / Check / Skip) with the reasoning behind each choice.',
+  },
+  {
+    src: '/images/applydesk/resumes.png',
+    alt: isFr
+      ? 'Page CVs ApplyDesk avec CV FR parsé et CV EN en attente'
+      : 'ApplyDesk resumes page with parsed FR resume and pending EN resume',
+    caption: isFr
+      ? 'CVs bilingues — upload PDF, parsing IA, traduction FR ↔ EN et application directe aux candidatures.'
+      : 'Bilingual resumes — PDF upload, AI parsing, FR ↔ EN translation and direct application to job entries.',
+  },
+] as const
+
+const remoteShot = {
+  src: '/images/applydesk/remote.png',
+  alt: isFr
+    ? 'Page Remote ApplyDesk avec sélection multi-pays et langues'
+    : 'ApplyDesk Remote page with multi-country and language selection',
+  caption: isFr
+    ? 'Remote international — agrégation multi-sources (Remotive, WeWorkRemotely, Himalayas, Adzuna) avec traduction FR→EN auto.'
+    : 'International remote — multi-source aggregation (Remotive, WeWorkRemotely, Himalayas, Adzuna) with auto FR→EN translation.',
+} as const
+---
+
+<Layout lang={lang} title={t.meta.applyDeskTitle} description={t.meta.applyDeskDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-4xl mx-auto">
+      <a
+        href={`${prefix}/projects`}
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-soft)] transition-colors inline-flex items-center gap-1.5 mb-8"
+      >
+        <span aria-hidden="true">←</span> {t.applydesk.backLink}
+      </a>
+
+      <div class="glass-card mb-10 overflow-hidden">
+        <div class="relative h-48 md:h-64 bg-gradient-to-br from-violet-500/40 via-fuchsia-500/20 to-cyan-400/30 overflow-hidden">
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent,_var(--color-bg)_85%)]"></div>
+          <svg
+            class="absolute inset-0 w-full h-full opacity-[0.07]"
+            aria-hidden="true"
+          >
+            <defs>
+              <pattern id="grid-hero" width="32" height="32" patternUnits="userSpaceOnUse">
+                <path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" stroke-width="0.5"></path>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid-hero)"></rect>
+          </svg>
+          <div class="absolute inset-0 flex items-end p-6 md:p-10">
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                  {t.applydesk.statusBadge}
+                </span>
+                <span class="text-[11px] text-[var(--color-text-secondary)] mono">{t.applydesk.personalBadge}</span>
+              </div>
+              <h1 class="display text-4xl md:text-6xl font-semibold tracking-tight text-white">
+                ApplyDesk
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 md:p-10">
+          <p class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed">
+            {t.applydesk.tagline}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.applydesk.problem.eyebrow}
+        title={t.applydesk.problem.title}
+      />
+      <p class="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed">
+        {t.applydesk.problem.bodyBefore} <span class="text-[var(--color-text)]">{t.applydesk.problem.bodyHighlight}</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.applydesk.highlights.eyebrow}
+        title={t.applydesk.highlights.title}
+      />
+      <div class="grid md:grid-cols-2 gap-4">
+        {t.applydesk.highlights.items.map((h, i) => (
+          <div class="glass-card p-6">
+            <div class="flex items-baseline gap-3 mb-3">
+              <span class="text-xs font-mono text-[var(--color-accent)] tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="display text-base font-semibold tracking-tight">{h.title}</h3>
+            </div>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">{h.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-5xl mx-auto">
+      <SectionHeader eyebrow={previewEyebrow} title={previewTitle} />
+      <div class="space-y-4 md:space-y-6">
+        <figure class="glass-card overflow-hidden">
+          <img
+            src={shots[0].src}
+            alt={shots[0].alt}
+            loading="lazy"
+            decoding="async"
+            class="w-full h-auto block bg-[var(--color-bg-card)]"
+          />
+          <figcaption class="px-5 md:px-6 py-4 text-sm text-[var(--color-text-secondary)] border-t border-[var(--color-border)]">
+            {shots[0].caption}
+          </figcaption>
+        </figure>
+        <div class="grid md:grid-cols-2 gap-4 md:gap-6">
+          {shots.slice(1, 3).map((s) => (
+            <figure class="glass-card overflow-hidden">
+              <img
+                src={s.src}
+                alt={s.alt}
+                loading="lazy"
+                decoding="async"
+                class="w-full h-auto block bg-[var(--color-bg-card)]"
+              />
+              <figcaption class="px-5 md:px-6 py-4 text-sm text-[var(--color-text-secondary)] border-t border-[var(--color-border)]">
+                {s.caption}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <figure class="glass-card overflow-hidden">
+          <img
+            src={shots[3].src}
+            alt={shots[3].alt}
+            loading="lazy"
+            decoding="async"
+            class="w-full h-auto block bg-[var(--color-bg-card)]"
+          />
+          <figcaption class="px-5 md:px-6 py-4 text-sm text-[var(--color-text-secondary)] border-t border-[var(--color-border)]">
+            {shots[3].caption}
+          </figcaption>
+        </figure>
+        <figure class="glass-card overflow-hidden">
+          <img
+            src={remoteShot.src}
+            alt={remoteShot.alt}
+            loading="lazy"
+            decoding="async"
+            class="w-full h-auto block bg-[var(--color-bg-card)]"
+          />
+          <figcaption class="px-5 md:px-6 py-4 text-sm text-[var(--color-text-secondary)] border-t border-[var(--color-border)]">
+            {remoteShot.caption}
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.applydesk.stack.eyebrow}
+        title={t.applydesk.stack.title}
+      />
+      <div class="glass-card divide-y divide-[var(--color-border)]">
+        {Object.entries(stack).map(([category, items]) => (
+          <div class="flex flex-col md:flex-row gap-3 md:gap-6 p-5 md:p-6">
+            <div class="md:w-32 shrink-0">
+              <div class="eyebrow text-[var(--color-accent)]">{category}</div>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              {items.map((s) => <TechChip name={s} size="md" />)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-4xl mx-auto">
+      <div class="glass-card p-6 md:p-8 flex items-start gap-4">
+        <span class="mt-1 inline-flex h-2 w-2 rounded-full bg-amber-400 shrink-0"></span>
+        <div>
+          <h3 class="display text-lg font-semibold tracking-tight mb-2">{t.applydesk.status.title}</h3>
+          <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">
+            {t.applydesk.status.body}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

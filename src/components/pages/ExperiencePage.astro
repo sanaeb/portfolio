@@ -1,0 +1,44 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import ExperienceCard from '../ExperienceCard.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+---
+
+<Layout lang={lang} title={t.meta.experienceTitle} description={t.meta.experienceDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.experience.eyebrow}
+        title={t.experience.title}
+        description={t.experience.description}
+      />
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-4xl mx-auto space-y-5">
+      {t.experience.items.map((item) => (
+        <ExperienceCard
+          company={item.company}
+          role={item.role}
+          period={item.period}
+          context={item.context}
+          url={item.url}
+          initials={item.initials}
+          gradient={item.gradient}
+          current={item.current}
+          highlights={item.highlights as any}
+          stack={item.stack as any}
+        />
+      ))}
+    </div>
+  </section>
+</Layout>

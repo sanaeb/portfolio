@@ -1,0 +1,389 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const isFr = lang === 'fr'
+
+const date = '2026-05'
+const readTime = isFr ? '9 min de lecture' : '9 min read'
+const eyebrow = isFr ? 'Article · LLM' : 'Article · LLM'
+const backLabel = isFr ? 'articles' : 'articles'
+
+const title = isFr
+  ? "Matcher IA : combiner score déterministe et verdict LLM"
+  : 'AI matcher: blending a deterministic score with an LLM verdict'
+
+const lede = isFr
+  ? "Comment ApplyDesk note 100 offres d'emploi en une fraction de seconde côté navigateur, et garde un budget LLM raisonnable pour donner un verdict argumenté seulement sur celles qui le méritent. Retour d'expérience sur un side-project perso."
+  : "How ApplyDesk scores 100 job offers in a fraction of a second in the browser, and keeps the LLM budget reasonable to deliver a reasoned verdict only on those that deserve it. Lessons from a personal side-project."
+
+const metaTitle = isFr
+  ? "Matcher IA d'ApplyDesk — Sanae Boutarfass"
+  : "ApplyDesk's AI matcher — Sanae Boutarfass"
+const metaDescription = isFr
+  ? "Pattern hybride pour scorer des offres d'emploi : score déterministe pondéré (skills/titre/lieu/fit) instantané côté front + verdict LLM async côté back pour la nuance."
+  : 'Hybrid pattern to score job offers: a weighted deterministic score (skills/title/location/fit) instant on the front, plus an async LLM verdict on the back for nuance.'
+
+const sections = isFr
+  ? {
+      problem: {
+        eyebrow: 'Le problème',
+        title: 'Trier 100 offres par jour, sans flamber le budget LLM',
+        body: [
+          "ApplyDesk scrape une centaine d'offres d'emploi par jour via 5 sources (France Travail, Adzuna, HelloWork, Remotive, WeWorkRemotely). En tant qu'utilisatrice, je veux savoir immédiatement quelles offres méritent que je m'y attarde — et je ne veux pas attendre 30 secondes par offre que l'IA réfléchisse, ni payer un appel LLM pour chaque ligne.",
+          "Deux contraintes : **rapide** (sous la seconde) et **explicable** (je dois savoir pourquoi une offre matche). L'IA seule est ni l'un ni l'autre. Une heuristique seule manque de nuance. La réponse : combiner les deux.",
+        ],
+      },
+      shape: {
+        eyebrow: "L'archi",
+        title: 'Deux couches, deux moments',
+        list: [
+          {
+            title: '1 — Score déterministe (front, synchrone)',
+            body: "Tourne en TypeScript dans le navigateur, sur chaque offre, à l'instant où elle s'affiche. 0 à 100 %, calcul transparent et debuggable. C'est ce qui anime les badges « 95 % », trie la liste et alimente le digest quotidien.",
+          },
+          {
+            title: '2 — Verdict LLM (back, async, à la demande)',
+            body: "Quand l'utilisatrice ouvre une offre intéressante, on appelle Gemini avec un prompt structuré qui retourne un verdict ternaire (postuler / vérifier / ignorer) + 3 raisons concrètes. Caché en base : on ne re-paie pas l'appel deux fois.",
+          },
+        ],
+      },
+      scoring: {
+        eyebrow: 'Le score',
+        title: '4 axes, des poids assumés',
+        body: [
+          "Le score déterministe pondère quatre axes :",
+        ],
+        items: [
+          {
+            label: '55 %',
+            title: 'Skills',
+            body: "Overlap pondéré entre les skills du CV (extraits par parsing IA, voir ApplyDesk) et le texte de l'offre. Les skills des 2 expériences les plus récentes pèsent 1.0, les plus anciennes 0.4, les catégories sans usage 0.2. Saturation à 8 matches : au-delà, +1 skill ne change plus le score.",
+          },
+          {
+            label: '25 %',
+            title: 'Titre',
+            body: "Les rôles cibles (`target_roles`) du profil et les tokens du headline (moins les stop-words : « Full », « Stack », « Senior »…) doivent apparaître dans le **titre** de l'offre. Un match suffit pour saturer l'axe.",
+          },
+          {
+            label: '10 %',
+            title: 'Lieu',
+            body: "Comparaison `preferred_locations` ↔ `offer.location`. Pas de préférence → neutre (0.5). Match → 1. Pas de match → 0.",
+          },
+          {
+            label: '10 %',
+            title: 'Fit',
+            body: "Type de contrat (CDI prime, autres demi-points) et remote si proposé. C'est un signal faible mais utile pour distinguer 90 % entre eux.",
+          },
+        ],
+        afterItems: [
+          "Trois subtilités qui changent la qualité du résultat :",
+        ],
+        subtleties: [
+          {
+            title: 'Recency bias',
+            body: "Une senior qui a fait du Java pendant 8 ans puis 2 ans de Python ne « cherche » pas Java — son profil **récent** est Python. Pondérer par récence évite de scorer haut une offre qui ne parle qu'à la version d'il y a 5 ans.",
+          },
+          {
+            title: 'Normalisation accent-insensitive',
+            body: "« développeuse » match « developpeuse ». On normalise via `NFD` + strip diacritiques. Indispensable pour le marché FR où les offres mélangent les deux orthographes.",
+          },
+          {
+            title: "Boundaries sur les skills courts",
+            body: "Sans boundary, « Go » match « Google ». Solution : skills < 5 caractères → regex avec frontières non-alphanumériques. Skills ≥ 5 caractères → substring direct (`javascript` match `javascripteur` est OK).",
+          },
+        ],
+      },
+      verdict: {
+        eyebrow: 'Le verdict',
+        title: 'Trois états, pas deux',
+        body: [
+          "Côté LLM, on aurait pu demander un score continu (\"note cette offre sur 100\"). Mauvaise idée : les LLMs sont mauvais en arithmétique fine et passent leur temps à hésiter entre 73 et 78. On demande à la place un **verdict ternaire** :",
+        ],
+        verdicts: [
+          { label: 'yes', body: "fit franc, devrait postuler" },
+          { label: 'maybe', body: "fit mais avec doute (séniorité limite, stack partielle, lieu à clarifier)" },
+          { label: 'no', body: "mismatch clair (séniorité, stack principale, contrat, lieu)" },
+        ],
+        body2: [
+          "Avec en bonus 1 à 3 **raisons concrètes** mélangeant points positifs et négatifs. C'est ce qui s'affiche sous chaque offre dans le digest quotidien : « Stack Spring Boot match parfait », « Mais salaire non précisé », etc.",
+          "Le prompt est structuré (Pydantic schema côté Python, JSON mode côté Gemini) : pas de regex sur du texte libre, pas de parsing fragile. On reçoit l'objet, on le sauvegarde, on l'affiche.",
+        ],
+      },
+      cache: {
+        eyebrow: 'Cache',
+        title: 'Le verdict, c’est en base — pas dans un cache mémoire',
+        body: [
+          "Le verdict est cher (~3-5 secondes, quelques centièmes par offre). On le persiste directement dans la table `offer` avec 3 colonnes : `verdict`, `verdict_reasons`, `verdict_generated_at`. Trois conséquences :",
+        ],
+        items: [
+          "On ne paie qu'une fois par offre, jamais deux.",
+          "L'utilisateur retrouve son verdict après refresh, déconnexion, navigation.",
+          "On peut invalider sélectivement (verdict_generated_at > 7 jours → re-run) sans toucher au modèle de cache.",
+        ],
+      },
+      lessons: {
+        eyebrow: 'Lessons',
+        title: 'Ce qu’on retient',
+        items: [
+          "**Ne pas demander au LLM ce qu'une fonction pure peut faire.** Compter des skills, normaliser une chaîne, comparer deux tableaux — tout ça c'est du JavaScript, pas un appel API à $0.0003 le token.",
+          "Le LLM brille sur **la nuance**, pas sur le calcul : « cette offre demande du Spring 6 mais ton CV s'arrête à Spring 3, ce qui peut passer si la team forme ». Aucune heuristique ne capture ça.",
+          "**Structured outputs** (JSON mode + schéma) changent la fiabilité. Plus de regex, plus de retry sur du texte qui ne parse pas.",
+          "Persister le verdict en base, pas en cache mémoire — ça survit au déploiement, au crash, au logout.",
+          "Le score déterministe est **debuggable** : on voit pourquoi une offre matche en lisant le breakdown. Le LLM seul est une boîte noire — combinés, on a une explication et une nuance.",
+        ],
+      },
+    }
+  : {
+      problem: {
+        eyebrow: 'The problem',
+        title: 'Triage 100 offers a day, without burning the LLM budget',
+        body: [
+          "ApplyDesk scrapes around 100 job offers a day from 5 sources (France Travail, Adzuna, HelloWork, Remotive, WeWorkRemotely). As a user, I want to immediately know which offers deserve a closer look — and I don't want to wait 30 seconds per offer for the AI to think, nor pay for an LLM call on every row.",
+          "Two constraints: **fast** (sub-second) and **explainable** (I have to see why an offer matches). The LLM alone is neither. Heuristics alone lack nuance. The answer: combine both.",
+        ],
+      },
+      shape: {
+        eyebrow: 'The architecture',
+        title: 'Two layers, two moments',
+        list: [
+          {
+            title: '1 — Deterministic score (front, synchronous)',
+            body: "Runs in TypeScript in the browser, on every offer, the moment it shows up. 0 to 100 %, transparent and debuggable. This is what powers the '95 %' badges, sorts the list, and feeds the daily digest.",
+          },
+          {
+            title: '2 — LLM verdict (back, async, on demand)',
+            body: "When the user opens an interesting offer, we call Gemini with a structured prompt that returns a ternary verdict (apply / check / skip) plus 3 concrete reasons. Cached in the database: we never pay for the same call twice.",
+          },
+        ],
+      },
+      scoring: {
+        eyebrow: 'The score',
+        title: '4 axes, opinionated weights',
+        body: [
+          'The deterministic score weights four axes:',
+        ],
+        items: [
+          {
+            label: '55 %',
+            title: 'Skills',
+            body: "Weighted overlap between CV skills (extracted via AI parsing, see ApplyDesk) and the offer text. Skills from the last 2 experiences weigh 1.0, older ones 0.4, categories without usage 0.2. Saturation at 8 matches: beyond that, +1 skill no longer moves the score.",
+          },
+          {
+            label: '25 %',
+            title: 'Title',
+            body: "Profile `target_roles` and headline tokens (minus stop-words: 'Full', 'Stack', 'Senior'…) must appear in the offer **title**. One match saturates the axis.",
+          },
+          {
+            label: '10 %',
+            title: 'Location',
+            body: "Compare `preferred_locations` with `offer.location`. No preference → neutral (0.5). Match → 1. No match → 0.",
+          },
+          {
+            label: '10 %',
+            title: 'Fit',
+            body: "Contract type (CDI primes, others half-point) and remote when offered. A weak signal, but useful to break ties between '90 % matches'.",
+          },
+        ],
+        afterItems: [
+          'Three subtleties that move the quality needle:',
+        ],
+        subtleties: [
+          {
+            title: 'Recency bias',
+            body: "A senior who did 8 years of Java then 2 years of Python isn't 'looking for Java' — her **recent** profile is Python. Weighting by recency avoids scoring high an offer that only matches the 5-year-old version of her.",
+          },
+          {
+            title: 'Accent-insensitive normalisation',
+            body: "'développeuse' must match 'developpeuse'. We normalise via `NFD` + diacritic stripping. Critical on the FR market where offers mix both spellings.",
+          },
+          {
+            title: 'Boundaries on short skills',
+            body: "Without boundaries, 'Go' matches 'Google'. Fix: skills < 5 chars → regex with non-alphanumeric boundaries. Skills ≥ 5 chars → direct substring (`javascript` matching `javascripteur` is fine).",
+          },
+        ],
+      },
+      verdict: {
+        eyebrow: 'The verdict',
+        title: 'Three states, not two',
+        body: [
+          'On the LLM side, we could have asked for a continuous score ("rate this offer 0–100"). Bad idea: LLMs are poor at fine arithmetic and spend their time wavering between 73 and 78. We ask instead for a **ternary verdict**:',
+        ],
+        verdicts: [
+          { label: 'yes', body: 'clear fit, should apply' },
+          { label: 'maybe', body: "fit but with doubt (borderline seniority, partial stack, location to clarify)" },
+          { label: 'no', body: "clear mismatch (seniority, main stack, contract type, location)" },
+        ],
+        body2: [
+          "Plus 1 to 3 **concrete reasons** mixing positives and negatives. That's what shows under each offer in the daily digest: 'Spring Boot stack is a perfect match', 'But salary not stated', etc.",
+          "The prompt is structured (Pydantic schema on the Python side, JSON mode on Gemini): no regex on free text, no fragile parsing. We get the object, save it, render it.",
+        ],
+      },
+      cache: {
+        eyebrow: 'Cache',
+        title: "The verdict lives in the database — not in a memory cache",
+        body: [
+          "The verdict is expensive (~3-5 seconds, a fraction of a cent per offer). We persist it directly in the `offer` table with 3 columns: `verdict`, `verdict_reasons`, `verdict_generated_at`. Three consequences:",
+        ],
+        items: [
+          'We pay once per offer, never twice.',
+          'The user gets the verdict back after refresh, logout, navigation.',
+          'We can invalidate selectively (verdict_generated_at > 7 days → re-run) without touching any cache layer.',
+        ],
+      },
+      lessons: {
+        eyebrow: 'Takeaways',
+        title: 'What we keep from it',
+        items: [
+          "**Never ask the LLM what a pure function can do.** Counting skills, normalising a string, comparing arrays — that's JavaScript, not a $0.0003-per-token API call.",
+          "The LLM shines on **nuance**, not arithmetic: 'this offer asks for Spring 6 but your CV stops at Spring 3, which is OK if the team mentors'. No heuristic captures that.",
+          "**Structured outputs** (JSON mode + schema) change reliability. No more regex, no more retries on text that won't parse.",
+          'Persist the verdict in the database, not in memory cache — it survives deploys, crashes, logouts.',
+          'The deterministic score is **debuggable**: you see why an offer matches by reading the breakdown. The LLM alone is a black box — combined, you get explanation **and** nuance.',
+        ],
+      },
+    }
+
+function renderInline(s: string): string {
+  return s
+    .replace(/`([^`]+)`/g, '<code class="font-mono text-[0.92em] px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] border border-[var(--color-border)]">$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[var(--color-text)]">$1</strong>')
+}
+---
+
+<Layout lang={lang} title={metaTitle} description={metaDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-3xl mx-auto">
+      <a
+        href={`${prefix}/articles`}
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-soft)] transition-colors inline-flex items-center gap-1.5 mb-8"
+      >
+        <span aria-hidden="true">←</span> {backLabel}
+      </a>
+
+      <div class="flex items-center gap-3 mb-4">
+        <span class="eyebrow text-[var(--color-accent)]">{eyebrow}</span>
+        <span class="text-[11px] text-[var(--color-text-muted)] mono">{date} · {readTime}</span>
+      </div>
+      <h1 class="display text-3xl md:text-5xl font-semibold tracking-tight mb-6 leading-[1.1]">
+        {title}
+      </h1>
+      <p class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed">
+        {lede}
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.problem.eyebrow} title={sections.problem.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.problem.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.shape.eyebrow} title={sections.shape.title} />
+      <div class="grid md:grid-cols-2 gap-4">
+        {sections.shape.list.map((it) => (
+          <div class="glass-card p-5 md:p-6">
+            <h3 class="display text-base font-semibold tracking-tight mb-2">{it.title}</h3>
+            <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">{it.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.scoring.eyebrow} title={sections.scoring.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-6">
+        {sections.scoring.body.map((p) => <p>{p}</p>)}
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        {sections.scoring.items.map((it) => (
+          <div class="glass-card p-5">
+            <div class="flex items-baseline gap-3 mb-2">
+              <span class="text-xl font-mono text-[var(--color-accent)] tabular-nums">{it.label}</span>
+              <h3 class="display text-base font-semibold tracking-tight">{it.title}</h3>
+            </div>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed" set:html={renderInline(it.body)}></p>
+          </div>
+        ))}
+      </div>
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-4">
+        {sections.scoring.afterItems.map((p) => <p>{p}</p>)}
+      </div>
+      <div class="grid gap-4">
+        {sections.scoring.subtleties.map((s) => (
+          <div class="glass-card p-5">
+            <h3 class="display text-sm md:text-base font-semibold tracking-tight mb-2">{s.title}</h3>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed" set:html={renderInline(s.body)}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.verdict.eyebrow} title={sections.verdict.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-6">
+        {sections.verdict.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+      <div class="grid md:grid-cols-3 gap-3 mb-6">
+        {sections.verdict.verdicts.map((v) => (
+          <div class="glass-card p-4">
+            <code class="font-mono text-sm text-[var(--color-accent)] block mb-1">{v.label}</code>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">{v.body}</p>
+          </div>
+        ))}
+      </div>
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.verdict.body2.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.cache.eyebrow} title={sections.cache.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-4">
+        {sections.cache.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+      <ul class="space-y-2 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.cache.items.map((it) => (
+          <li class="flex gap-3">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(it)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.lessons.eyebrow} title={sections.lessons.title} />
+      <ul class="space-y-3">
+        {sections.lessons.items.map((it) => (
+          <li class="flex gap-3 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(it)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

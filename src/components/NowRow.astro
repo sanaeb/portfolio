@@ -1,0 +1,67 @@
+---
+import TechChip from './TechChip.astro'
+import { getDict, type Lang } from '../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+const { lang } = Astro.props
+const t = getDict(lang)
+
+const prefix = lang === 'fr' ? '' : '/en'
+
+const items = [
+  {
+    label: t.home.now.cards.building.label,
+    accent: 'text-[var(--color-accent)]',
+    title: t.home.now.cards.building.title,
+    description: t.home.now.cards.building.description,
+    chips: ['FastAPI', 'React', 'Gemini'],
+    href: `${prefix}/projects/applydesk`,
+    icon: t.home.now.cards.building.icon,
+  },
+  {
+    label: t.home.now.cards.shipped.label,
+    accent: 'text-emerald-400',
+    title: t.home.now.cards.shipped.title,
+    titleSuffix: t.home.now.cards.shipped.titleSuffix,
+    description: t.home.now.cards.shipped.description,
+    chips: ['Python', 'C++ SLAM', 'Three.js'],
+    href: `${prefix}/experience`,
+    icon: t.home.now.cards.shipped.icon,
+  },
+  {
+    label: t.home.now.cards.currently.label,
+    accent: 'text-cyan-400',
+    title: t.home.now.cards.currently.title,
+    description: t.home.now.cards.currently.description,
+    chips: ['Java', 'Python', 'React'],
+    href: 'mailto:sanae.boutarfass@gmail.com',
+    icon: t.home.now.cards.currently.icon,
+  },
+]
+---
+
+<div class="grid md:grid-cols-3 gap-4 md:gap-5">
+  {items.map((item) => (
+    <a href={item.href} class="glass-card glass-card-interactive p-6 group">
+      <div class="flex items-center gap-2 mb-5">
+        <span class={`text-[11px] font-mono uppercase tracking-wider ${item.accent}`}>
+          {item.icon} {item.label}
+        </span>
+      </div>
+      <h3 class="display text-xl font-semibold tracking-tight mb-2 group-hover:text-[var(--color-accent-soft)] transition-colors">
+        {item.title}
+        {item.titleSuffix && (
+          <span class="text-[var(--color-text-muted)] font-normal text-xs ml-1.5 mono">{item.titleSuffix}</span>
+        )}
+      </h3>
+      <p class="text-[13px] text-[var(--color-text-secondary)] leading-relaxed mb-4 min-h-[3rem]">
+        {item.description}
+      </p>
+      <div class="flex flex-wrap gap-1">
+        {item.chips.map((c) => <TechChip name={c} />)}
+      </div>
+    </a>
+  ))}
+</div>

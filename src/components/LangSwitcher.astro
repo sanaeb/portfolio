@@ -1,0 +1,78 @@
+---
+import {
+  alternateLangPath,
+  getDict,
+  type Lang,
+} from '../i18n/translations'
+
+interface Props {
+  lang: Lang
+  currentPath: string
+}
+
+const { lang, currentPath } = Astro.props
+const t = getDict(lang)
+const otherPath = alternateLangPath(currentPath, lang)
+
+const frIsActive = lang === 'fr'
+const enIsActive = lang === 'en'
+
+// FR href: switching from EN → FR, target alternate path. If already FR, stays self.
+const frHref = lang === 'en' ? otherPath : currentPath
+const enHref = lang === 'fr' ? otherPath : currentPath
+---
+
+<div
+  class="inline-flex items-center gap-1.5"
+  role="group"
+  aria-label="Language switcher"
+>
+  {/* FR */}
+  <a
+    href={frHref}
+    aria-current={frIsActive ? 'true' : undefined}
+    aria-label={frIsActive ? t.langSwitcher.frActiveLabel : t.langSwitcher.switchToFr}
+    title={t.langSwitcher.frTitle}
+    class:list={[
+      'group relative w-7 h-7 rounded-full overflow-hidden transition-all',
+      frIsActive
+        ? 'ring-2 ring-[var(--color-accent)] ring-offset-2 ring-offset-[var(--color-bg)] cursor-default hover:scale-105'
+        : 'ring-1 ring-[var(--color-border-strong)] opacity-65 hover:opacity-100 hover:scale-105',
+    ]}
+  >
+    <svg viewBox="0 0 3 2" preserveAspectRatio="none" class="w-full h-full block" aria-hidden="true">
+      <rect width="1" height="2" fill="#0055A4"></rect>
+      <rect x="1" width="1" height="2" fill="#FFFFFF"></rect>
+      <rect x="2" width="1" height="2" fill="#EF4135"></rect>
+    </svg>
+  </a>
+
+  {/* EN */}
+  <a
+    href={enHref}
+    aria-current={enIsActive ? 'true' : undefined}
+    aria-label={enIsActive ? t.langSwitcher.enActiveLabel : t.langSwitcher.switchToEn}
+    title={t.langSwitcher.enTitle}
+    class:list={[
+      'group relative w-7 h-7 rounded-full overflow-hidden transition-all',
+      enIsActive
+        ? 'ring-2 ring-[var(--color-accent)] ring-offset-2 ring-offset-[var(--color-bg)] cursor-default hover:scale-105'
+        : 'ring-1 ring-[var(--color-border-strong)] opacity-65 hover:opacity-100 hover:scale-105',
+    ]}
+  >
+    <svg viewBox="0 0 60 30" preserveAspectRatio="none" class="w-full h-full block" aria-hidden="true">
+      <rect width="60" height="30" fill="#012169"></rect>
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#FFFFFF" stroke-width="6"></path>
+      <clipPath id="uk-clip-tl">
+        <polygon points="0,0 30,15 0,30"></polygon>
+      </clipPath>
+      <clipPath id="uk-clip-tr">
+        <polygon points="60,0 30,15 60,30"></polygon>
+      </clipPath>
+      <path d="M0,0 L60,30" stroke="#C8102E" stroke-width="2.5" clip-path="url(#uk-clip-tl)"></path>
+      <path d="M60,0 L0,30" stroke="#C8102E" stroke-width="2.5" clip-path="url(#uk-clip-tr)"></path>
+      <path d="M30,0 v30 M0,15 h60" stroke="#FFFFFF" stroke-width="10"></path>
+      <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"></path>
+    </svg>
+  </a>
+</div>

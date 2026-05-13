@@ -1,0 +1,12 @@
+---
+interface Props {
+  name: string
+  size?: 'sm' | 'md'
+}
+const { name, size = 'sm' } = Astro.props
+const padding = size === 'md' ? 'px-2.5 py-1 text-xs' : 'px-2 py-0.5 text-[11px]'
+---
+
+<span class={`inline-flex items-center ${padding} font-mono rounded-md border border-[var(--color-border)] bg-[var(--color-bg-elev)] text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-accent)]/40 hover:text-[var(--color-text)]`}>
+  {name}
+</span>

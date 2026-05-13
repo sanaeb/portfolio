@@ -1,0 +1,132 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import ProjectCard from '../ProjectCard.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const isFr = lang === 'fr'
+
+const slamBoTagline = isFr
+  ? "Back-office de cartographie SLAM (greenfield, end-to-end) qui transforme des vidéos 360° en plans indoor navigables, pour un produit de navigation indoor accessible. SLAM C++ piloté depuis FastAPI, visualisation Mapbox + Three.js, géoréférencement Sim(2)."
+  : 'SLAM mapping back-office (greenfield, end-to-end) that turns 360° video into navigable indoor maps, for an accessible indoor navigation product. C++ SLAM driven from FastAPI, Mapbox + Three.js visualisation, Sim(2) georeferencing.'
+
+const articlesEyebrow = isFr ? 'Articles' : 'Articles'
+const articlesTitle = isFr ? 'Écrits techniques.' : 'Technical writing.'
+const articlesDescription = isFr
+  ? "Retours d'expérience sur l'architecture, l'intégration et les patterns UI."
+  : 'Lessons on architecture, integration and UI patterns.'
+const articlesCta = isFr ? 'Tous les articles' : 'All articles'
+
+const articles = isFr
+  ? [
+      {
+        slug: 'multi-datasource-spring-boot',
+        category: 'Architecture',
+        title: 'Multi-datasource Spring Boot : 3 bases, 1 transaction',
+        readTime: '10 min',
+      },
+      {
+        slug: 'visual-slam-python-bridge',
+        category: 'Vision',
+        title: 'Visual SLAM ↔ Python : un pont propre via sous-processus',
+        readTime: '12 min',
+      },
+      {
+        slug: 'applydesk-ai-matcher',
+        category: 'LLM',
+        title: 'Matcher IA : combiner score déterministe et verdict LLM',
+        readTime: '9 min',
+      },
+    ]
+  : [
+      {
+        slug: 'multi-datasource-spring-boot',
+        category: 'Architecture',
+        title: 'Multi-datasource Spring Boot: 3 databases, 1 transaction',
+        readTime: '10 min',
+      },
+      {
+        slug: 'visual-slam-python-bridge',
+        category: 'Vision',
+        title: 'Visual SLAM ↔ Python: a clean bridge via subprocess',
+        readTime: '12 min',
+      },
+      {
+        slug: 'applydesk-ai-matcher',
+        category: 'LLM',
+        title: 'AI matcher: blending a deterministic score with an LLM verdict',
+        readTime: '9 min',
+      },
+    ]
+---
+
+<Layout lang={lang} title={t.meta.projectsTitle} description={t.meta.projectsDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-6xl mx-auto">
+      <SectionHeader
+        eyebrow={t.projects.eyebrow}
+        title={t.projects.title}
+        description={t.projects.description}
+      />
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-5">
+      <ProjectCard
+        title="ApplyDesk"
+        tagline={t.projects.applyDeskTagline}
+        stack={['FastAPI', 'React', 'PostgreSQL', 'Gemini', 'TanStack Query', 'Tailwind']}
+        href={`${prefix}/projects/applydesk`}
+        status="wip"
+        year="2026"
+        visual="violet"
+      />
+      <ProjectCard
+        title="SLAM Mapping BO"
+        tagline={slamBoTagline}
+        stack={['FastAPI', 'React', 'Three.js', 'Mapbox GL', 'C++ SLAM', 'PostgreSQL']}
+        href={`${prefix}/projects/slam-mapping-bo`}
+        status="live"
+        year="2024-26"
+        visual="cyan"
+      />
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-6xl mx-auto">
+      <SectionHeader
+        eyebrow={articlesEyebrow}
+        title={articlesTitle}
+        description={articlesDescription}
+        cta={{ href: `${prefix}/articles`, label: articlesCta }}
+      />
+      <div class="grid md:grid-cols-3 gap-4">
+        {articles.map((a) => (
+          <a
+            href={`${prefix}/articles/${a.slug}`}
+            class="glass-card glass-card-interactive p-5 md:p-6 flex flex-col gap-3 min-h-[170px]"
+          >
+            <div class="flex items-center gap-3">
+              <span class="text-[11px] font-mono uppercase tracking-wider text-[var(--color-accent)]">
+                {a.category}
+              </span>
+              <span class="text-[11px] text-[var(--color-text-muted)] mono">{a.readTime}</span>
+            </div>
+            <h3 class="display text-base md:text-lg font-semibold tracking-tight leading-snug">
+              {a.title}
+            </h3>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

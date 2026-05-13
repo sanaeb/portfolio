@@ -1,0 +1,325 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const isFr = lang === 'fr'
+
+const venue = 'IEEE EUVIP'
+const year = 2018
+const readTime = isFr ? '7 min de lecture' : '7 min read'
+const eyebrow = isFr ? 'Publication · Vision par ordinateur' : 'Publication · Computer vision'
+const backLabel = isFr ? 'articles' : 'articles'
+
+const title = isFr
+  ? 'Visible + NIR pour la reconnaissance faciale par CNN'
+  : 'Visible + NIR information for CNN face recognition'
+
+const lede = isFr
+  ? "Et si on rendait la caméra sensible au proche infrarouge pour mieux reconnaître les visages ? J'ai monté un dataset original VNIR (52 identités, 3 poses), entraîné deux architectures CNN, et comparé leur performance face au RGB classique. La conclusion m'a surprise : les images full-spectrum 3 canaux battent les 4 canaux RGB + I."
+  : "What if we made the camera sensitive to near-infrared to better recognise faces? I built an original VNIR dataset (52 identities, 3 poses), trained two CNN architectures, and compared their performance against plain RGB. The result surprised me: 3-channel full-spectrum images beat 4-channel RGB + I."
+
+const metaTitle = isFr
+  ? 'Visible + NIR pour la reconnaissance faciale — Sanae Boutarfass'
+  : 'Visible + NIR for face recognition — Sanae Boutarfass'
+const metaDescription = isFr
+  ? 'Reconnaissance faciale par CNN sur images full-spectrum (VNIR) : dataset original, deux architectures comparées, résultats sur le rôle du canal NIR.'
+  : 'CNN-based face recognition on full-spectrum (VNIR) images: original dataset, two architectures compared, findings on the role of the NIR channel.'
+
+const sections = isFr
+  ? {
+      problem: {
+        eyebrow: 'Le problème',
+        title: 'Le NIR perdu en silence',
+        body: [
+          "Les capteurs CCD/CMOS de **toutes** les caméras numériques sont sensibles à la fois au visible (400-700 nm) ET au proche infrarouge (700-1200 nm). Mais un filtre interne — l'ICF (Infrared Cut-off Filter) — bloque l'IR pour que les couleurs paraissent naturelles à l'œil.",
+          "En retirant ce filtre, on récupère l'information NIR « gratuitement », mêlée aux trois canaux RGB. La peau, les yeux, les os réagissent différemment dans le NIR : la peau y est plus uniforme (moins de défauts de surface), les vaisseaux et structures sub-cutanées y deviennent visibles. **Peut-on exploiter ce signal pour reconnaître un visage de façon plus robuste ?**",
+        ],
+      },
+      diagram: {
+        eyebrow: 'Capture',
+        title: 'Trois images par pose, une seule caméra',
+      },
+      method: {
+        eyebrow: 'Approche',
+        title: 'Le setup, le dataset, les deux CNN',
+        body: [
+          "**Hack hardware** : SONY F717 équipé d'un mode « night shot » où l'ICF est mécaniquement rétractable. Trépied + 4 LEDs IR pour compenser l'absence de NIR ambiant en intérieur. Filtre Kodak Wratten 87 monté en façade pour les captures NIR-pur.",
+        ],
+        bullets: [
+          "**Dataset original VNIR** : 52 identités, 3 poses (face / quart-droit / quart-gauche), avec et sans lunettes pour les porteurs.",
+          "**3 versions par pose** : RGB classique (ICF en place), full-spectrum (ICF retiré, stocké comme RGB par la caméra), NIR pur (filtre Wratten 87, canal vert extrait en monochrome).",
+          "**Résolution** : 2048 × 1536 JPEG, recadrage en haute résolution sur la zone visage.",
+          "**Deux architectures CNN comparées** : (a) CNN classique 3 canaux entraîné sur RGB, testé aussi sur full-spectrum ; (b) CNN 4 canaux R, G, B, I avec I = image NIR pure.",
+        ],
+      },
+      results: {
+        eyebrow: 'Résultats',
+        title: 'Ce qui marche, ce qui ne marche pas',
+        cards: [
+          {
+            title: 'Le full-spectrum 3 canaux : surprise',
+            body: "Un CNN entraîné sur RGB classique **généralise correctement** à des images full-spectrum, sans réentraînement. Le mélange visible + NIR dans les trois canaux ne perturbe pas la reconnaissance — au contraire, le taux monte.",
+          },
+          {
+            title: 'Le RGB + I 4 canaux : déception',
+            body: "Ajouter le NIR comme **quatrième canal séparé** dégrade la performance par rapport au full-spectrum 3 canaux. L'architecture ne sait pas exploiter ce canal isolé aussi bien qu'un NIR « fondu » dans le RGB.",
+          },
+          {
+            title: 'Le canal bleu, grand bénéficiaire',
+            body: "Quand on injecte du NIR dans les canaux RGB, le **canal bleu** est celui qui s'améliore le plus. Le signal bleu est habituellement le plus faible (capteurs moins sensibles), donc le ratio signal/bruit y bénéficie le plus de l'apport NIR.",
+          },
+          {
+            title: 'Robustesse à la lumière',
+            body: "Le full-spectrum est plus stable que le RGB face aux variations d'éclairage indoor — le NIR ambiant rattrape ce que le visible perd quand la lumière baisse.",
+          },
+        ],
+      },
+      contribution: {
+        eyebrow: 'Ma contribution',
+        title: 'Ce que cette publication apporte',
+        items: [
+          "**Premier dataset VNIR public** dédié à la reconnaissance faciale. Les bases existantes (type CASIA NIR-VIS 2.0) contiennent RGB et NIR **séparés**, pas du full-spectrum.",
+          "**Démonstration empirique** qu'on n'a pas besoin d'une architecture multi-canal sur-mesure pour exploiter le NIR : un CNN classique sur du full-spectrum suffit, et fait même mieux.",
+          "**Méthodologie de capture reproductible** : caméra grand public + LEDs IR + filtre Wratten. Pas d'équipement de labo coûteux.",
+          "**Recommandation pratique** pour les applications de reconnaissance faciale en conditions de luminosité variables : retirer l'ICF plutôt que d'ajouter un capteur NIR dédié.",
+        ],
+      },
+      meta: {
+        eyebrow: 'Pour aller plus loin',
+        title: 'Conférence & contexte',
+        items: [
+          'Publié à **IEEE EUVIP 2018** (European Workshop on Visual Information Processing).',
+          'Travail mené pendant mon Master Recherche, MIA Laboratory · Université de La Rochelle.',
+          'Mots-clés : CNN, face recognition, NIR imaging, multispectral, full-spectrum, dataset.',
+        ],
+      },
+    }
+  : {
+      problem: {
+        eyebrow: 'The problem',
+        title: 'The NIR signal we silently throw away',
+        body: [
+          "The CCD/CMOS sensors in **every** digital camera are sensitive both to visible light (400-700 nm) AND near-infrared (700-1200 nm). But an internal filter — the ICF (Infrared Cut-off Filter) — blocks IR so that colours look natural to the human eye.",
+          "Remove that filter and you recover NIR information 'for free', mixed into the three RGB channels. Skin, eyes and bone respond differently in NIR: skin looks more uniform (fewer surface defects show), sub-cutaneous structures become visible. **Can we leverage that signal to recognise a face more robustly?**",
+        ],
+      },
+      diagram: {
+        eyebrow: 'Capture',
+        title: 'Three images per pose, one camera',
+      },
+      method: {
+        eyebrow: 'Approach',
+        title: 'The setup, the dataset, the two CNNs',
+        body: [
+          "**Hardware hack**: SONY F717 with a 'night shot' mode whose ICF can be mechanically retracted. Tripod + 4 IR LEDs to compensate for the lack of ambient NIR indoors. A Kodak Wratten 87 filter mounted in front of the lens for pure-NIR captures.",
+        ],
+        bullets: [
+          "**Original VNIR dataset**: 52 identities, 3 poses (front / quarter-right / quarter-left), with and without glasses for those who wear them.",
+          '**3 versions per pose**: plain RGB (ICF on), full-spectrum (ICF off, stored as RGB by the camera), pure NIR (Wratten 87 filter, green channel extracted as monochrome).',
+          '**Resolution**: 2048 × 1536 JPEG, high-resolution crop on the face region.',
+          '**Two CNN architectures compared**: (a) classic 3-channel CNN trained on RGB, tested also on full-spectrum; (b) 4-channel CNN R, G, B, I with I = pure NIR image.',
+        ],
+      },
+      results: {
+        eyebrow: 'Results',
+        title: 'What works, what does not',
+        cards: [
+          {
+            title: 'Full-spectrum 3 channels: a surprise',
+            body: "A CNN trained on plain RGB **generalises well** to full-spectrum images, without any retraining. The visible + NIR mixture in the three channels does not confuse recognition — accuracy goes up.",
+          },
+          {
+            title: 'RGB + I 4 channels: a disappointment',
+            body: "Adding NIR as a **separate fourth channel** degrades performance compared to the 3-channel full-spectrum approach. The architecture cannot exploit the isolated channel as well as it does NIR 'baked' into RGB.",
+          },
+          {
+            title: 'The blue channel, biggest winner',
+            body: 'When NIR is injected into the RGB channels, the **blue channel** improves the most. Blue is usually the weakest signal (sensors are less sensitive there), so the signal-to-noise ratio benefits the most from the NIR boost.',
+          },
+          {
+            title: 'Lighting robustness',
+            body: 'Full-spectrum is more stable than plain RGB under varying indoor lighting — ambient NIR fills in for the visible signal as light dims.',
+          },
+        ],
+      },
+      contribution: {
+        eyebrow: 'My contribution',
+        title: 'What this publication brings',
+        items: [
+          '**First public VNIR dataset** dedicated to face recognition. Existing bases (e.g. CASIA NIR-VIS 2.0) contain RGB and NIR **separately**, not full-spectrum.',
+          '**Empirical demonstration** that a custom multi-channel architecture is not required to leverage NIR: a plain CNN on full-spectrum is enough — and actually does better.',
+          '**Reproducible capture methodology**: consumer camera + IR LEDs + filter. No lab-grade equipment needed.',
+          '**Practical recommendation** for face-recognition systems exposed to variable lighting: remove the ICF rather than adding a separate NIR sensor.',
+        ],
+      },
+      meta: {
+        eyebrow: 'More',
+        title: 'Venue & context',
+        items: [
+          'Published at **IEEE EUVIP 2018** (European Workshop on Visual Information Processing).',
+          "Work carried out during my research master's at MIA Laboratory · University of La Rochelle.",
+          'Keywords: CNN, face recognition, NIR imaging, multispectral, full-spectrum, dataset.',
+        ],
+      },
+    }
+
+function renderInline(s: string): string {
+  return s
+    .replace(/`([^`]+)`/g, '<code class="font-mono text-[0.92em] px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] border border-[var(--color-border)]">$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[var(--color-text)]">$1</strong>')
+}
+---
+
+<Layout lang={lang} title={metaTitle} description={metaDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-3xl mx-auto">
+      <a
+        href={`${prefix}/articles`}
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-soft)] transition-colors inline-flex items-center gap-1.5 mb-8"
+      >
+        <span aria-hidden="true">←</span> {backLabel}
+      </a>
+
+      <div class="flex items-center gap-3 mb-4 flex-wrap">
+        <span class="eyebrow text-[var(--color-accent)]">{eyebrow}</span>
+        <span class="text-[11px] text-[var(--color-text-muted)] mono">{venue} · {year} · {readTime}</span>
+      </div>
+      <h1 class="display text-3xl md:text-5xl font-semibold tracking-tight mb-6 leading-[1.1]">
+        {title}
+      </h1>
+      <p class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed">
+        {lede}
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.problem.eyebrow} title={sections.problem.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.problem.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.diagram.eyebrow} title={sections.diagram.title} />
+
+      <div class="glass-card p-5 md:p-8 overflow-x-auto">
+        <div class="min-w-[520px]">
+          {/* Camera schema */}
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <div class="rounded-md border border-violet-500/40 bg-violet-500/10 p-3 text-center">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-violet-300 mb-1">ICF on</div>
+              <div class="text-[12px] mono text-[var(--color-text)]">RGB classique</div>
+              <div class="text-[10px] mono text-[var(--color-text-muted)] mt-1">{isFr ? 'visible seul' : 'visible only'}</div>
+            </div>
+            <div class="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-center">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-amber-300 mb-1">ICF off</div>
+              <div class="text-[12px] mono text-[var(--color-text)]">VNIR full-spectrum</div>
+              <div class="text-[10px] mono text-[var(--color-text-muted)] mt-1">{isFr ? 'visible + NIR mêlés' : 'visible + NIR mixed'}</div>
+            </div>
+            <div class="rounded-md border border-rose-500/40 bg-rose-500/10 p-3 text-center">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-rose-300 mb-1">Wratten 87</div>
+              <div class="text-[12px] mono text-[var(--color-text)]">NIR pur</div>
+              <div class="text-[10px] mono text-[var(--color-text-muted)] mt-1">{isFr ? 'IR seul, monochrome' : 'IR only, monochrome'}</div>
+            </div>
+          </div>
+
+          {/* Arrows */}
+          <div class="grid grid-cols-3 gap-3 mb-2 text-center text-[var(--color-text-muted)]">
+            <span class="text-lg leading-none">↓</span>
+            <span class="text-lg leading-none">↓</span>
+            <span class="text-lg leading-none">↓</span>
+          </div>
+
+          {/* Architectures */}
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-lg border border-[var(--color-accent)]/40 bg-[var(--color-accent)]/10 p-4 text-center">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-[var(--color-accent)]">{isFr ? 'CNN classique 3 canaux' : 'Plain 3-channel CNN'}</div>
+              <div class="text-[12px] mono text-[var(--color-text)] mt-1">RGB · VNIR</div>
+              <div class="text-[10px] mono text-[var(--color-text-muted)] mt-1">{isFr ? 'entraîné RGB, testé sur les deux' : 'trained on RGB, tested on both'}</div>
+            </div>
+            <div class="rounded-lg border border-cyan-500/40 bg-cyan-500/10 p-4 text-center">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-cyan-300">{isFr ? 'CNN 4 canaux R, G, B, I' : '4-channel CNN R, G, B, I'}</div>
+              <div class="text-[12px] mono text-[var(--color-text)] mt-1">RGB + NIR</div>
+              <div class="text-[10px] mono text-[var(--color-text-muted)] mt-1">{isFr ? 'NIR comme canal séparé' : 'NIR as a dedicated channel'}</div>
+            </div>
+          </div>
+
+          <p class="text-[11px] mono text-[var(--color-text-muted)] mt-4 text-center">
+            {isFr ? 'Capture : 52 identités · 3 poses · avec / sans lunettes · 2048 × 1536 JPEG' : 'Capture: 52 identities · 3 poses · with / without glasses · 2048 × 1536 JPEG'}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.method.eyebrow} title={sections.method.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-6">
+        {sections.method.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+      <ul class="space-y-3">
+        {sections.method.bullets.map((b) => (
+          <li class="flex gap-3 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(b)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.results.eyebrow} title={sections.results.title} />
+      <div class="grid md:grid-cols-2 gap-4">
+        {sections.results.cards.map((c) => (
+          <div class="glass-card p-5">
+            <h3 class="display text-base font-semibold tracking-tight mb-2">{c.title}</h3>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed" set:html={renderInline(c.body)}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.contribution.eyebrow} title={sections.contribution.title} />
+      <ul class="space-y-3">
+        {sections.contribution.items.map((it) => (
+          <li class="flex gap-3 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(it)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.meta.eyebrow} title={sections.meta.title} />
+      <ul class="space-y-2">
+        {sections.meta.items.map((it) => (
+          <li class="flex gap-3 text-sm md:text-base leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(it)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,423 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const isFr = lang === 'fr'
+
+const date = '2026-05'
+const readTime = isFr ? '10 min de lecture' : '10 min read'
+const eyebrow = isFr ? 'Article · Architecture' : 'Article · Architecture'
+const backLabel = isFr ? 'articles' : 'articles'
+
+const title = isFr
+  ? 'Multi-datasource Spring Boot : 3 bases, 1 transaction'
+  : 'Multi-datasource Spring Boot: 3 databases, 1 transaction'
+
+const lede = isFr
+  ? "Comment on a séparé l'édition back-office, la lecture API mobile et l'analytique en trois bases PostgreSQL distinctes, tout en gardant des transactions atomiques entre elles. Retour d'expérience sur un back-end d'application d'accessibilité indoor (Java 17 / Spring Boot 3)."
+  : 'How we split back-office editing, mobile API reads and analytics into three distinct PostgreSQL databases while keeping atomic transactions across them. Lessons from an accessible indoor navigation back-end (Java 17 / Spring Boot 3).'
+
+const metaTitle = isFr
+  ? 'Multi-datasource Spring Boot — Sanae Boutarfass'
+  : 'Multi-datasource Spring Boot — Sanae Boutarfass'
+const metaDescription = isFr
+  ? "Retour d'expérience sur une architecture Spring Boot à trois bases PostgreSQL avec transactions distribuées Atomikos JTA, workflow de publication snapshot et versioning d'API mobile."
+  : 'Lessons from a Spring Boot architecture with three PostgreSQL databases, Atomikos JTA distributed transactions, a snapshot publication workflow and mobile API versioning.'
+
+const sections = isFr
+  ? {
+      problem: {
+        eyebrow: 'Le problème',
+        title: 'Pourquoi une seule base ne tenait plus',
+        body: [
+          "Le produit est une app mobile de navigation indoor pour l'accessibilité, déployée dans de grands ERP (aéroports, gares, musées). Elle s'appuie sur un back-office Spring Boot qui sert deux mondes différents :",
+          "côté édition, une dizaine d'opérateurs métier mettent à jour des plans complexes (places, levels, troubles, audit trail complet). Côté lecture, des milliers d'apps mobiles tirent les plans publiés depuis nos APIs.",
+          "Avec une seule base, les écritures intenses du BO entraient en contention avec les lectures massives des apps. Et les jointures lourdes nécessaires côté édition pénalisaient la latence mobile. Il fallait découpler.",
+        ],
+      },
+      architecture: {
+        eyebrow: "L'archi",
+        title: '3 bases, 1 application',
+        body: [
+          "On a séparé en trois datasources PostgreSQL côte à côte, gérés par la même application Spring Boot :",
+        ],
+        list: [
+          {
+            name: 'working_data',
+            tag: 'normalisée · audit complet',
+            body: "Working data du back-office : tout ce que les opérateurs éditent. Chaque modification écrit aussi dans une table d'audit (qui a fait quoi, quand, depuis quelle IP).",
+          },
+          {
+            name: 'published_data',
+            tag: 'snapshot read-only · dénormalisée · versionnée',
+            body: "Lecture seule pour l'API mobile. Données dénormalisées au moment de la publication pour éviter toute jointure en prod. Plusieurs versions peuvent cohabiter via un URL prefix versioning.",
+          },
+          {
+            name: 'segment_events',
+            tag: 'analytics · écritures massives',
+            body: "Événements analytiques (taps, navigations, sessions). Isolée pour que les pics d'écriture n'aient aucun impact sur les tables métier.",
+          },
+        ],
+      },
+      jta: {
+        eyebrow: 'Atomicité',
+        title: 'Pourquoi une transaction distribuée',
+        body: [
+          "Quand un opérateur édite une entité métier, il faut écrire dans `working_data` ET dans la table d'audit en atomique. Si l'audit échoue, l'édition doit roll-back, et inversement. Une transaction locale par DB ne suffit pas — il faut une transaction **distribuée** qui s'étend sur plusieurs datasources.",
+          "Concrètement, un seul `@Transactional` dans le service métier englobe l'update sur `working_data` ET l'insertion d'une entrée d'audit. Le gestionnaire de transactions (Atomikos JTA, en l'occurrence) prend en charge le 2-phase commit entre les datasources.",
+        ],
+        afterCode: [
+          "L'alternative — XA natif PostgreSQL — était moins mature côté Hibernate à l'époque. Atomikos s'intègre proprement, mais attention : si un commit échoue partiellement, l'erreur peut être muette dans certains cas. On a appris à scruter les logs Atomikos et à ne **jamais** mélanger `@Async` et `@Transactional` (préférer un message JMS).",
+        ],
+      },
+      publication: {
+        eyebrow: 'Workflow',
+        title: 'La publication, ou comment passer en read-only',
+        body: [
+          "Quand un opérateur valide un site, il faut copier les données métier de `working_data` vers `published_data` en les dénormalisant. C'est lourd (potentiellement plusieurs minutes pour un grand aéroport) et ça ne doit pas bloquer l'utilisateur. Le pattern :",
+        ],
+        steps: [
+          { label: '1', body: "L'opérateur clique « Publier » → l'API enregistre une demande dans une table de jobs et publie un message JMS sur Apache Artemis." },
+          { label: '2', body: "Un consumer Spring Batch reçoit le message, lance le job (reader/processor/writer). Quartz orchestre le scheduling et le clustering (un seul worker prend le job à la fois)." },
+          { label: '3', body: "Le job copie + dénormalise vers `published_data` avec checkpoints. Si ça crash, il reprend où il s'est arrêté." },
+          { label: '4', body: "Le statut bascule en `published`. Les apps mobiles lisent la nouvelle version. L'ancienne reste en base pour rollback rapide." },
+        ],
+        afterSteps: [
+          "Côté API mobile, l'URL prefixe la version (`/mobile/api/vN/...`). On peut publier une nouvelle version sans casser les anciennes apps — temps de grâce intégré.",
+        ],
+      },
+      tradeoffs: {
+        eyebrow: 'Choix',
+        title: 'Ce qu’on a aussi évalué',
+        items: [
+          {
+            title: 'Single-DB + table partitioning',
+            body: "Suffisant tant que le pattern lecture/écriture reste proche. Insuffisant ici : la dénormalisation pour le mobile demande un schéma différent, pas juste un partitionnement.",
+          },
+          {
+            title: 'Microservices séparés',
+            body: "Aurait surévalué le besoin. Trois bases dans un même monolithe Spring suffisent pour le volume actuel et restent simples à déployer (un seul artefact Maven).",
+          },
+          {
+            title: 'Read replicas',
+            body: "Bonne idée pour scale en lecture mais ne résout pas la dénormalisation. Et le délai de réplication aurait introduit une fenêtre de cohérence inacceptable pour le workflow de publication.",
+          },
+          {
+            title: 'Event sourcing',
+            body: "Tentant pour l'audit, mais surcoût important pour une équipe de notre taille. une table d'audit + transaction distribuée donne 80 % des bénéfices à 10 % du coût.",
+          },
+        ],
+      },
+      lessons: {
+        eyebrow: 'Lessons',
+        title: 'Ce qu’on retient',
+        items: [
+          'Trois bases dans une même app, ce n’est pas trois fois plus de complexité — c’est moins, parce que chaque base a un rôle clair et un schéma optimisé pour ce rôle.',
+          "Atomikos est solide tant qu'on évite les mélanges async / transactionnel. Tester les chemins d'erreur (mock d'une DB qui tombe) est obligatoire.",
+          "Le versioning URL pour l'API mobile vaut largement les en-têtes : explicite, debuggable, et permet à plusieurs versions de cohabiter sans état partagé.",
+          "Spring Batch + Quartz couvre 100 % des besoins de jobs longs. Kafka aurait été overkill pour notre volume.",
+          "Ne **jamais** modifier une version d'API mobile déjà publiée. Toujours créer la version suivante. Les apps mobiles ont des cycles de mise à jour de plusieurs mois.",
+        ],
+      },
+    }
+  : {
+      problem: {
+        eyebrow: 'The problem',
+        title: 'Why one database stopped being enough',
+        body: [
+          "The product is a mobile app for accessible indoor navigation, deployed in large public venues (airports, train stations, museums). It's powered by a Spring Boot back-office that serves two very different worlds:",
+          "on the editing side, a handful of operators update complex maps (places, levels, troubles, with a full audit trail). On the read side, thousands of mobile apps pull published maps from our APIs.",
+          "With a single database, heavy back-office writes were contending with massive mobile reads. And the joins needed for editing penalised mobile latency. We had to decouple.",
+        ],
+      },
+      architecture: {
+        eyebrow: 'The architecture',
+        title: '3 databases, 1 application',
+        body: [
+          "We split into three PostgreSQL datasources side by side, all managed by the same Spring Boot application:",
+        ],
+        list: [
+          {
+            name: 'working_data',
+            tag: 'normalised · full audit trail',
+            body: "Back-office working data — everything operators edit. Every mutation also writes to an audit table so we keep a complete trail (who did what, when, from where).",
+          },
+          {
+            name: 'published_data',
+            tag: 'read-only snapshot · denormalised · versioned',
+            body: 'Mobile API read path. Data is denormalised at publication time so production never has to join. Multiple versions can coexist via URL-prefix versioning.',
+          },
+          {
+            name: 'segment_events',
+            tag: 'analytics · write-heavy',
+            body: "Analytics events (taps, navigation, sessions). Isolated so write spikes can't impact business tables.",
+          },
+        ],
+      },
+      jta: {
+        eyebrow: 'Atomicity',
+        title: 'Why a distributed transaction',
+        body: [
+          "When an operator edits a business entity, we have to write to `working_data` AND the audit table atomically. If audit fails, the edit rolls back, and vice versa. Local-per-database transactions aren't enough — we need a **distributed transaction** that spans multiple datasources.",
+          "In practice, a single `@Transactional` on the service method wraps both the business update on `working_data` AND the audit insert. The transaction manager (Atomikos JTA here) drives the 2-phase commit across datasources.",
+        ],
+        afterCode: [
+          "The alternative — native PostgreSQL XA — was less mature with Hibernate at the time. Atomikos integrates cleanly, but watch out: if a commit fails partially, the error can be silent in some cases. We learned to read the Atomikos logs carefully and **never** mix `@Async` with `@Transactional` (use a JMS message instead).",
+        ],
+      },
+      publication: {
+        eyebrow: 'Workflow',
+        title: 'Publication, or how to move to read-only',
+        body: [
+          "When an operator validates a site, business data must be copied from `working_data` to `published_data` while being denormalised. It's heavy (sometimes several minutes for a large airport) and must not block the user. The pattern:",
+        ],
+        steps: [
+          { label: '1', body: "The operator clicks Publish → the API records a job request in a table and publishes a JMS message on Apache Artemis." },
+          { label: '2', body: "A Spring Batch consumer picks up the message, runs the job (reader/processor/writer). Quartz handles scheduling and clustering (only one worker grabs the job at a time)." },
+          { label: '3', body: "The job copies and denormalises into `published_data` with checkpoints. If it crashes, it resumes from the last checkpoint." },
+          { label: '4', body: "Status switches to `published`. Mobile apps read the new version. The previous one stays in the database for fast rollback." },
+        ],
+        afterSteps: [
+          "On the mobile API side, the version is prefixed in the URL (`/mobile/api/vN/...`). We can publish a new version without breaking older apps — built-in grace period.",
+        ],
+      },
+      tradeoffs: {
+        eyebrow: 'Calls',
+        title: 'What we also considered',
+        items: [
+          {
+            title: 'Single DB + table partitioning',
+            body: "Fine while read/write patterns stay close. Not enough here: mobile-side denormalisation requires a different schema, not just partitioning.",
+          },
+          {
+            title: 'Separate microservices',
+            body: "Would have over-engineered the need. Three databases in one Spring monolith are enough for current volume and stay simple to deploy (a single Maven artifact).",
+          },
+          {
+            title: 'Read replicas',
+            body: "Great for read scaling but doesn't help with denormalisation. And replication lag would have introduced a consistency window that the publication workflow can't tolerate.",
+          },
+          {
+            title: 'Event sourcing',
+            body: 'Tempting for audit, but a big tax for a team our size. A dedicated audit table + a distributed transaction gives 80% of the benefits at 10% of the cost.',
+          },
+        ],
+      },
+      lessons: {
+        eyebrow: 'Takeaways',
+        title: 'What we keep from it',
+        items: [
+          "Three databases in one app isn't three times the complexity — it's actually less, because each database has a clear role and a schema optimised for that role.",
+          "Atomikos is solid as long as you avoid async / transactional mixing. Testing error paths (mocking a DB going down) is mandatory.",
+          'URL-prefix versioning is well worth the over-header approach: explicit, debuggable, and lets multiple versions coexist without shared state.',
+          "Spring Batch + Quartz covers 100 % of long-running job needs. Kafka would have been overkill for our volume.",
+          "Never modify a published mobile API version. Always create the next one. Mobile apps roll out over months, not days.",
+        ],
+      },
+    }
+---
+
+<Layout lang={lang} title={metaTitle} description={metaDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-3xl mx-auto">
+      <a
+        href={`${prefix}/articles`}
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-soft)] transition-colors inline-flex items-center gap-1.5 mb-8"
+      >
+        <span aria-hidden="true">←</span> {backLabel}
+      </a>
+
+      <div class="flex items-center gap-3 mb-4">
+        <span class="eyebrow text-[var(--color-accent)]">{eyebrow}</span>
+        <span class="text-[11px] text-[var(--color-text-muted)] mono">{date} · {readTime}</span>
+      </div>
+      <h1 class="display text-3xl md:text-5xl font-semibold tracking-tight mb-6 leading-[1.1]">
+        {title}
+      </h1>
+      <p class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed">
+        {lede}
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.problem.eyebrow} title={sections.problem.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.problem.body.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.architecture.eyebrow} title={sections.architecture.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-6">
+        {sections.architecture.body.map((p) => <p>{p}</p>)}
+      </div>
+
+      {/* ===== Architecture diagram ===== */}
+      <div class="glass-card p-5 md:p-8 mb-6 overflow-x-auto">
+        <div class="min-w-[520px]">
+          {/* Top row: consumers */}
+          <div class="grid grid-cols-2 gap-4 md:gap-8 mb-2">
+            <div class="flex flex-col items-center gap-1.5">
+              <div class="w-full px-3 py-2.5 rounded-md border border-violet-500/40 bg-violet-500/10 text-center">
+                <span class="font-mono text-[12px] md:text-[13px] text-violet-300">{isFr ? 'Back-office édition' : 'Editing back-office'}</span>
+              </div>
+              <span class="text-[10px] font-mono text-[var(--color-text-muted)]">{isFr ? 'opérateurs métier' : 'operators'}</span>
+            </div>
+            <div class="flex flex-col items-center gap-1.5">
+              <div class="w-full px-3 py-2.5 rounded-md border border-cyan-500/40 bg-cyan-500/10 text-center">
+                <span class="font-mono text-[12px] md:text-[13px] text-cyan-300">{isFr ? 'App mobile' : 'Mobile app'}</span>
+              </div>
+              <span class="text-[10px] font-mono text-[var(--color-text-muted)]">{isFr ? 'lecture massive' : 'massive read traffic'}</span>
+            </div>
+          </div>
+
+          {/* Two arrows down (BO writes, mobile reads) */}
+          <div class="grid grid-cols-2 gap-4 md:gap-8 mb-2">
+            <div class="flex flex-col items-center text-center">
+              <span class="text-[var(--color-accent)] text-lg leading-none">↓</span>
+              <span class="text-[10px] font-mono text-[var(--color-text-muted)] mt-0.5">{isFr ? 'REST · écritures' : 'REST · writes'}</span>
+            </div>
+            <div class="flex flex-col items-center text-center">
+              <span class="text-emerald-400 text-lg leading-none">↑</span>
+              <span class="text-[10px] font-mono text-[var(--color-text-muted)] mt-0.5">{isFr ? 'REST · lectures' : 'REST · reads'}</span>
+            </div>
+          </div>
+
+          {/* Center: Spring Boot app */}
+          <div class="rounded-lg border border-[var(--color-accent)]/50 bg-gradient-to-br from-[var(--color-accent)]/15 via-fuchsia-500/5 to-cyan-500/10 p-3 md:p-4 mb-2 text-center">
+            <div class="font-mono text-sm md:text-base text-[var(--color-text)]">Spring Boot 3 · Java 17</div>
+            <div class="text-[10px] md:text-[11px] font-mono text-[var(--color-text-muted)] mt-1.5">@Transactional · Atomikos JTA · Spring Batch · Quartz · Artemis JMS</div>
+          </div>
+
+          {/* Three arrows down with labels */}
+          <div class="grid grid-cols-3 gap-2 md:gap-3 mb-2">
+            <div class="flex flex-col items-center text-center">
+              <span class="text-[var(--color-text-muted)] text-lg leading-none">↓</span>
+              <span class="text-[10px] font-mono text-[var(--color-accent)] mt-0.5">{isFr ? 'CRUD sync' : 'sync CRUD'}</span>
+            </div>
+            <div class="flex flex-col items-center text-center">
+              <span class="text-[var(--color-text-muted)] text-lg leading-none">↓</span>
+              <span class="text-[10px] font-mono text-[var(--color-accent)] mt-0.5">{isFr ? 'publish · job batch' : 'publish · batch job'}</span>
+            </div>
+            <div class="flex flex-col items-center text-center">
+              <span class="text-[var(--color-text-muted)] text-lg leading-none">↓</span>
+              <span class="text-[10px] font-mono text-[var(--color-accent)] mt-0.5">{isFr ? 'events stream' : 'event stream'}</span>
+            </div>
+          </div>
+
+          {/* Three datasources */}
+          <div class="grid grid-cols-3 gap-2 md:gap-3">
+            <div class="rounded-md border border-[var(--color-border-strong)] bg-[var(--color-bg-card)] p-2.5 md:p-3 text-center">
+              <div class="font-mono text-[12px] md:text-sm text-[var(--color-text)]">working_data</div>
+              <div class="text-[9px] md:text-[10px] font-mono text-[var(--color-text-muted)] mt-1 leading-relaxed">
+                {isFr ? 'normalisée' : 'normalised'}<br/>{isFr ? 'audit complet' : 'full audit trail'}
+              </div>
+            </div>
+            <div class="rounded-md border border-emerald-500/40 bg-emerald-500/5 p-2.5 md:p-3 text-center">
+              <div class="font-mono text-[12px] md:text-sm text-emerald-300">published_data</div>
+              <div class="text-[9px] md:text-[10px] font-mono text-[var(--color-text-muted)] mt-1 leading-relaxed">
+                {isFr ? 'dénormalisée' : 'denormalised'}<br/>{isFr ? 'read-only · versionnée' : 'read-only · versioned'}
+              </div>
+            </div>
+            <div class="rounded-md border border-[var(--color-border-strong)] bg-[var(--color-bg-card)] p-2.5 md:p-3 text-center">
+              <div class="font-mono text-[12px] md:text-sm text-[var(--color-text)]">segment_events</div>
+              <div class="text-[9px] md:text-[10px] font-mono text-[var(--color-text-muted)] mt-1 leading-relaxed">
+                analytics<br/>{isFr ? 'écritures massives' : 'write-heavy'}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer note */}
+          <p class="text-[10px] md:text-[11px] font-mono text-[var(--color-text-muted)] mt-4 text-center leading-relaxed" set:html={isFr
+            ? 'L’API mobile lit uniquement <span class="text-emerald-400">published_data</span> — jamais working_data. Le job batch (Spring Batch + Quartz) copie + dénormalise au moment du publish.'
+            : 'The mobile API only reads <span class="text-emerald-400">published_data</span> — never working_data. The batch job (Spring Batch + Quartz) copies and denormalises at publish time.'}></p>
+        </div>
+      </div>
+
+      {/* Detail cards */}
+      <div class="grid gap-3">
+        {sections.architecture.list.map((db) => (
+          <div class="glass-card p-5 md:p-6">
+            <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-2">
+              <code class="text-[var(--color-text)] font-mono text-sm md:text-base">{db.name}</code>
+              <span class="text-[11px] font-mono text-[var(--color-text-muted)]">{db.tag}</span>
+            </div>
+            <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">{db.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.jta.eyebrow} title={sections.jta.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-4">
+        {sections.jta.body.map((p) => <p set:html={p.replace(/`([^`]+)`/g, '<code class="font-mono text-[0.92em] px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] border border-[var(--color-border)]">$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[var(--color-text)]">$1</strong>')} />)}
+      </div>
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.jta.afterCode.map((p) => <p set:html={p.replace(/`([^`]+)`/g, '<code class="font-mono text-[0.92em] px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] border border-[var(--color-border)]">$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[var(--color-text)]">$1</strong>')} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.publication.eyebrow} title={sections.publication.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-6">
+        {sections.publication.body.map((p) => <p>{p}</p>)}
+      </div>
+      <ol class="space-y-3 mb-6">
+        {sections.publication.steps.map((s) => (
+          <li class="glass-card p-5 flex gap-4">
+            <span class="text-[var(--color-accent)] font-mono text-sm shrink-0 tabular-nums">{s.label}</span>
+            <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed" set:html={s.body.replace(/`([^`]+)`/g, '<code class="font-mono text-[0.92em] px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] border border-[var(--color-border)]">$1</code>')}></p>
+          </li>
+        ))}
+      </ol>
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.publication.afterSteps.map((p) => <p set:html={p.replace(/`([^`]+)`/g, '<code class="font-mono text-[0.92em] px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] border border-[var(--color-border)]">$1</code>')} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.tradeoffs.eyebrow} title={sections.tradeoffs.title} />
+      <div class="grid md:grid-cols-2 gap-4">
+        {sections.tradeoffs.items.map((it) => (
+          <div class="glass-card p-5">
+            <h3 class="display text-base font-semibold tracking-tight mb-2">{it.title}</h3>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">{it.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.lessons.eyebrow} title={sections.lessons.title} />
+      <ul class="space-y-3">
+        {sections.lessons.items.map((it) => (
+          <li class="flex gap-3 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span>{it}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

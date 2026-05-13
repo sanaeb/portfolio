@@ -1,0 +1,339 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const isFr = lang === 'fr'
+
+const date = '2026-05'
+const readTime = isFr ? '12 min de lecture' : '12 min read'
+const eyebrow = isFr ? 'Article · Vision' : 'Article · Vision'
+const backLabel = isFr ? 'articles' : 'articles'
+
+const title = isFr
+  ? 'Visual SLAM ↔ Python : un pont propre via sous-processus'
+  : 'Visual SLAM ↔ Python: a clean bridge via subprocess'
+
+const lede = isFr
+  ? "Comment intégrer un moteur Visual SLAM C++ open-source dans un back-end FastAPI sans bindings exotiques, et comment aligner ensuite le résultat sur un plan d'étage avec deux contraintes GPS. Retour d'expérience sur un back-office de cartographie indoor."
+  : 'How to integrate an open-source C++ Visual SLAM engine into a FastAPI back-end without exotic bindings, then align the result on a floor plan with two GPS constraints. Lessons from an indoor mapping back-office.'
+
+const metaTitle = isFr
+  ? 'Visual SLAM ↔ Python — Sanae Boutarfass'
+  : 'Visual SLAM ↔ Python — Sanae Boutarfass'
+const metaDescription = isFr
+  ? "Pont propre entre un moteur SLAM C++ et FastAPI (Python) via sous-processus + msgpack. Géoréférencement Sim(2) Umeyama, contraintes GPS, leçons d'intégration."
+  : 'Clean bridge between a C++ SLAM engine and FastAPI (Python) via subprocess + msgpack. Sim(2) Umeyama georeferencing, GPS constraints, integration lessons.'
+
+const sections = isFr
+  ? {
+      intro: {
+        eyebrow: 'Contexte',
+        title: 'Du flot de pixels à un plan navigable',
+        body: [
+          "Le projet : transformer des vidéos 360° en plans indoor navigables. La pièce centrale du pipeline, c'est le **Visual SLAM** — Simultaneous Localization And Mapping — qui reconstruit en parallèle la trajectoire 3D de la caméra et un nuage de points 3D de l'environnement.",
+          "On a choisi un **moteur SLAM open-source en C++**, construit sur OpenCV, g2o et Eigen. Notre back-end est en Python (FastAPI). La question : comment les faire dialoguer proprement ?",
+        ],
+      },
+      decision: {
+        eyebrow: 'Le choix',
+        title: 'Sous-processus, pas binding',
+        body: [
+          "Trois options techniques sur la table :",
+        ],
+        items: [
+          {
+            title: 'Bindings pybind11',
+            body: "Tentant sur le papier. Mais le moteur SLAM expose une API stateful complexe (config YAML, observers, callbacks). Maintenir un binding qui couvre tout ça revient à dupliquer leur surface publique en C++ avec un coût de maintenance énorme à chaque release upstream.",
+          },
+          {
+            title: 'Service réseau séparé (gRPC)',
+            body: "Propre, scalable. Mais surdimensionné : on a un seul job SLAM à la fois par site, déclenché à la demande. Ajouter un service à packager, déployer et monitorer pour ça serait du complexity tax.",
+          },
+          {
+            title: 'Sous-processus + format de sérialisation neutre',
+            body: "On exécute le binaire SLAM en sous-processus depuis FastAPI, on lui passe la vidéo et la config YAML, on récupère un map.msg (msgpack) qu'on parse côté Python. Simple, observable, isolé du runtime web.",
+          },
+        ],
+        afterItems: [
+          "On a pris la troisième. Le binaire SLAM crashe ? Le sous-processus meurt, on capture le code de retour, on logue, on remonte une erreur propre. Aucun risque que ça emporte FastAPI avec lui.",
+        ],
+      },
+      pipeline: {
+        eyebrow: 'Pipeline',
+        title: 'De la vidéo au map.msg',
+        steps: [
+          { label: '1', body: 'La vidéo 360° est uploadée vers Cloud Storage via signed URL — pas de proxy backend, le client uploade directement.' },
+          { label: '2', body: "À la demande, FastAPI extrait les frames clés (OpenCV) à une cadence configurable. Pas tout d'un coup : pipeline streamé pour limiter l'IO disque." },
+          { label: '3', body: 'FastAPI invoque le moteur SLAM en sous-processus avec la config (camera intrinsics, scale factor, vocabulary FBoW) et le dossier de frames.' },
+          { label: '4', body: 'Le binaire écrit un fichier `map.msg` contenant keyframes (poses + descripteurs) et map points (3D + observations).' },
+          { label: '5', body: "Côté Python on parse le `map.msg` via la lib `msgpack`, on materialise des modèles SQLAlchemy, et on stocke en PostgreSQL." },
+        ],
+      },
+      code: {
+        eyebrow: 'Le bridge',
+        title: 'Trois propriétés du sous-processus',
+        body: [
+          "Côté FastAPI, le pattern est court : on lance le binaire SLAM via `asyncio.create_subprocess_exec`, on attend le `returncode`, on parse le `map.msg` produit avec la lib `msgpack`. Pas de binding, pas de FFI, pas de serveur intermédiaire — juste un process Unix et un fichier de sortie. Ce qu'on gagne :",
+        ],
+        afterCode: [],
+        afterItems: [
+          "**Isolation runtime** : le crash d'un job SLAM ne tue jamais l'API.",
+          "**Cancellation propre** : tuer le sous-processus revient à l'annuler, sans state corrupted côté Python.",
+          "**Observable** : stdout/stderr sont capturés et loggés, on debug en lisant les logs comme n'importe quel process Unix.",
+        ],
+      },
+      georef: {
+        eyebrow: 'Géoréférencement',
+        title: 'Aligner la trajectoire sur un plan',
+        body: [
+          "Le moteur nous donne la trajectoire dans un repère SLAM arbitraire (origine à la première frame, échelle métrique relative). Pour que ce soit utile dans le back-office, il faut l'aligner sur le plan d'étage en coordonnées WGS84 (lon, lat).",
+          "L'opérateur clique sur quelques keyframes et indique « ici dans le SLAM = ici sur le plan ». Avec assez de contraintes, on calcule la transformation rigide qui aligne tout.",
+        ],
+        cases: [
+          {
+            title: '1 contrainte',
+            body: "Translation seule : on déplace le repère SLAM pour que le point coïncide. L'orientation et l'échelle restent celles du SLAM.",
+          },
+          {
+            title: '≥2 contraintes',
+            body: "Sim(2) via l'algorithme d'**Umeyama** : on résout simultanément rotation 2D, translation et échelle qui minimisent l'erreur quadratique sur les correspondances. Closed-form, robuste, déterministe.",
+          },
+          {
+            title: 'Auto-fit',
+            body: "Si on n'a qu'une contrainte mais que l'opérateur a posé les bornes du plan, on peut auto-scaler la trajectoire pour qu'elle remplisse le plan — sanity check rapide.",
+          },
+        ],
+      },
+      lessons: {
+        eyebrow: 'Lessons',
+        title: 'Ce qu’on retient',
+        items: [
+          "Pour intégrer une lib C++ avec une API stateful, **les sous-processus sont sous-estimés**. Ils tracent une frontière nette : un crash là-bas n'est pas un crash chez vous.",
+          "msgpack est un excellent format d'IPC : binaire, typé, multi-langage, sans la surface d'attaque de pickle.",
+          "Pour la perf 3D côté navigateur (milliers de frustums), on a utilisé Three.js directement plutôt que react-three-fiber — le coût React par frame est non négligeable à ces volumes.",
+          "Le géoréférencement Sim(2) Umeyama est en 30 lignes de NumPy. Ne pas se laisser intimider par la littérature SLAM : la plupart des briques utiles ont des solutions closed-form.",
+          "Toujours tester avec une vidéo « cassée » (frame manquante, codec exotique, taille zéro). Le sous-processus doit échouer proprement, pas planter le worker.",
+        ],
+      },
+    }
+  : {
+      intro: {
+        eyebrow: 'Context',
+        title: 'From a stream of pixels to a navigable map',
+        body: [
+          "The project: turn 360° videos into navigable indoor maps. The pipeline's centrepiece is **Visual SLAM** — Simultaneous Localization And Mapping — which jointly recovers the camera's 3D trajectory and a 3D point cloud of the environment.",
+          "We picked an **open-source C++ SLAM engine**, built on OpenCV, g2o and Eigen. Our back-end is Python (FastAPI). Question: how do we make them talk cleanly?",
+        ],
+      },
+      decision: {
+        eyebrow: 'The call',
+        title: 'Subprocess, not bindings',
+        body: [
+          'Three technical options on the table:',
+        ],
+        items: [
+          {
+            title: 'pybind11 bindings',
+            body: 'Tempting on paper. But the SLAM engine exposes a stateful API (YAML config, observers, callbacks). Maintaining bindings that cover all of it duplicates their public surface in C++, with a heavy maintenance tax every upstream release.',
+          },
+          {
+            title: 'Separate network service (gRPC)',
+            body: "Clean, scalable. But oversized: we run one SLAM job at a time per site, on demand. Adding a service to package, deploy and monitor for that is pure complexity tax.",
+          },
+          {
+            title: 'Subprocess + neutral serialisation',
+            body: 'We run the SLAM binary as a subprocess from FastAPI, hand it the video and the YAML config, and read back a map.msg (msgpack) on the Python side. Simple, observable, isolated from the web runtime.',
+          },
+        ],
+        afterItems: [
+          "We took the third one. SLAM binary crashes? The subprocess dies, we capture the return code, log it, surface a clean error. No risk of taking FastAPI down with it.",
+        ],
+      },
+      pipeline: {
+        eyebrow: 'Pipeline',
+        title: 'From video to map.msg',
+        steps: [
+          { label: '1', body: 'The 360° video is uploaded to Cloud Storage via signed URL — no backend proxy, the client uploads directly.' },
+          { label: '2', body: "On demand, FastAPI extracts key frames (OpenCV) at a configurable cadence. Not all at once: a streamed pipeline keeps disk IO bounded." },
+          { label: '3', body: 'FastAPI invokes the SLAM engine as a subprocess with the config (camera intrinsics, scale factor, FBoW vocabulary) and the frames folder.' },
+          { label: '4', body: 'The binary writes a `map.msg` file containing keyframes (poses + descriptors) and landmarks (3D + observation counts).' },
+          { label: '5', body: 'On the Python side, we parse `map.msg` with `msgpack`, hydrate SQLAlchemy models, and store everything in PostgreSQL.' },
+        ],
+      },
+      code: {
+        eyebrow: 'The bridge',
+        title: 'Three properties of the subprocess',
+        body: [
+          "On the FastAPI side, the pattern is short: spawn the SLAM binary with `asyncio.create_subprocess_exec`, await the `returncode`, parse the resulting `map.msg` with the `msgpack` library. No binding, no FFI, no intermediate server — just a Unix process and an output file. What we get:",
+        ],
+        afterCode: [],
+        afterItems: [
+          '**Runtime isolation**: a SLAM job crash never takes the API down.',
+          '**Clean cancellation**: killing the subprocess cancels the job without leaving corrupted state on the Python side.',
+          '**Observability**: stdout/stderr are captured and logged, so debugging is just reading logs like any other Unix process.',
+        ],
+      },
+      georef: {
+        eyebrow: 'Georeferencing',
+        title: 'Aligning the trajectory on a plan',
+        body: [
+          "The engine gives us the trajectory in an arbitrary SLAM frame (origin at the first key frame, relative metric scale). To make it useful in the back-office, we have to align it on the floor plan in WGS84 coordinates (lon, lat).",
+          "The operator clicks a few key frames and says \"this point in SLAM = this point on the plan\". With enough constraints, we compute the rigid transform that aligns everything.",
+        ],
+        cases: [
+          {
+            title: '1 constraint',
+            body: "Translation only: we offset the SLAM frame so the point matches. Orientation and scale stay as SLAM produced them.",
+          },
+          {
+            title: '≥2 constraints',
+            body: "Sim(2) via the **Umeyama** algorithm: we jointly solve for 2D rotation, translation and scale that minimise the squared error over the correspondences. Closed-form, robust, deterministic.",
+          },
+          {
+            title: 'Auto-fit',
+            body: "With only one constraint but the plan bounds defined, we can auto-scale the trajectory to fill the plan — quick sanity check.",
+          },
+        ],
+      },
+      lessons: {
+        eyebrow: 'Takeaways',
+        title: 'What we keep from it',
+        items: [
+          "To integrate a C++ library with a stateful API, **subprocesses are underrated**. They draw a clean boundary: a crash there is not a crash here.",
+          "msgpack is an excellent IPC format: binary, typed, multi-language, without pickle's attack surface.",
+          "For browser-side 3D perf (thousands of frustums), we used plain Three.js instead of react-three-fiber — the per-frame React cost is non-trivial at that scale.",
+          "Sim(2) Umeyama georeferencing fits in 30 lines of NumPy. Don't be intimidated by the SLAM literature: most of the useful bricks have closed-form solutions.",
+          "Always test with a 'broken' video (missing frame, exotic codec, zero size). The subprocess must fail cleanly, not crash the worker.",
+        ],
+      },
+    }
+
+function renderInline(s: string): string {
+  return s
+    .replace(/`([^`]+)`/g, '<code class="font-mono text-[0.92em] px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] border border-[var(--color-border)]">$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[var(--color-text)]">$1</strong>')
+}
+---
+
+<Layout lang={lang} title={metaTitle} description={metaDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-3xl mx-auto">
+      <a
+        href={`${prefix}/articles`}
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-soft)] transition-colors inline-flex items-center gap-1.5 mb-8"
+      >
+        <span aria-hidden="true">←</span> {backLabel}
+      </a>
+
+      <div class="flex items-center gap-3 mb-4">
+        <span class="eyebrow text-[var(--color-accent)]">{eyebrow}</span>
+        <span class="text-[11px] text-[var(--color-text-muted)] mono">{date} · {readTime}</span>
+      </div>
+      <h1 class="display text-3xl md:text-5xl font-semibold tracking-tight mb-6 leading-[1.1]">
+        {title}
+      </h1>
+      <p class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed">
+        {lede}
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.intro.eyebrow} title={sections.intro.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.intro.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.decision.eyebrow} title={sections.decision.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-6">
+        {sections.decision.body.map((p) => <p>{p}</p>)}
+      </div>
+      <div class="grid gap-4 mb-6">
+        {sections.decision.items.map((it) => (
+          <div class="glass-card p-5">
+            <h3 class="display text-base font-semibold tracking-tight mb-2">{it.title}</h3>
+            <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">{it.body}</p>
+          </div>
+        ))}
+      </div>
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.decision.afterItems.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.pipeline.eyebrow} title={sections.pipeline.title} />
+      <ol class="space-y-3">
+        {sections.pipeline.steps.map((s) => (
+          <li class="glass-card p-5 flex gap-4">
+            <span class="text-[var(--color-accent)] font-mono text-sm shrink-0 tabular-nums">{s.label}</span>
+            <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed" set:html={renderInline(s.body)}></p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.code.eyebrow} title={sections.code.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-4">
+        {sections.code.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+      <ul class="space-y-2 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.code.afterItems.map((p) => (
+          <li class="flex gap-3">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(p)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.georef.eyebrow} title={sections.georef.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-6">
+        {sections.georef.body.map((p) => <p>{p}</p>)}
+      </div>
+      <div class="grid md:grid-cols-3 gap-4">
+        {sections.georef.cases.map((c) => (
+          <div class="glass-card p-5">
+            <h3 class="display text-base font-semibold tracking-tight mb-2">{c.title}</h3>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed" set:html={renderInline(c.body)}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.lessons.eyebrow} title={sections.lessons.title} />
+      <ul class="space-y-3">
+        {sections.lessons.items.map((it) => (
+          <li class="flex gap-3 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(it)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

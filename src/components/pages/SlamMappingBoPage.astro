@@ -1,0 +1,346 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import TechChip from '../TechChip.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const isFr = lang === 'fr'
+
+const stack: Record<string, string[]> = {
+  Backend: ['Python 3.11', 'FastAPI', 'SQLAlchemy 2.0', 'Pydantic 2', 'Alembic', 'PostgreSQL 15', 'slowapi'],
+  Frontend: ['React 18', 'TypeScript', 'Vite', 'Zustand', 'TanStack Query', 'sonner'],
+  '2D / 3D': ['Mapbox GL', 'Three.js', 'OpenCV', 'msgpack'],
+  SLAM: ['moteur SLAM C++', 'g2o', 'Eigen 3', 'OpenCV 4', 'FBoW', 'CMake'],
+  Ops: ['GCP (GKE)', 'GCS', 'Cloud Build', isFr ? 'serveur SLAM dédié' : 'dedicated SLAM host', 'Keycloak OIDC', 'GitLab CI'],
+}
+
+const heroTitle = isFr ? 'Back-office cartographie SLAM' : 'SLAM Mapping Back-office'
+const heroBackLabel = isFr ? 'projets' : 'projects'
+const statusLabel = isFr ? 'Production · 2024-2026' : 'Production · 2024-2026'
+const ownerLabel = isFr ? 'Greenfield' : 'Greenfield'
+
+const tagline = isFr
+  ? "Back-office de cartographie SLAM pour un produit de navigation indoor accessible. Pipeline asynchrone vidéo 360° → trajectoire 3D → carte exploitable, avec moteur SLAM C++ piloté à distance, géoréférencement Sim(2) interactif, visualisation 2D/3D et curation opérateur. Greenfield, end-to-end."
+  : 'SLAM mapping back-office for an accessible indoor navigation product. Async pipeline from 360° video to navigable map, with a C++ SLAM engine driven remotely, interactive Sim(2) georeferencing, 2D/3D visualisation and operator curation. Greenfield, end-to-end.'
+
+const problemEyebrow = isFr ? 'Le pipeline' : 'The pipeline'
+const problemTitle = isFr ? "De la vidéo 360° au plan exploitable" : 'From 360° video to a usable map'
+const problemBody = isFr
+  ? "Les opérateurs terrain filment les bâtiments en vidéo 360° équirectangulaire. Le back-office orchestre ensuite tout le pipeline : reconstruction 3D, géoréférencement interactif, validation par l'opérateur, export. À l'échelle de grands ERP — aéroports, gares, musées, sites industriels."
+  : 'Field operators capture buildings as equirectangular 360° video. The back-office then orchestrates the full pipeline: 3D reconstruction, interactive georeferencing, operator curation, export. At the scale of large public venues — airports, train stations, museums, industrial sites.'
+
+const flowSteps: { title: string; body: string }[] = isFr
+  ? [
+      { title: '1 — Capture', body: 'Vidéo MP4 360° équirectangulaire (caméra portative), plusieurs segments par site, marche à vitesse constante.' },
+      { title: '2 — Upload', body: 'Signed URL GCS (15 min, scopée) — le client uploade directement vers le bucket, le backend ne proxifie pas le fichier.' },
+      { title: '3 — SLAM', body: 'Moteur C++ piloté à distance sur un serveur dédié externe. Config YAML adaptative (indoor / outdoor). Output : binaire MSG msgpack + trajectory.txt.' },
+      { title: '4 — Parsing', body: 'msgpack → keyframes JSON sérialisés dans la table de jobs. Sous la seconde pour une trajectoire typique. Map points laissés sur GCS pour debug.' },
+      { title: '5 — Géoréférencement', body: "L'opérateur pose des contraintes GPS sur les keyframes. Sim(2) résolu via SVD / Umeyama dès ≥ 2 contraintes. Solve instantané, même avec une vingtaine de points." },
+      { title: '6 — Validation', body: "Curation manuelle : seules les trajectoires marquées « validée » sont visibles côté carte production. Évite la pollution par les tests et A/B." },
+      { title: '7 — Export', body: 'GeoJSON (FeatureCollection LineString + Points keyframes) téléchargeable. Format consommé par l’app mobile downstream.' },
+    ]
+  : [
+      { title: '1 — Capture', body: 'Equirectangular 360° MP4 (handheld camera), several segments per site, walked at a steady pace.' },
+      { title: '2 — Upload', body: 'GCS signed URL (15 min, scoped) — the client uploads straight to the bucket, the backend never proxies the file.' },
+      { title: '3 — SLAM', body: 'C++ engine driven remotely on a dedicated external host. Adaptive YAML config (indoor / outdoor). Output: a binary MSG (msgpack) + trajectory.txt.' },
+      { title: '4 — Parsing', body: 'msgpack → keyframes serialised as JSON in the jobs table. Sub-second for a typical trajectory. Map points stay on GCS for debug.' },
+      { title: '5 — Georef', body: "The operator pins GPS constraints on keyframes. Sim(2) solved via SVD / Umeyama as soon as ≥ 2 constraints. Solve is instant, even with a couple dozen points." },
+      { title: '6 — Curation', body: 'Manual validation: only trajectories flagged as "validated" reach the production map. Avoids pollution by tests and A/B retries.' },
+      { title: '7 — Export', body: 'GeoJSON (FeatureCollection LineString + keyframe Points) is downloadable. Consumed by the downstream mobile app.' },
+    ]
+
+const highlightsEyebrow = isFr ? 'Ce que j’ai construit' : 'What I built'
+const highlightsTitle = isFr ? 'From scratch, end-to-end' : 'From scratch, end-to-end'
+const highlights: { title: string; body: string }[] = isFr
+  ? [
+      {
+        title: 'SLAM piloté à distance',
+        body: "Backend FastAPI déclenche le moteur SLAM C++ via HTTPS sur un serveur dédié externe (dépendances natives, GPU pour le bundle adjustment). Trois modes : remote prod, Docker dev, mock CI. Tracking d'état, retries propres, jamais de blocage du thread HTTP.",
+      },
+      {
+        title: 'Visualisation 2D & 3D synchronisée',
+        body: 'Mapbox GL pour le plan d’étage avec trajectoires en LineString, keyframes en Points et contraintes GPS draggables. Three.js pour frustums caméra, nuage de points filtrable et trajectoire 3D. Sélection et survol propagés entre les deux vues.',
+      },
+      {
+        title: 'Géoréférencement Sim(2) interactif',
+        body: '1 contrainte → translation seule. ≥ 2 contraintes → solve Umeyama (SVD sur matrice de covariance centrée, force det = +1 pour éviter les flips). Override de niveau si toutes les contraintes sont sur le même étage. Solve instantané.',
+      },
+      {
+        title: 'Upload résistant aux gros fichiers',
+        body: 'Signed URL GCS (PUT, 15 min, scopée au path) — le client envoie sa vidéo directement au bucket via XHR avec progress. Aucun fichier ne transite par le pod backend, qui reste léger en RAM.',
+      },
+      {
+        title: 'Curation opérateur',
+        body: "Une trajectoire n'apparaît sur la carte production qu'après validation manuelle. Évite la pollution par les retries et les comparaisons A/B. Réversible avec confirm dialog.",
+      },
+      {
+        title: 'Dashboard serveur « calm / loud »',
+        body: 'Monitoring infra avec une règle simple : 1-liner discret quand tout va bien, panneau détaillé quand anomalie. Couvre uptime, DB, disque, RAM, certs SSL, facturation GCP. Évite la fatigue Grafana.',
+      },
+      {
+        title: 'Auth & audit',
+        body: 'Keycloak OIDC, 3 rôles (admin / operator / reader), audit trail complet groupé par jour, export CSV RFC 4180 UTF-8 BOM (compatible Excel FR).',
+      },
+      {
+        title: 'Design system maison',
+        body: 'Tokens CSS, dark mode systémique, composants mutualisés (EmptyState, UserChip, ConfirmDialog, Escape-to-close), couverture unit + Playwright E2E par scenario.',
+      },
+    ]
+  : [
+      {
+        title: 'SLAM driven remotely',
+        body: 'FastAPI invokes the C++ SLAM engine over HTTPS on a dedicated external host (native deps, GPU for bundle adjustment). Three modes: remote prod, Docker dev, mock CI. Status tracking, clean retries, HTTP threads never block.',
+      },
+      {
+        title: 'Synchronised 2D & 3D viewers',
+        body: 'Mapbox GL for the floor plan with trajectories as LineStrings, keyframes as Points and draggable GPS constraints. Three.js for camera frustums, a filterable point cloud and the 3D trajectory. Selection and hover propagated across both views.',
+      },
+      {
+        title: 'Interactive Sim(2) georeferencing',
+        body: '1 constraint → translation only. ≥ 2 constraints → Umeyama solve (SVD on the centred covariance matrix, det forced to +1 to avoid flips). Level override when all constraints live on the same floor. Solve is instant.',
+      },
+      {
+        title: 'Large-file friendly upload',
+        body: 'GCS signed URL (PUT, 15 min, scoped to the exact path) — the client uploads its video straight to the bucket via XHR with progress. No file transits through the backend pod, which stays lean on RAM.',
+      },
+      {
+        title: 'Operator curation',
+        body: 'A trajectory only reaches the production map after manual validation. Avoids pollution by retries and A/B comparisons. Reversible via a confirm dialog.',
+      },
+      {
+        title: '"Calm / loud" server dashboard',
+        body: 'Infra monitoring with a simple rule: a quiet one-liner when healthy, a full panel when something is off. Covers uptime, DB, disk, RAM, SSL certs, GCP billing. Avoids Grafana fatigue.',
+      },
+      {
+        title: 'Auth & audit',
+        body: 'Keycloak OIDC, three roles (admin / operator / reader), full audit trail grouped by day, RFC 4180 CSV export with UTF-8 BOM (Excel FR friendly).',
+      },
+      {
+        title: 'In-house design system',
+        body: 'CSS tokens, systematic dark mode, shared components (EmptyState, UserChip, ConfirmDialog, Escape-to-close), unit + Playwright E2E coverage per scenario.',
+      },
+    ]
+
+const stackEyebrow = isFr ? 'Stack' : 'Stack'
+const stackTitle = isFr ? 'Comment c’est fait' : 'How it is built'
+
+const decisionsEyebrow = isFr ? 'Arbitrages' : 'Trade-offs'
+const decisionsTitle = isFr ? "Quelques choix techniques" : 'A few technical calls'
+const decisions: { title: string; body: string }[] = isFr
+  ? [
+      {
+        title: 'SLAM hors GKE, sur host dédié externe',
+        body: "Le moteur C++ a des dépendances natives lourdes et profite d'un GPU pour le bundle adjustment. Un GKE GPU aurait été plus cher qu'un serveur dédié externe. Trois modes de fallback (remote / Docker / mock) permettent de tester sans dépendre du host prod.",
+      },
+      {
+        title: 'FastAPI plutôt que Spring Boot',
+        body: 'L’écosystème SLAM (moteur C++ open-source, OpenCV, msgpack) est Python-natif. Un bridge JNI vers du Java aurait doublé la surface technique sans gain.',
+      },
+      {
+        title: 'Three.js direct, pas React Three Fiber',
+        body: 'Besoin de contrôle fin sur la scène et la perf (milliers de frustums). RTF rajoute un coût React par frame qu’on ne peut pas se permettre.',
+      },
+      {
+        title: 'Zustand + TanStack Query, pas Redux',
+        body: 'Volume de state client limité, API plus simple. TanStack Query gère seule le cache/invalidation/refetch — pas besoin de re-coder ce pattern.',
+      },
+      {
+        title: 'Upload direct vers GCS, pas via proxy backend',
+        body: "Les vidéos pèsent plusieurs gigas. Recevoir le fichier dans le pod backend l'aurait fait crasher en RAM. Signed URL scopée + XHR direct côté client : le backend reste léger, le bucket gère le débit.",
+      },
+      {
+        title: 'Pas de mock DB dans les tests d’intégration',
+        body: 'Un mock divergent avait masqué une migration cassée en prod. Depuis : Testcontainers / DB éphémère, et le bug ne peut plus passer.',
+      },
+    ]
+  : [
+      {
+        title: 'SLAM off-GKE, on a dedicated external host',
+        body: 'The C++ engine has heavy native dependencies and benefits from a GPU for bundle adjustment. A GKE GPU node would have cost more than a dedicated external server. Three fallback modes (remote / Docker / mock) make it testable without depending on the prod host.',
+      },
+      {
+        title: 'FastAPI over Spring Boot',
+        body: 'The SLAM ecosystem (open-source C++ engine, OpenCV, msgpack) is Python-native. A JNI bridge to Java would have doubled the technical surface for no gain.',
+      },
+      {
+        title: 'Plain Three.js, not React Three Fiber',
+        body: 'Need fine control over the scene and per-frame perf (thousands of frustums). RTF adds a React cost per frame we cannot afford.',
+      },
+      {
+        title: 'Zustand + TanStack Query, not Redux',
+        body: "Limited client state, simpler API. TanStack Query handles cache, invalidation and refetch on its own — no reason to re-implement that.",
+      },
+      {
+        title: 'Direct upload to GCS, not via a backend proxy',
+        body: "Videos weigh several gigabytes. Streaming a file that size through the backend pod would OOM it. A scoped signed URL + client-side XHR keeps the backend lean and lets the bucket handle throughput.",
+      },
+      {
+        title: 'No DB mocks in integration tests',
+        body: 'A divergent mock masked a broken migration in prod. Now: Testcontainers / ephemeral DBs, and that class of bug cannot ship again.',
+      },
+    ]
+
+const linkArticleSlam = isFr ? 'Lire l’article : Visual SLAM ↔ Python via JNI' : 'Read the article: Visual SLAM ↔ Python via JNI'
+const articleSlamHref = `${prefix}/articles/visual-slam-python-bridge`
+const linkExperience = isFr ? 'Voir le poste lié sur /experience' : 'See the related role in /experience'
+const experienceHref = `${prefix}/experience`
+
+const metaTitle = isFr
+  ? 'Back-office cartographie SLAM — Sanae Boutarfass'
+  : 'SLAM Mapping Back-office — Sanae Boutarfass'
+const metaDescription = isFr
+  ? "Back-office de cartographie SLAM (vidéo 360° → plan indoor) — FastAPI, React, Three.js, Mapbox GL, moteur SLAM C++. Greenfield, end-to-end."
+  : 'SLAM mapping back-office (360° video → indoor map) — FastAPI, React, Three.js, Mapbox GL, C++ SLAM engine. Greenfield, end-to-end.'
+---
+
+<Layout lang={lang} title={metaTitle} description={metaDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-4xl mx-auto">
+      <a
+        href={`${prefix}/projects`}
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-soft)] transition-colors inline-flex items-center gap-1.5 mb-8"
+      >
+        <span aria-hidden="true">←</span> {heroBackLabel}
+      </a>
+
+      <div class="glass-card mb-10 overflow-hidden">
+        <div class="relative h-48 md:h-64 bg-gradient-to-br from-cyan-500/40 via-emerald-500/20 to-violet-400/30 overflow-hidden">
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent,_var(--color-bg)_85%)]"></div>
+          <svg class="absolute inset-0 w-full h-full opacity-[0.07]" aria-hidden="true">
+            <defs>
+              <pattern id="grid-vision" width="32" height="32" patternUnits="userSpaceOnUse">
+                <path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" stroke-width="0.5"></path>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid-vision)"></rect>
+          </svg>
+          <div class="absolute inset-0 flex items-end p-6 md:p-10">
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  {statusLabel}
+                </span>
+                <span class="text-[11px] text-[var(--color-text-secondary)] mono">{ownerLabel}</span>
+              </div>
+              <h1 class="display text-4xl md:text-6xl font-semibold tracking-tight text-white">
+                {heroTitle}
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 md:p-10">
+          <p class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed">
+            {tagline}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader eyebrow={problemEyebrow} title={problemTitle} />
+      <p class="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed mb-6">
+        {problemBody}
+      </p>
+      {/* Compact pipeline strip */}
+      <div class="glass-card p-4 md:p-5 mb-4 overflow-x-auto">
+        <div class="flex items-center gap-2 min-w-[640px]">
+          {flowSteps.map((step, i) => (
+            <>
+              <div class="flex-1 text-center">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--color-accent)]">
+                  {step.title.split(' — ')[0]}
+                </div>
+                <div class="text-[11px] mono text-[var(--color-text)] mt-0.5">
+                  {step.title.split(' — ')[1]}
+                </div>
+              </div>
+              {i < flowSteps.length - 1 && (
+                <span class="text-[var(--color-text-muted)] shrink-0" aria-hidden="true">→</span>
+              )}
+            </>
+          ))}
+        </div>
+      </div>
+
+      {/* Detail cards */}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {flowSteps.map((step) => (
+          <div class="glass-card p-4">
+            <div class="text-[11px] font-mono text-[var(--color-accent)] mb-1">{step.title}</div>
+            <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">{step.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader eyebrow={highlightsEyebrow} title={highlightsTitle} />
+      <div class="grid md:grid-cols-2 gap-4">
+        {highlights.map((h, i) => (
+          <div class="glass-card p-6">
+            <div class="flex items-baseline gap-3 mb-3">
+              <span class="text-xs font-mono text-[var(--color-accent)] tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="display text-base font-semibold tracking-tight">{h.title}</h3>
+            </div>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">{h.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader eyebrow={stackEyebrow} title={stackTitle} />
+      <div class="glass-card divide-y divide-[var(--color-border)]">
+        {Object.entries(stack).map(([category, items]) => (
+          <div class="flex flex-col md:flex-row gap-3 md:gap-6 p-5 md:p-6">
+            <div class="md:w-32 shrink-0">
+              <div class="eyebrow text-[var(--color-accent)]">{category}</div>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              {items.map((s) => <TechChip name={s} size="md" />)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader eyebrow={decisionsEyebrow} title={decisionsTitle} />
+      <div class="grid md:grid-cols-2 gap-4">
+        {decisions.map((d) => (
+          <div class="glass-card p-6">
+            <h3 class="display text-base font-semibold tracking-tight mb-2">{d.title}</h3>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">{d.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-3">
+      <a href={articleSlamHref} class="glass-card glass-card-interactive p-5 md:p-6 flex-1 text-sm text-[var(--color-text)]">
+        <span class="text-[var(--color-accent)] mr-2" aria-hidden="true">›</span>{linkArticleSlam}
+      </a>
+      <a href={experienceHref} class="glass-card glass-card-interactive p-5 md:p-6 flex-1 text-sm text-[var(--color-text)]">
+        <span class="text-[var(--color-accent)] mr-2" aria-hidden="true">›</span>{linkExperience}
+      </a>
+    </div>
+  </section>
+</Layout>

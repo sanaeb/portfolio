@@ -1,0 +1,36 @@
+---
+interface Item {
+  label: string
+  detail?: string
+}
+
+interface Props {
+  eyebrow?: string
+  items: Item[]
+}
+
+const { eyebrow = 'Published in', items } = Astro.props
+---
+
+<div class="border-y border-[var(--color-border)] py-6 md:py-7 bg-[var(--color-bg-elev)]/30">
+  <div class="max-w-6xl mx-auto px-0">
+    <div class="flex flex-col md:flex-row md:items-center md:gap-12 gap-4">
+      <div class="eyebrow shrink-0">{eyebrow}</div>
+      <div class="flex flex-wrap items-center gap-x-7 gap-y-2">
+        {items.map((item, i) => (
+          <>
+            {i > 0 && (
+              <span class="hidden md:inline-block w-px h-3 bg-[var(--color-border-strong)]"></span>
+            )}
+            <div class="flex items-baseline gap-2">
+              <span class="text-sm font-medium text-[var(--color-text)] tracking-tight">{item.label}</span>
+              {item.detail && (
+                <span class="text-[11px] mono text-[var(--color-text-muted)]">{item.detail}</span>
+              )}
+            </div>
+          </>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>

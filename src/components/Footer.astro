@@ -1,0 +1,52 @@
+---
+import { getDict, type Lang } from '../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const year = new Date().getFullYear()
+---
+
+<footer class="relative z-[1] mt-24 border-t border-[var(--color-border)]">
+  <div class="max-w-6xl mx-auto px-6 md:px-8 py-12 grid md:grid-cols-3 gap-8">
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="status-dot"></span>
+        <span class="text-sm text-[var(--color-text)]">{t.status.footerLine}</span>
+      </div>
+      <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">
+        {t.status.footerDetails}
+      </p>
+    </div>
+
+    <div>
+      <div class="eyebrow mb-3">{t.footer.contact}</div>
+      <a href="mailto:sanae.boutarfass@gmail.com" class="link-underline text-sm block mb-1">
+        {t.footer.sendEmail}
+      </a>
+      <a
+        href="https://www.linkedin.com/in/sanae-boutarfass-7186a14b"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="link-underline text-sm"
+      >
+        {t.footer.linkedIn}
+      </a>
+    </div>
+
+    <div class="md:text-right">
+      <div class="eyebrow mb-3">{t.footer.location}</div>
+      <p class="text-sm text-[var(--color-text)]">{t.footer.locationCity}</p>
+      <p class="text-sm text-[var(--color-text-muted)] mt-1">{t.footer.timezone}</p>
+    </div>
+  </div>
+  <div class="border-t border-[var(--color-border)]">
+    <div class="max-w-6xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between text-xs text-[var(--color-text-muted)]">
+      <span>© {year} Sanae Boutarfass</span>
+      <span class="mono">{t.footer.builtWith}</span>
+    </div>
+  </div>
+</footer>

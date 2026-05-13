@@ -1,0 +1,91 @@
+---
+import TechChip from './TechChip.astro'
+import Avatar from './Avatar.astro'
+
+interface Props {
+  company: string
+  role: string
+  period: string
+  context?: string
+  url?: string
+  highlights: string[]
+  stack: string[]
+  initials?: string
+  gradient?: 'violet' | 'cyan' | 'amber' | 'emerald' | 'slate'
+  current?: boolean
+}
+
+const {
+  company,
+  role,
+  period,
+  context,
+  url,
+  highlights,
+  stack,
+  initials,
+  gradient = 'violet',
+  current = false,
+} = Astro.props
+
+// Compute initials if not provided (first letter of first 2 words)
+const computedInitials =
+  initials ?? company.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase()
+---
+
+<article class="glass-card p-6 md:p-8 relative">
+  <div class="flex items-start gap-5">
+    <div class="shrink-0">
+      <Avatar initials={computedInitials} gradient={gradient} size="md" />
+    </div>
+
+    <div class="flex-1 min-w-0">
+      <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-1">
+        <h3 class="display text-lg md:text-xl font-semibold tracking-tight">
+          {role}
+        </h3>
+        {current && (
+          <span class="inline-flex items-center gap-1.5 text-[11px] text-emerald-300">
+            <span class="status-dot"></span>
+            actuellement
+          </span>
+        )}
+      </div>
+
+      <div class="flex flex-wrap items-center gap-x-2 text-sm text-[var(--color-text-secondary)] mb-2">
+        {url ? (
+          <a href={url} target="_blank" rel="noopener noreferrer" class="link-underline">
+            {company}
+          </a>
+        ) : (
+          <span class="text-[var(--color-text)]">{company}</span>
+        )}
+        <span class="text-[var(--color-text-muted)]">·</span>
+        <span class="mono text-xs text-[var(--color-text-muted)]">{period}</span>
+      </div>
+
+      {context && (
+        <p class="text-sm text-[var(--color-text-secondary)] italic mb-4 leading-relaxed">{context}</p>
+      )}
+
+      <ul class="space-y-2 text-sm leading-relaxed">
+        {highlights.map((h) => (
+          <li class="flex gap-2.5">
+            <span class="shrink-0 text-[var(--color-accent)] mt-1.5">
+              <svg width="6" height="6" viewBox="0 0 6 6" fill="currentColor" aria-hidden="true">
+                <circle cx="3" cy="3" r="3"></circle>
+              </svg>
+            </span>
+            <span>{h}</span>
+          </li>
+        ))}
+      </ul>
+
+      {stack.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mt-5">
+          {stack.map((s) => <TechChip name={s} />)}
+        </div>
+      )}
+    </div>
+  </div>
+</article>

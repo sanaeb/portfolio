@@ -1,0 +1,247 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const isFr = lang === 'fr'
+
+const eyebrow = isFr ? 'Articles' : 'Articles'
+const title = isFr ? 'Écrits techniques.' : 'Technical writing.'
+const description = isFr
+  ? "Retours d'expérience sur des choix d'architecture, d'intégration ou de pattern UI. Tirés de projets pro et personnels."
+  : 'Lessons from architecture, integration or UI pattern decisions. Drawn from professional and personal projects.'
+
+const articles = isFr
+  ? [
+      {
+        slug: 'multi-datasource-spring-boot',
+        category: 'Architecture',
+        date: '2026-05',
+        readTime: '10 min',
+        title: 'Multi-datasource Spring Boot : 3 bases, 1 transaction',
+        lede:
+          "Comment on a séparé l'édition back-office, la lecture API mobile et l'analytique en trois bases PostgreSQL distinctes, tout en gardant des transactions atomiques entre elles. Retour d'expérience sur un back-end d'accessibilité indoor.",
+      },
+      {
+        slug: 'visual-slam-python-bridge',
+        category: 'Vision',
+        date: '2026-05',
+        readTime: '12 min',
+        title: 'Visual SLAM ↔ Python : un pont propre via sous-processus',
+        lede:
+          "Intégrer un moteur Visual SLAM C++ dans un back-end FastAPI sans bindings exotiques, puis aligner le résultat sur un plan d'étage avec deux contraintes GPS. Retour d'expérience sur un back-office de cartographie indoor.",
+      },
+      {
+        slug: 'applydesk-ai-matcher',
+        category: 'LLM',
+        date: '2026-05',
+        readTime: '9 min',
+        title: 'Matcher IA : combiner score déterministe et verdict LLM',
+        lede:
+          "Comment ApplyDesk note 100 offres en une fraction de seconde côté navigateur, et garde un budget LLM raisonnable pour un verdict argumenté seulement sur celles qui le méritent.",
+      },
+    ]
+  : [
+      {
+        slug: 'multi-datasource-spring-boot',
+        category: 'Architecture',
+        date: '2026-05',
+        readTime: '10 min',
+        title: 'Multi-datasource Spring Boot: 3 databases, 1 transaction',
+        lede:
+          'How we split back-office editing, mobile API reads and analytics into three distinct PostgreSQL databases while keeping atomic transactions across them. Lessons from an accessible indoor navigation back-end.',
+      },
+      {
+        slug: 'visual-slam-python-bridge',
+        category: 'Vision',
+        date: '2026-05',
+        readTime: '12 min',
+        title: 'Visual SLAM ↔ Python: a clean bridge via subprocess',
+        lede:
+          'Integrating a C++ Visual SLAM engine into a FastAPI back-end without exotic bindings, then aligning the result on a floor plan using two GPS constraints. Lessons from an indoor mapping back-office.',
+      },
+      {
+        slug: 'applydesk-ai-matcher',
+        category: 'LLM',
+        date: '2026-05',
+        readTime: '9 min',
+        title: 'AI matcher: blending a deterministic score with an LLM verdict',
+        lede:
+          "How ApplyDesk scores 100 offers in a fraction of a second in the browser, and keeps the LLM budget reasonable for a reasoned verdict only on those that deserve it.",
+      },
+    ]
+
+const readMore = isFr ? 'Lire' : 'Read'
+
+const papersEyebrow = isFr ? 'Publications académiques' : 'Academic publications'
+const papersTitle = isFr ? 'Vision par ordinateur · 2018-2020' : 'Computer vision · 2018-2020'
+const papersDescription = isFr
+  ? 'Quatre papiers issus de mon Master Recherche à l’Université de La Rochelle (MIA Laboratory). Présentés ici en résumés détaillés — les PDFs ne sont pas hébergés (droits IEEE).'
+  : "Four papers from my research master's at the University of La Rochelle (MIA Laboratory). Detailed summaries here — PDFs are not hosted (IEEE copyright)."
+
+const papers = isFr
+  ? [
+      {
+        slug: 'cnn-colorization-improving',
+        venue: 'IEEE IPAS',
+        year: 2020,
+        title: 'Coloriser de vraies photos d’archive : palette + scribbles',
+        keywords: ['Colorization', 'Deep learning', 'Archival', 'CNN', 'Interactive'],
+        summary:
+          "Les CNN de colorisation sont entraînés sur des photos couleur converties en N&B — inadaptés aux vraies photos d'archives (silver halide). J'améliore le résultat en combinant deux indices : palette globale automatisée + scribbles manuels là où ça compte (drapeaux, monuments).",
+      },
+      {
+        slug: 'cnn-colorization-palette',
+        venue: 'IEEE MCNA',
+        year: 2020,
+        title: 'Coloriser un film N&B avec une palette de couleurs saillantes',
+        keywords: ['Colorization', 'Deep learning', 'Colour palette', 'CNN', 'Movie'],
+        summary:
+          "Une palette des couleurs « saillantes » de la scène (distinctes des couleurs « mémorables » déjà apprises) injectée au CNN comme entrée additionnelle. Une palette suffit pour des centaines de frames — adapté à la colorisation de films sans scribbler par frame.",
+      },
+      {
+        slug: 'handwriting-anomaly-detection',
+        venue: 'EUVIP',
+        year: 2019,
+        title: 'Détecter des anomalies d’écriture manuscrite par autoencodeur',
+        keywords: ['Deep learning', 'Handwriting', 'Outlier detection', 'Autoencoder', 'Radon'],
+        summary:
+          "Un autoencodeur convolutionnel pour détecter — sans annotation — qu'une portion de texte a été écrite par une autre main. Tile splitting + transformée de Radon partielle. La discrimination émerge pendant l'entraînement via un shuffling batch-à-batch.",
+      },
+      {
+        slug: 'face-recognition-visible-nir',
+        venue: 'IEEE EUVIP',
+        year: 2018,
+        title: 'Visible + NIR pour la reconnaissance faciale par CNN',
+        keywords: ['CNN', 'Face recognition', 'NIR', 'Multispectral', 'Dataset'],
+        summary:
+          "Dataset original VNIR (52 identités, 3 poses) capturé en retirant l'ICF d'une caméra grand public. Deux CNN comparés. Conclusion : le full-spectrum 3 canaux bat le 4 canaux RGB+I, et le canal bleu est le plus aidé par le NIR.",
+      },
+    ]
+  : [
+      {
+        slug: 'cnn-colorization-improving',
+        venue: 'IEEE IPAS',
+        year: 2020,
+        title: 'Colorizing genuine archival photos: palette + scribbles',
+        keywords: ['Colorization', 'Deep learning', 'Archival', 'CNN', 'Interactive'],
+        summary:
+          'CNN colorization networks are trained on colour photos converted to grayscale — ill-suited to genuine archival B&W (silver halide). I improve the output with two hints: an automated global palette + manual scribbles where it matters (flags, monuments).',
+      },
+      {
+        slug: 'cnn-colorization-palette',
+        venue: 'IEEE MCNA',
+        year: 2020,
+        title: 'Colorizing a B&W movie with a salient-colour palette',
+        keywords: ['Colorization', 'Deep learning', 'Colour palette', 'CNN', 'Movie'],
+        summary:
+          "A palette of 'salient' scene colours (distinct from the 'memorable' ones the network already infers well) is injected into the CNN as an additional input. One palette covers hundreds of frames — well-suited to movie colorization without per-frame scribbling.",
+      },
+      {
+        slug: 'handwriting-anomaly-detection',
+        venue: 'EUVIP',
+        year: 2019,
+        title: 'Detecting handwriting anomalies via a convolutional autoencoder',
+        keywords: ['Deep learning', 'Handwriting', 'Outlier detection', 'Autoencoder', 'Radon'],
+        summary:
+          'A convolutional autoencoder that detects — without annotation — that a portion of text was written by another hand. Tile splitting + partial Radon transform. Discrimination emerges during training via batch-to-batch shuffling.',
+      },
+      {
+        slug: 'face-recognition-visible-nir',
+        venue: 'IEEE EUVIP',
+        year: 2018,
+        title: 'Visible + NIR information for CNN face recognition',
+        keywords: ['CNN', 'Face recognition', 'NIR', 'Multispectral', 'Dataset'],
+        summary:
+          'An original VNIR dataset (52 identities, 3 poses) captured by removing the ICF of a consumer camera. Two CNNs compared. Finding: 3-channel full-spectrum beats 4-channel RGB+I, and the blue channel benefits the most from NIR.',
+      },
+    ]
+
+const metaTitle = isFr ? 'Articles — Sanae Boutarfass' : 'Articles — Sanae Boutarfass'
+const metaDescription = isFr
+  ? "Articles techniques sur des choix d'architecture, d'intégration et de pattern UI, plus résumés de mes publications académiques en vision par ordinateur."
+  : 'Technical articles on architecture, integration and UI patterns, plus summaries of my computer-vision academic publications.'
+---
+
+<Layout lang={lang} title={metaTitle} description={metaDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-6xl mx-auto">
+      <SectionHeader eyebrow={eyebrow} title={title} description={description} />
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto grid gap-4">
+      {articles.map((a) => (
+        <a
+          href={`${prefix}/articles/${a.slug}`}
+          class="glass-card glass-card-interactive p-6 md:p-8 flex flex-col gap-3"
+        >
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-[var(--color-accent)]">
+              {a.category}
+            </span>
+            <span class="text-[11px] text-[var(--color-text-muted)] mono">{a.date} · {a.readTime}</span>
+          </div>
+          <h2 class="display text-xl md:text-2xl font-semibold tracking-tight">
+            {a.title}
+          </h2>
+          <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">
+            {a.lede}
+          </p>
+          <div class="text-xs text-[var(--color-text-muted)] mt-2 inline-flex items-center gap-1.5">
+            {readMore} <span aria-hidden="true">→</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={papersEyebrow}
+        title={papersTitle}
+        description={papersDescription}
+      />
+      <div class="grid gap-4">
+        {papers.map((p) => (
+          <a
+            href={`${prefix}/articles/${p.slug}`}
+            class="glass-card glass-card-interactive p-6 md:p-8 flex flex-col gap-3"
+          >
+            <div class="flex items-baseline gap-3">
+              <span class="text-[11px] font-mono uppercase tracking-wider text-[var(--color-accent)]">
+                {p.venue}
+              </span>
+              <span class="text-[11px] text-[var(--color-text-muted)] mono">{p.year}</span>
+            </div>
+            <h3 class="display text-base md:text-xl font-semibold tracking-tight leading-snug">
+              {p.title}
+            </h3>
+            <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">
+              {p.summary}
+            </p>
+            <div class="flex flex-wrap gap-1.5">
+              {p.keywords.map((k) => (
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-bg-card)]">
+                  {k}
+                </span>
+              ))}
+            </div>
+            <div class="text-xs text-[var(--color-text-muted)] mt-1 inline-flex items-center gap-1.5">
+              {readMore} <span aria-hidden="true">→</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

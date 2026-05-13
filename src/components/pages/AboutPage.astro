@@ -1,0 +1,129 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Avatar from '../Avatar.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, siteConfig, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const projectsHref = `${prefix}/projects`
+
+const paperSlugs: Record<string, string> = {
+  'IEEE IPAS-2020': 'cnn-colorization-improving',
+  'IEEE MCNA-2020': 'cnn-colorization-palette',
+  'EUVIP-2019': 'handwriting-anomaly-detection',
+  'EUVIP-2018': 'face-recognition-visible-nir',
+}
+---
+
+<Layout lang={lang} title={t.meta.aboutTitle}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-col md:flex-row gap-8 items-start">
+        <div class="shrink-0">
+          <Avatar
+            initials="SB"
+            size="xl"
+            gradient="violet"
+            src={siteConfig.photo}
+            alt="Sanae Boutarfass"
+          />
+        </div>
+        <div>
+          <div class="eyebrow mb-3">{t.about.eyebrow}</div>
+          <h1 class="display text-4xl md:text-5xl font-semibold tracking-tight mb-4">
+            {t.about.titleLine1}<br />{t.about.titleLine2}
+          </h1>
+          <p class="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed">
+            {t.about.subtitle}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-3xl mx-auto space-y-6 text-base md:text-lg leading-relaxed">
+      <p>
+        {t.about.bioBefore1}<span class="text-[var(--color-text)] font-medium">{t.about.bioHighlight1}</span>{t.about.bioAfter1}
+      </p>
+      <p>{t.about.bioP2}</p>
+      <p>
+        {t.about.bioP3Before}
+        <a
+          href="https://www.okeenea.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link-underline"
+        >{t.about.bioP3LinkLabel}</a>{t.about.bioP3Middle}<span class="text-[var(--color-text)] font-medium">{t.about.bioP3Highlight1}</span>{t.about.bioP3Middle2}<span class="text-[var(--color-text)] font-medium">{t.about.bioP3Highlight2}</span>{t.about.bioP3After}
+      </p>
+      <p>{t.about.bioP4}</p>
+      <p>
+        {t.about.bioP5Before}<a href={projectsHref} class="link-underline">{t.about.bioP5Link}</a>{t.about.bioP5After}
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader eyebrow={t.about.formation.eyebrow} title={t.about.formation.title} />
+      <div class="glass-card divide-y divide-[var(--color-border)]">
+        {t.about.formation.items.map((f) => (
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 p-5 md:p-6">
+            <div>
+              <div class="text-[var(--color-text)] font-medium">{f.degree}</div>
+              <div class="text-sm text-[var(--color-text-secondary)] mt-0.5">
+                {f.institution} · <span class="italic">{f.specialty}</span>
+              </div>
+            </div>
+            <div class="mono text-xs text-[var(--color-text-muted)] shrink-0">{f.period}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.about.publications.eyebrow}
+        title={t.about.publications.title}
+        description={t.about.publications.description}
+      />
+      <div class="grid md:grid-cols-2 gap-3">
+        {t.about.publications.items.map((p) => {
+          const slug = paperSlugs[`${p.venue}-${p.year}`]
+          const cardClass = slug
+            ? 'glass-card glass-card-interactive p-5 group'
+            : 'glass-card p-5'
+          const content = (
+            <>
+              <div class="flex items-baseline justify-between gap-3 mb-2">
+                <span class="text-[11px] font-mono uppercase tracking-wider text-[var(--color-accent)]">
+                  {p.venue}
+                </span>
+                <span class="text-xs text-[var(--color-text-muted)] mono">{p.year}</span>
+              </div>
+              <h3 class="text-sm md:text-base font-medium leading-snug">{p.title}</h3>
+              {slug && (
+                <div class="text-[11px] text-[var(--color-text-muted)] mt-3 inline-flex items-center gap-1.5 group-hover:text-[var(--color-accent-soft)] transition-colors">
+                  {lang === 'fr' ? 'Lire le résumé' : 'Read summary'} <span aria-hidden="true">→</span>
+                </div>
+              )}
+            </>
+          )
+          return slug ? (
+            <a href={`${prefix}/articles/${slug}`} class={cardClass}>{content}</a>
+          ) : (
+            <div class={cardClass}>{content}</div>
+          )
+        })}
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,310 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+const isFr = lang === 'fr'
+
+const venue = 'IEEE IPAS'
+const year = 2020
+const readTime = isFr ? '8 min de lecture' : '8 min read'
+const eyebrow = isFr ? 'Publication · Vision par ordinateur' : 'Publication · Computer vision'
+const backLabel = isFr ? 'articles' : 'articles'
+
+const title = isFr
+  ? "Coloriser de vraies photos d'archive : palette globale + scribbles ciblés"
+  : 'Colorizing genuine archival photographs: global palette + targeted scribbles'
+
+const lede = isFr
+  ? "Les CNN de colorisation sont entraînés sur des photos couleur converties en N&B. Mais les vraies photos d'archive (silver halide) n'ont pas les mêmes sensibilités spectrales — le réseau échoue sur les drapeaux, les monuments, les objets « connus ». J'améliore le résultat en combinant deux types d'indices : une palette automatisée + des scribbles manuels là où ça compte."
+  : "CNN colorization networks are trained on colour photos converted to grayscale. But real archival photographs (silver halide) don't share the same spectral sensitivities — the network fails on flags, monuments, well-known objects. I improve the output by combining two types of hints: an automated palette + manual scribbles where it matters."
+
+const metaTitle = isFr
+  ? "Améliorer la colorisation CNN de photos d'archive — Sanae Boutarfass"
+  : 'Improving CNN colorization of archival photographs — Sanae Boutarfass'
+const metaDescription = isFr
+  ? 'Méthode hybride pour coloriser des photos N&B argentiques : palette globale automatisée + scribbles manuels pour les zones critiques.'
+  : 'Hybrid method to colorize silver-halide B&W photographs: automated global palette + manual scribbles for critical regions.'
+
+const sections = isFr
+  ? {
+      problem: {
+        eyebrow: 'Le problème',
+        title: 'Quand le dataset trahit le réseau',
+        body: [
+          "**Le décalage des sensibilités spectrales** : les datasets d'entraînement (ImageNet, Places…) sont des photos numériques RGB converties en grayscale par une moyenne pondérée des canaux. Les vraies photos N&B argentiques répondent **différemment** à la lumière : silver halide ≠ luminance Y'CbCr. Les niveaux de gris ne mappent pas aux mêmes couleurs.",
+          "**Conséquence pratique** : pour une vraie photo d'archive, les couleurs prédites peuvent être plausibles **mais fausses**. Un drapeau tricolore peint en uni. Un monument peint avec la mauvaise pierre. Un uniforme militaire reconnu dans la mauvaise armée.",
+          "**Le suivi de MCNA 2020** : ma publi précédente proposait une palette globale comme hint. Bonne intuition, mais insuffisante seule pour les cas extrêmes (objets uniques, identifiables, sensibles aux erreurs).",
+        ],
+      },
+      pipeline: {
+        eyebrow: 'Pipeline',
+        title: 'Deux indices, un colorisateur',
+      },
+      method: {
+        eyebrow: 'Approche',
+        title: 'Palette globale + scribbles ciblés',
+        body: [
+          "L'idée : combiner deux types d'indices complémentaires. La palette globale couvre la majorité du cadre. Les scribbles manuels ne servent que sur les objets résiduels où la palette ne suffit pas.",
+        ],
+        bullets: [
+          "**Palette globale automatisée** (hérité de MCNA 2020) : palette saillante calculée par scène. Bien pour la colorisation de films, automatisable, suffisamment précis pour la plupart des scènes.",
+          "**Scribbles manuels ciblés** : pour les zones où la palette globale ne suffit pas (drapeaux, monuments, objets uniques), l'utilisateur dépose quelques taches de couleur localisées — quelques pixels suffisent.",
+          "**Aucune modification de l'architecture** : les hints (palette + scribbles) sont injectés en input additionnel au réseau pré-entraîné. Plug-in sur les colorisateurs existants.",
+          "**Stratégie d'usage** : 80 % de la colorisation est gérée par la palette, les scribbles ne sont nécessaires que sur 15 % de la surface. Le ratio bascule selon la complexité de la scène.",
+        ],
+      },
+      results: {
+        eyebrow: 'Résultats',
+        title: 'Ce que cette méthode permet',
+        cards: [
+          {
+            title: 'Qualité visiblement améliorée',
+            body: "Sur photos d'archive vs colorisateur seul : ciel, feuillages, persons restent corrects, MAIS aussi drapeaux, monuments, uniformes, qui étaient échoués avant.",
+          },
+          {
+            title: 'Coût d\'interaction maîtrisé',
+            body: "La palette gère la majorité du cadre automatiquement ; les scribbles ne sont nécessaires que sur les objets uniques. Quelques minutes de scribbles pour une scène, au lieu de plusieurs heures pour une approche pixel-par-pixel.",
+          },
+          {
+            title: 'Compatible open-source',
+            body: 'Méthode testée sur les colorisateurs open-source les plus cités (Zhang/Isola/Efros, Iizuka/Simo-Serra/Ishikawa). Pas de modèle propriétaire requis.',
+          },
+          {
+            title: "Adapté aux silver halide",
+            body: "Le pipeline traite explicitement le domain shift entre photos numériques converties et photos N&B argentiques — souvent ignoré dans la littérature.",
+          },
+        ],
+      },
+      contribution: {
+        eyebrow: 'Ma contribution',
+        title: 'Ce que cette publication apporte',
+        items: [
+          "**Identification claire du domain shift** entre datasets d'entraînement (RGB → grayscale) et photos d'archive (silver halide). C'est un trou de la littérature classique colorisation : on assume la grayscale comme proxy universelle, ce qui est faux pour l'archive.",
+          "**Méthodologie hybride palette + scribbles** : meilleur compromis entre automatisation (palette) et qualité ciblée (scribbles). Pas un choix binaire entre les deux.",
+          "**Pipeline pratique pour restaurer des photos historiques** sans devoir ré-entraîner un colorisateur dédié — applicable par des restaurateurs avec un colorisateur open-source du commerce.",
+          "**Aboutissement de la série** : EUVIP 2018 (face recognition NIR), EUVIP 2019 (anomaly detection écriture), MCNA 2020 (palette colorisation), IPAS 2020 (palette + scribbles). Un fil rouge : guider les réseaux profonds avec des hints structurés.",
+        ],
+      },
+      meta: {
+        eyebrow: 'Pour aller plus loin',
+        title: 'Conférence & contexte',
+        items: [
+          'Publié à **IEEE IPAS 2020** (International Conference on Image Processing, Applications and Systems).',
+          "Travail mené pendant mon Master Recherche, MIA Laboratory · Université de La Rochelle.",
+          "Mots-clés : CNN, colorization, archival photography, interactive colorization, domain shift.",
+        ],
+      },
+    }
+  : {
+      problem: {
+        eyebrow: 'The problem',
+        title: 'When the dataset betrays the network',
+        body: [
+          "**Spectral-sensitivity mismatch**: training datasets (ImageNet, Places…) are digital RGB photos converted to grayscale via a weighted average of channels. Genuine silver-halide B&W photos react **differently** to light: silver halide ≠ Y'CbCr luminance. Grey levels do not map to the same colours.",
+          '**Practical consequence**: for a real archival photo, the predicted colours can be plausible **but wrong**. A tricolour flag painted uniformly. A monument painted in the wrong stone. A military uniform recognised in the wrong army.',
+          '**Building on MCNA 2020**: my previous paper proposed a global palette as a hint. Good intuition, but not enough alone for edge cases (unique, identifiable, error-sensitive objects).',
+        ],
+      },
+      pipeline: {
+        eyebrow: 'Pipeline',
+        title: 'Two hints, one colorizer',
+      },
+      method: {
+        eyebrow: 'Approach',
+        title: 'Global palette + targeted scribbles',
+        body: [
+          'The idea: combine two complementary types of hints. The global palette covers most of the frame. Manual scribbles are only used on residual objects where the palette is not enough.',
+        ],
+        bullets: [
+          "**Automated global palette** (inherited from MCNA 2020): a salient palette computed per scene. Good for movie colorization, automatable, precise enough for most scenes.",
+          "**Targeted manual scribbles**: for regions where the global palette is not enough (flags, monuments, unique objects), the user drops a few localised colour patches — a few pixels are enough.",
+          "**No architecture change**: hints (palette + scribbles) are injected as additional inputs to the pretrained network. Plug-in on existing colorizers.",
+          '**Usage strategy**: 80% of colorization is handled by the palette, scribbles are only needed on about 15% of the surface. The ratio shifts with scene complexity.',
+        ],
+      },
+      results: {
+        eyebrow: 'Results',
+        title: 'What this method enables',
+        cards: [
+          {
+            title: 'Visibly better quality',
+            body: 'On archival photos vs colorizer alone: sky, foliage, persons stay correct, AND flags, monuments, uniforms — which used to fail — now come out right.',
+          },
+          {
+            title: 'Controlled interaction cost',
+            body: 'The palette handles most of the frame automatically; scribbles are only needed on unique objects. Minutes of scribbling per scene, instead of hours of pixel-by-pixel work.',
+          },
+          {
+            title: 'Open-source compatible',
+            body: 'Tested on the most-cited open-source colorizers (Zhang/Isola/Efros, Iizuka/Simo-Serra/Ishikawa). No proprietary model required.',
+          },
+          {
+            title: 'Tailored to silver-halide imagery',
+            body: 'The pipeline explicitly addresses the domain shift between converted digital photos and genuine silver-halide B&W — a gap often ignored in the literature.',
+          },
+        ],
+      },
+      contribution: {
+        eyebrow: 'My contribution',
+        title: 'What this publication brings',
+        items: [
+          '**Clear identification of the domain shift** between training datasets (RGB → grayscale) and archival photos (silver halide). A blind spot in the colorization literature, where grayscale is implicitly assumed universal — which is false for archives.',
+          '**Hybrid palette + scribbles methodology**: a better trade-off between automation (palette) and targeted quality (scribbles). Not a binary choice between the two.',
+          '**Practical pipeline for restoring historical photos** without retraining a dedicated colorizer — usable by restorers with an off-the-shelf open-source colorizer.',
+          '**Culmination of the series**: EUVIP 2018 (NIR face recognition), EUVIP 2019 (handwriting anomaly detection), MCNA 2020 (colorization palette), IPAS 2020 (palette + scribbles). One thread runs through all four: guiding deep networks with structured hints.',
+        ],
+      },
+      meta: {
+        eyebrow: 'More',
+        title: 'Venue & context',
+        items: [
+          'Published at **IEEE IPAS 2020** (International Conference on Image Processing, Applications and Systems).',
+          "Work carried out during my research master's at MIA Laboratory · University of La Rochelle.",
+          'Keywords: CNN, colorization, archival photography, interactive colorization, domain shift.',
+        ],
+      },
+    }
+
+function renderInline(s: string): string {
+  return s
+    .replace(/`([^`]+)`/g, '<code class="font-mono text-[0.92em] px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] border border-[var(--color-border)]">$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[var(--color-text)]">$1</strong>')
+}
+
+const pipelineSteps = isFr
+  ? [
+      { label: '1', title: 'Photo archive', body: 'silver halide' },
+      { label: '2', title: 'Palette globale', body: 'auto, par scène' },
+      { label: '3', title: 'Scribbles', body: 'zones critiques' },
+      { label: '4', title: 'CNN pré-entraîné', body: 'plug-and-play' },
+      { label: '5', title: 'Photo couleur', body: 'restaurée' },
+    ]
+  : [
+      { label: '1', title: 'Archival photo', body: 'silver halide' },
+      { label: '2', title: 'Global palette', body: 'auto, per scene' },
+      { label: '3', title: 'Scribbles', body: 'critical regions' },
+      { label: '4', title: 'Pretrained CNN', body: 'plug-and-play' },
+      { label: '5', title: 'Colour photo', body: 'restored' },
+    ]
+---
+
+<Layout lang={lang} title={metaTitle} description={metaDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-3xl mx-auto">
+      <a
+        href={`${prefix}/articles`}
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-soft)] transition-colors inline-flex items-center gap-1.5 mb-8"
+      >
+        <span aria-hidden="true">←</span> {backLabel}
+      </a>
+
+      <div class="flex items-center gap-3 mb-4 flex-wrap">
+        <span class="eyebrow text-[var(--color-accent)]">{eyebrow}</span>
+        <span class="text-[11px] text-[var(--color-text-muted)] mono">{venue} · {year} · {readTime}</span>
+      </div>
+      <h1 class="display text-3xl md:text-5xl font-semibold tracking-tight mb-6 leading-[1.1]">
+        {title}
+      </h1>
+      <p class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed" set:html={renderInline(lede)}>
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.problem.eyebrow} title={sections.problem.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+        {sections.problem.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.pipeline.eyebrow} title={sections.pipeline.title} />
+      <div class="glass-card p-4 md:p-5 overflow-x-auto">
+        <div class="flex items-center gap-2 min-w-[560px]">
+          {pipelineSteps.map((step, i) => (
+            <>
+              <div class="flex-1 text-center">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--color-accent)]">{step.label}</div>
+                <div class="text-[12px] mono text-[var(--color-text)] mt-0.5">{step.title}</div>
+                <div class="text-[10px] mono text-[var(--color-text-muted)] mt-0.5">{step.body}</div>
+              </div>
+              {i < pipelineSteps.length - 1 && (
+                <span class="text-[var(--color-text-muted)] shrink-0" aria-hidden="true">→</span>
+              )}
+            </>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.method.eyebrow} title={sections.method.title} />
+      <div class="space-y-4 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)] mb-6">
+        {sections.method.body.map((p) => <p set:html={renderInline(p)} />)}
+      </div>
+      <ul class="space-y-3">
+        {sections.method.bullets.map((b) => (
+          <li class="flex gap-3 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(b)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.results.eyebrow} title={sections.results.title} />
+      <div class="grid md:grid-cols-2 gap-4">
+        {sections.results.cards.map((c) => (
+          <div class="glass-card p-5">
+            <h3 class="display text-base font-semibold tracking-tight mb-2">{c.title}</h3>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed" set:html={renderInline(c.body)}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12 md:pb-16">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.contribution.eyebrow} title={sections.contribution.title} />
+      <ul class="space-y-3">
+        {sections.contribution.items.map((it) => (
+          <li class="flex gap-3 text-base md:text-lg leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(it)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-3xl mx-auto">
+      <SectionHeader eyebrow={sections.meta.eyebrow} title={sections.meta.title} />
+      <ul class="space-y-2">
+        {sections.meta.items.map((it) => (
+          <li class="flex gap-3 text-sm md:text-base leading-relaxed text-[var(--color-text-secondary)]">
+            <span class="text-[var(--color-accent)] mt-1 shrink-0" aria-hidden="true">›</span>
+            <span set:html={renderInline(it)}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,11 @@
+---
+interface Props {
+  label?: string
+}
+const { label = "Disponible · Open to work" } = Astro.props
+---
+
+<span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-bg-card)] border border-[var(--color-border-strong)] text-xs">
+  <span class="status-dot"></span>
+  <span class="text-[var(--color-text)]">{label}</span>
+</span>
