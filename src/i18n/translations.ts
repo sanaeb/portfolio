@@ -38,6 +38,9 @@ const fr = {
     applyDeskTitle: 'ApplyDesk — Sanae Boutarfass',
     applyDeskDescription:
       "Back-office personnel de recherche d'emploi : scrapers, parsing CV LLM, suivi de candidatures, génération d'emails.",
+    altForgeTitle: 'AltForge — Sanae Boutarfass',
+    altForgeDescription:
+      "Générateur d'alt-text par IA pour la conformité WCAG. Spring Boot + React + Gemini Vision, déployé en prod.",
     aboutTitle: 'À propos — Sanae Boutarfass',
   },
   nav: {
@@ -294,6 +297,8 @@ const fr = {
       "Back-office personnel pour gérer ma recherche d'emploi de bout en bout — scrapers d'offres (France Travail, Adzuna, HelloWork), parsing CV via Gemini, suivi de candidatures, génération d'emails et prep d'entretiens.",
     homeApplyDeskTagline:
       "Back-office personnel pour gérer ma recherche d'emploi de bout en bout — scrapers d'offres, parsing CV via LLM, suivi de candidatures, génération d'emails.",
+    altForgeTagline:
+      "Générateur d'alt-text par IA pour la conformité WCAG. Upload une image, récupère un alt-text descriptif en FR ou EN en quelques secondes — pensé pour l'European Accessibility Act (juin 2025).",
   },
   applydesk: {
     backLink: 'projets',
@@ -347,6 +352,64 @@ const fr = {
       eyebrow: 'Statut actuel',
       title: 'Statut actuel',
       body: "Utilisé quotidiennement depuis avril 2026. Repo privé pour l'instant — je l'ouvrirai après ma recherche, une fois nettoyé des données perso.",
+    },
+  },
+  altforge: {
+    backLink: 'projets',
+    statusBadge: 'Live · 2026',
+    personalBadge: 'Personnel',
+    tagline:
+      "Outil web qui transforme une image en alt-text WCAG-compliant en quelques secondes. Drag & drop, sélection FR/EN, copie en un clic. Pensé pour les équipes qui doivent mettre à jour des milliers d'images avant l'European Accessibility Act.",
+    links: {
+      demo: 'Démo live',
+      repo: 'Code source',
+    },
+    problem: {
+      eyebrow: 'Le problème',
+      title: "Pourquoi j'ai construit ça",
+      bodyBefore:
+        "Depuis juin 2025, l'European Accessibility Act impose aux sites e-commerce, banques et services publics européens des images correctement décrites pour les lecteurs d'écran. La plupart des sites ont des milliers d'images legacy sans alt-text, et la rédaction manuelle ne passe pas à l'échelle.",
+      bodyHighlight:
+        "AltForge automatise la première passe en restant aligné avec les bonnes pratiques WCAG (pas de « image de », descriptif, concis).",
+    },
+    highlights: {
+      eyebrow: 'Highlights',
+      title: 'Ce qui est intéressant techniquement',
+      items: [
+        {
+          title: 'Appel multi-modal Gemini depuis Spring Boot',
+          body: "Le backend Java reçoit un upload multipart, encode l'image en base64 inline_data et envoie le tout à l'API Gemini avec un prompt système conditionné par la langue. Pas de SDK, juste un RestClient typé.",
+        },
+        {
+          title: 'Prompt bilingue FR / EN',
+          body: "Un seul endpoint, deux prompts système soigneusement écrits pour respecter les règles WCAG dans chaque langue (interdire « image de / picture of », limiter à ~125 caractères, décrire avant d'interpréter).",
+        },
+        {
+          title: 'Configuration externalisée à 100 %',
+          body: "Aucun secret en dur. Clé API, modèle, base URL, port HTTP et patterns CORS sont tous injectés via variables d'environnement avec fallbacks pour le dev local. Le binaire est portable entre Render, Fly, Docker local.",
+        },
+        {
+          title: 'Deploy free-tier end-to-end',
+          body: "Dockerfile multi-stage (JDK builder → JRE runtime) qui tient dans les 512 Mo de Render. Frontend buildé par Cloudflare Pages depuis le même monorepo. Zéro coût d'hébergement.",
+        },
+        {
+          title: 'CORS strict avec wildcards de preview',
+          body: "Pattern `https://*.altforge.pages.dev` autorise les déploiements de preview Cloudflare sans ouvrir le backend au monde entier — utile pour tester une PR avant merge.",
+        },
+        {
+          title: 'Tests JUnit + couverture des erreurs',
+          body: "Tests unitaires sur la validation multipart, les codes d'erreur Gemini (401, 429, 5xx) et les payloads malformés. Pas de mock du LLM en intégration, mais isolation propre du client HTTP.",
+        },
+      ],
+    },
+    stack: {
+      eyebrow: 'Stack',
+      title: 'Sous le capot',
+    },
+    status: {
+      eyebrow: 'Statut actuel',
+      title: 'Statut actuel',
+      body: "MVP v0 livré et live sur altforge.pages.dev. Repo public sur GitHub. Prochaine étape : batch upload + export CSV pour traiter une bibliothèque d'images en une passe.",
     },
   },
   about: {
@@ -448,6 +511,9 @@ const en: Dict = {
     applyDeskTitle: 'ApplyDesk — Sanae Boutarfass',
     applyDeskDescription:
       'Personal job-search back-office: scrapers, LLM CV parsing, application tracking, email generation.',
+    altForgeTitle: 'AltForge — Sanae Boutarfass',
+    altForgeDescription:
+      'AI alt-text generator for WCAG compliance. Spring Boot + React + Gemini Vision, deployed to production.',
     aboutTitle: 'About — Sanae Boutarfass',
   },
   nav: {
@@ -704,6 +770,8 @@ const en: Dict = {
       "Personal job-search back-office to manage everything end-to-end — job scrapers (France Travail, Adzuna, HelloWork), LLM-powered CV parsing, application tracking, email generation and interview prep.",
     homeApplyDeskTagline:
       'Personal job-search back-office to manage everything end-to-end — job scrapers, LLM CV parsing, application tracking, email generation.',
+    altForgeTagline:
+      'AI-powered alt-text generator for WCAG compliance. Upload an image, get a clean descriptive alt-text in French or English within seconds — built ahead of the European Accessibility Act (June 2025).',
   },
   applydesk: {
     backLink: 'projects',
@@ -757,6 +825,64 @@ const en: Dict = {
       eyebrow: 'Current status',
       title: 'Current status',
       body: "Used daily since April 2026. Private repo for now — I'll open-source it after my job search, once cleaned of personal data.",
+    },
+  },
+  altforge: {
+    backLink: 'projects',
+    statusBadge: 'Live · 2026',
+    personalBadge: 'Personal',
+    tagline:
+      "Web tool that turns an image into a WCAG-compliant alt-text within seconds. Drag & drop, FR/EN switch, one-click copy. Built for teams who need to caption thousands of legacy images before the European Accessibility Act deadline.",
+    links: {
+      demo: 'Live demo',
+      repo: 'Source code',
+    },
+    problem: {
+      eyebrow: 'The problem',
+      title: 'Why I built this',
+      bodyBefore:
+        "Since June 2025, the European Accessibility Act requires e-commerce sites, banks and public services to provide proper image descriptions for screen readers. Most sites have thousands of legacy images without alt-text, and manual writing simply doesn't scale.",
+      bodyHighlight:
+        'AltForge automates the first pass while staying aligned with WCAG best practices (no "image of", descriptive, concise).',
+    },
+    highlights: {
+      eyebrow: 'Highlights',
+      title: 'What is technically interesting',
+      items: [
+        {
+          title: 'Multi-modal Gemini call from Spring Boot',
+          body: 'The Java backend receives a multipart upload, encodes the image as base64 inline_data and forwards it to the Gemini API with a language-conditioned system prompt. No SDK — a typed RestClient is enough.',
+        },
+        {
+          title: 'Bilingual FR / EN prompts',
+          body: 'One endpoint, two carefully written system prompts that enforce WCAG rules in each language (forbid "image of / picture of", cap around 125 chars, describe before interpreting).',
+        },
+        {
+          title: '100% externalized configuration',
+          body: 'No hard-coded secrets. API key, model name, base URL, HTTP port and CORS patterns are all injected via environment variables with sensible local-dev fallbacks. The binary is portable across Render, Fly and local Docker.',
+        },
+        {
+          title: 'End-to-end free-tier deploy',
+          body: 'Multi-stage Dockerfile (JDK builder → JRE runtime) that fits within Render\'s 512 MB free tier. Frontend is built by Cloudflare Pages from the same monorepo. Zero hosting cost.',
+        },
+        {
+          title: 'Strict CORS with preview wildcards',
+          body: "Pattern `https://*.altforge.pages.dev` authorizes Cloudflare preview deployments without opening the backend to the world — useful for testing a PR before merge.",
+        },
+        {
+          title: 'JUnit tests covering error paths',
+          body: 'Unit tests for multipart validation, Gemini error codes (401, 429, 5xx) and malformed payloads. The LLM is not mocked at integration level, but the HTTP client is cleanly isolated.',
+        },
+      ],
+    },
+    stack: {
+      eyebrow: 'Stack',
+      title: 'Under the hood',
+    },
+    status: {
+      eyebrow: 'Current status',
+      title: 'Current status',
+      body: 'MVP v0 shipped and live on altforge.pages.dev. Public repo on GitHub. Next step: batch upload + CSV export to process an entire image library in one pass.',
     },
   },
   about: {

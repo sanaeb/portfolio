@@ -1,0 +1,160 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import TechChip from '../TechChip.astro'
+import SectionHeader from '../SectionHeader.astro'
+import { getDict, type Lang } from '../../i18n/translations'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = getDict(lang)
+const prefix = lang === 'fr' ? '' : '/en'
+
+const stack: Record<string, string[]> = {
+  Backend: ['Java 17', 'Spring Boot 3.5', 'Spring Web', 'Validation', 'Actuator', 'Lombok', 'JUnit 5'],
+  Frontend: ['React 18', 'TypeScript', 'Vite'],
+  AI: ['Gemini 2.5 Flash Lite', 'Vision multi-modal', 'Prompt FR / EN'],
+  Ops: ['Docker multi-stage', 'Render (free tier)', 'Cloudflare Pages', 'GitHub Actions'],
+}
+
+const demoUrl = 'https://altforge.pages.dev'
+const repoUrl = 'https://github.com/sanaeb/altforge'
+---
+
+<Layout lang={lang} title={t.meta.altForgeTitle} description={t.meta.altForgeDescription}>
+  <section class="pt-12 md:pt-20 pb-12">
+    <div class="max-w-4xl mx-auto">
+      <a
+        href={`${prefix}/projects`}
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-soft)] transition-colors inline-flex items-center gap-1.5 mb-8"
+      >
+        <span aria-hidden="true">←</span> {t.altforge.backLink}
+      </a>
+
+      <div class="glass-card mb-10 overflow-hidden">
+        <div class="relative h-48 md:h-64 bg-gradient-to-br from-violet-500/40 via-fuchsia-500/20 to-cyan-400/30 overflow-hidden">
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent,_var(--color-bg)_85%)]"></div>
+          <svg
+            class="absolute inset-0 w-full h-full opacity-[0.07]"
+            aria-hidden="true"
+          >
+            <defs>
+              <pattern id="grid-altforge-hero" width="32" height="32" patternUnits="userSpaceOnUse">
+                <path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" stroke-width="0.5"></path>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid-altforge-hero)"></rect>
+          </svg>
+          <div class="absolute inset-0 flex items-end p-6 md:p-10">
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  {t.altforge.statusBadge}
+                </span>
+                <span class="text-[11px] text-[var(--color-text-secondary)] mono">{t.altforge.personalBadge}</span>
+              </div>
+              <h1 class="display text-4xl md:text-6xl font-semibold tracking-tight text-white">
+                AltForge
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 md:p-10">
+          <p class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed mb-6">
+            {t.altforge.tagline}
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a
+              href={demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-accent)] text-white text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              {t.altforge.links.demo}
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a
+              href={repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--color-border)] text-sm font-medium hover:border-[var(--color-accent-soft)] transition-colors"
+            >
+              {t.altforge.links.repo}
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.altforge.problem.eyebrow}
+        title={t.altforge.problem.title}
+      />
+      <p class="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed">
+        {t.altforge.problem.bodyBefore} <span class="text-[var(--color-text)]">{t.altforge.problem.bodyHighlight}</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.altforge.highlights.eyebrow}
+        title={t.altforge.highlights.title}
+      />
+      <div class="grid md:grid-cols-2 gap-4">
+        {t.altforge.highlights.items.map((h, i) => (
+          <div class="glass-card p-6">
+            <div class="flex items-baseline gap-3 mb-3">
+              <span class="text-xs font-mono text-[var(--color-accent)] tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="display text-base font-semibold tracking-tight">{h.title}</h3>
+            </div>
+            <p class="text-sm text-[var(--color-text-secondary)] leading-relaxed">{h.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.altforge.stack.eyebrow}
+        title={t.altforge.stack.title}
+      />
+      <div class="glass-card divide-y divide-[var(--color-border)]">
+        {Object.entries(stack).map(([category, items]) => (
+          <div class="flex flex-col md:flex-row gap-3 md:gap-6 p-5 md:p-6">
+            <div class="md:w-32 shrink-0">
+              <div class="eyebrow text-[var(--color-accent)]">{category}</div>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              {items.map((s) => <TechChip name={s} size="md" />)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20 md:pb-28">
+    <div class="max-w-4xl mx-auto">
+      <div class="glass-card p-6 md:p-8 flex items-start gap-4">
+        <span class="mt-1 inline-flex h-2 w-2 rounded-full bg-emerald-400 shrink-0"></span>
+        <div>
+          <h3 class="display text-lg font-semibold tracking-tight mb-2">{t.altforge.status.title}</h3>
+          <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">
+            {t.altforge.status.body}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
