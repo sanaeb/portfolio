@@ -13,10 +13,12 @@ const t = getDict(lang)
 const prefix = lang === 'fr' ? '' : '/en'
 
 const stack: Record<string, string[]> = {
-  Backend: ['Java 17', 'Spring Boot 3.5', 'Spring Web', 'Validation', 'Actuator', 'Lombok', 'JUnit 5'],
+  Backend: ['Java 17', 'Spring Boot 3.5', 'Spring Web', 'Spring @Async', 'HandlerInterceptor', 'Lombok'],
+  Persistence: ['PostgreSQL 17 (Neon)', 'Spring Data JPA', 'Hibernate', 'Flyway', 'HikariCP'],
   Frontend: ['React 18', 'TypeScript', 'Vite'],
   AI: ['Gemini 2.5 Flash Lite', 'Vision multi-modal', 'Prompt FR / EN'],
-  Ops: ['Docker multi-stage', 'Render (free tier)', 'Cloudflare Pages', 'GitHub Actions'],
+  Tests: ['JUnit 5', '@DataJpaTest', '@WebMvcTest', 'MockMvc', 'H2 (PostgreSQL mode)'],
+  Ops: ['Docker multi-stage', 'Render (free tier)', 'Cloudflare Pages'],
 }
 
 const demoUrl = 'https://altforge.pages.dev'

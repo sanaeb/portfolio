@@ -40,7 +40,7 @@ const fr = {
       "Back-office personnel de recherche d'emploi : scrapers, parsing CV LLM, suivi de candidatures, génération d'emails.",
     altForgeTitle: 'AltForge — Sanae Boutarfass',
     altForgeDescription:
-      "Générateur d'alt-text par IA pour la conformité WCAG. Spring Boot + React + Gemini Vision, déployé en prod.",
+      "Générateur d'alt-text par IA pour la conformité WCAG. Spring Boot + JPA + Postgres + React + Gemini, audit DB et rate-limiting, déployé en prod.",
     aboutTitle: 'À propos — Sanae Boutarfass',
   },
   nav: {
@@ -359,7 +359,7 @@ const fr = {
     statusBadge: 'Live · 2026',
     personalBadge: 'Personnel',
     tagline:
-      "Outil web qui transforme une image en alt-text WCAG-compliant en quelques secondes. Drag & drop, sélection FR/EN, copie en un clic. Pensé pour les équipes qui doivent mettre à jour des milliers d'images avant l'European Accessibility Act.",
+      "Générateur d'alt-text par IA pour la conformité WCAG. Single + batch synchrone + batch asynchrone (job polling), audit DB Postgres, rate-limiting par IP, stats agrégées. 4 onglets UI, 27 tests, deploy free-tier Render + Cloudflare Pages.",
     links: {
       demo: 'Démo live',
       repo: 'Code source',
@@ -370,35 +370,35 @@ const fr = {
       bodyBefore:
         "Depuis juin 2025, l'European Accessibility Act impose aux sites e-commerce, banques et services publics européens des images correctement décrites pour les lecteurs d'écran. La plupart des sites ont des milliers d'images legacy sans alt-text, et la rédaction manuelle ne passe pas à l'échelle.",
       bodyHighlight:
-        "AltForge automatise la première passe en restant aligné avec les bonnes pratiques WCAG (pas de « image de », descriptif, concis).",
+        "AltForge automatise la première passe en restant aligné avec les bonnes pratiques WCAG (pas de « image de », descriptif, concis), avec une couche d'audit et de rate-limiting prête pour de la production multi-tenant.",
     },
     highlights: {
       eyebrow: 'Highlights',
       title: 'Ce qui est intéressant techniquement',
       items: [
         {
-          title: 'Appel multi-modal Gemini depuis Spring Boot',
-          body: "Le backend Java reçoit un upload multipart, encode l'image en base64 inline_data et envoie le tout à l'API Gemini avec un prompt système conditionné par la langue. Pas de SDK, juste un RestClient typé.",
+          title: 'Audit DB Postgres avec interceptor chain',
+          body: "Chaque appel à l'API est enregistré dans `request_audits` (Spring Data JPA + Flyway, IP hashée SHA-256, latence, status, langue, modèle). Un HandlerInterceptor mesure le temps de réponse côté serveur, le controller pose les métadonnées métier via request attributes — séparation claire entre cross-cutting et logique métier.",
         },
         {
-          title: 'Prompt bilingue FR / EN',
-          body: "Un seul endpoint, deux prompts système soigneusement écrits pour respecter les règles WCAG dans chaque langue (interdire « image de / picture of », limiter à ~125 caractères, décrire avant d'interpréter).",
+          title: 'Rate-limiting par IP sans Redis',
+          body: "Un deuxième interceptor compte les appels du même hash IP sur les 60 dernières minutes via la table d'audit, renvoie 429 + `Retry-After` au-dessus du seuil. Ordre des interceptors choisi pour que les 429 soient eux-mêmes audités (`error_code = rate_limited`). Activable par feature flag, fail-open si la DB tombe.",
         },
         {
-          title: 'Configuration externalisée à 100 %',
-          body: "Aucun secret en dur. Clé API, modèle, base URL, port HTTP et patterns CORS sont tous injectés via variables d'environnement avec fallbacks pour le dev local. Le binaire est portable entre Render, Fly, Docker local.",
+          title: 'Pipeline async avec @Async + ThreadPoolTaskExecutor',
+          body: "`POST /batch/async` retourne 202 + UUID immédiatement, un worker dédié (1 core / 2 max / queue 10) traite les images séquentiellement, met à jour `processed_images` après chaque appel Gemini. Le front polle `GET /api/jobs/{id}` toutes les 2s et anime une progress bar.",
         },
         {
-          title: 'Deploy free-tier end-to-end',
-          body: "Dockerfile multi-stage (JDK builder → JRE runtime) qui tient dans les 512 Mo de Render. Frontend buildé par Cloudflare Pages depuis le même monorepo. Zéro coût d'hébergement.",
+          title: 'Multi-modal Gemini depuis Spring Boot, sans SDK',
+          body: "RestClient typé Spring 6.1, image encodée en base64 `inline_data`, prompts système soigneusement écrits en FR et EN pour respecter les règles WCAG (interdire « image de / picture of », ~125 chars, décrire avant d'interpréter).",
         },
         {
-          title: 'CORS strict avec wildcards de preview',
-          body: "Pattern `https://*.altforge.pages.dev` autorise les déploiements de preview Cloudflare sans ouvrir le backend au monde entier — utile pour tester une PR avant merge.",
+          title: 'Stats agrégées en JPQL',
+          body: "`GET /api/stats?hours=N` calcule total / success rate / avg latency + breakdowns par langue et endpoint via des derived queries Spring Data + JPQL `GROUP BY`. UI dédiée avec barres horizontales et sélecteur de fenêtre 24h / 7j / 30j.",
         },
         {
-          title: 'Tests JUnit + couverture des erreurs',
-          body: "Tests unitaires sur la validation multipart, les codes d'erreur Gemini (401, 429, 5xx) et les payloads malformés. Pas de mock du LLM en intégration, mais isolation propre du client HTTP.",
+          title: 'Pyramide de tests sans Docker en CI',
+          body: "27 tests JUnit 5 : `@DataJpaTest` sur H2 en mode PostgreSQL pour faire tourner les vraies migrations Flyway sur les queries du repository, `@WebMvcTest` + MockMvc avec @MockitoBean pour les controllers, unit tests pour les interceptors. Aucune dépendance Testcontainers.",
         },
       ],
     },
@@ -409,7 +409,7 @@ const fr = {
     status: {
       eyebrow: 'Statut actuel',
       title: 'Statut actuel',
-      body: "MVP v0 livré et live sur altforge.pages.dev. Repo public sur GitHub. Prochaine étape : batch upload + export CSV pour traiter une bibliothèque d'images en une passe.",
+      body: "v2.2 livré et live sur altforge.pages.dev — 4 onglets (single / batch / async / stats). Repo public sur GitHub. Reste v3 (auth + billing) si besoin d'en faire un vrai SaaS public.",
     },
   },
   about: {
@@ -513,7 +513,7 @@ const en: Dict = {
       'Personal job-search back-office: scrapers, LLM CV parsing, application tracking, email generation.',
     altForgeTitle: 'AltForge — Sanae Boutarfass',
     altForgeDescription:
-      'AI alt-text generator for WCAG compliance. Spring Boot + React + Gemini Vision, deployed to production.',
+      'AI alt-text generator for WCAG compliance. Spring Boot + JPA + Postgres + React + Gemini, audit DB and rate limiting, deployed to production.',
     aboutTitle: 'About — Sanae Boutarfass',
   },
   nav: {
@@ -832,7 +832,7 @@ const en: Dict = {
     statusBadge: 'Live · 2026',
     personalBadge: 'Personal',
     tagline:
-      "Web tool that turns an image into a WCAG-compliant alt-text within seconds. Drag & drop, FR/EN switch, one-click copy. Built for teams who need to caption thousands of legacy images before the European Accessibility Act deadline.",
+      'AI alt-text generator for WCAG compliance. Single + sync batch + async batch (job polling), Postgres audit DB, per-IP rate limiting, aggregated stats. 4-tab UI, 27 tests, free-tier deploy on Render + Cloudflare Pages.',
     links: {
       demo: 'Live demo',
       repo: 'Source code',
@@ -843,35 +843,35 @@ const en: Dict = {
       bodyBefore:
         "Since June 2025, the European Accessibility Act requires e-commerce sites, banks and public services to provide proper image descriptions for screen readers. Most sites have thousands of legacy images without alt-text, and manual writing simply doesn't scale.",
       bodyHighlight:
-        'AltForge automates the first pass while staying aligned with WCAG best practices (no "image of", descriptive, concise).',
+        'AltForge automates the first pass while staying aligned with WCAG best practices (no "image of", descriptive, concise), with an audit and rate-limiting layer ready for multi-tenant production use.',
     },
     highlights: {
       eyebrow: 'Highlights',
       title: 'What is technically interesting',
       items: [
         {
-          title: 'Multi-modal Gemini call from Spring Boot',
-          body: 'The Java backend receives a multipart upload, encodes the image as base64 inline_data and forwards it to the Gemini API with a language-conditioned system prompt. No SDK — a typed RestClient is enough.',
+          title: 'Postgres audit DB with an interceptor chain',
+          body: 'Every API call is recorded in `request_audits` (Spring Data JPA + Flyway, SHA-256 hashed IP, latency, status, language, model). A HandlerInterceptor measures server-side latency; the controller posts the business metadata via request attributes — clean separation between cross-cutting concerns and business logic.',
         },
         {
-          title: 'Bilingual FR / EN prompts',
-          body: 'One endpoint, two carefully written system prompts that enforce WCAG rules in each language (forbid "image of / picture of", cap around 125 chars, describe before interpreting).',
+          title: 'Per-IP rate limiting without Redis',
+          body: 'A second interceptor counts hits for the same IP hash over the last 60 minutes from the audit table, returns 429 + `Retry-After` past the threshold. Interceptor order is set so the 429 itself is audited (`error_code = rate_limited`). Feature-flagged, fails open if the DB is down.',
         },
         {
-          title: '100% externalized configuration',
-          body: 'No hard-coded secrets. API key, model name, base URL, HTTP port and CORS patterns are all injected via environment variables with sensible local-dev fallbacks. The binary is portable across Render, Fly and local Docker.',
+          title: 'Async pipeline with @Async + ThreadPoolTaskExecutor',
+          body: '`POST /batch/async` returns 202 + UUID immediately; a dedicated worker (1 core / 2 max / queue 10) processes images sequentially, updating `processed_images` after each Gemini call. The frontend polls `GET /api/jobs/{id}` every 2s and animates a progress bar.',
         },
         {
-          title: 'End-to-end free-tier deploy',
-          body: 'Multi-stage Dockerfile (JDK builder → JRE runtime) that fits within Render\'s 512 MB free tier. Frontend is built by Cloudflare Pages from the same monorepo. Zero hosting cost.',
+          title: 'Multi-modal Gemini from Spring Boot, no SDK',
+          body: 'Typed Spring 6.1 RestClient, image base64-encoded as `inline_data`, system prompts carefully written in FR and EN to enforce WCAG rules (forbid "image of / picture of", ~125 chars, describe before interpreting).',
         },
         {
-          title: 'Strict CORS with preview wildcards',
-          body: "Pattern `https://*.altforge.pages.dev` authorizes Cloudflare preview deployments without opening the backend to the world — useful for testing a PR before merge.",
+          title: 'JPQL-driven aggregated stats',
+          body: '`GET /api/stats?hours=N` computes total / success rate / avg latency + breakdowns per language and endpoint through Spring Data derived queries and JPQL `GROUP BY`. Dedicated UI with horizontal bars and a 24h / 7d / 30d window picker.',
         },
         {
-          title: 'JUnit tests covering error paths',
-          body: 'Unit tests for multipart validation, Gemini error codes (401, 429, 5xx) and malformed payloads. The LLM is not mocked at integration level, but the HTTP client is cleanly isolated.',
+          title: 'A test pyramid that runs without Docker in CI',
+          body: '27 JUnit 5 tests: `@DataJpaTest` against H2 in PostgreSQL mode so the real Flyway migrations exercise the repository queries, `@WebMvcTest` + MockMvc with @MockitoBean for controllers, plain unit tests for interceptors. No Testcontainers dependency.',
         },
       ],
     },
@@ -882,7 +882,7 @@ const en: Dict = {
     status: {
       eyebrow: 'Current status',
       title: 'Current status',
-      body: 'MVP v0 shipped and live on altforge.pages.dev. Public repo on GitHub. Next step: batch upload + CSV export to process an entire image library in one pass.',
+      body: 'v2.2 shipped and live on altforge.pages.dev — 4 tabs (single / batch / async / stats). Public repo on GitHub. v3 (auth + billing) is the next step if I turn this into a real public SaaS.',
     },
   },
   about: {
