@@ -41,6 +41,9 @@ const fr = {
     altForgeTitle: 'AltForge — Sanae Boutarfass',
     altForgeDescription:
       "Générateur d'alt-text par IA pour la conformité WCAG. Spring Boot + JPA + Postgres + React + Gemini, audit DB et rate-limiting, déployé en prod.",
+    klabiTitle: 'Klabi — Sanae Boutarfass',
+    klabiDescription:
+      "PWA invite-only pour ~60 maîtres de chiens d'un quartier — sorties du soir, balades GPS en direct, partage des parcours. Spring Boot + React PWA + Cloudflare R2 + Neon, déployé en prod.",
     aboutTitle: 'À propos — Sanae Boutarfass',
   },
   nav: {
@@ -299,6 +302,8 @@ const fr = {
       "Back-office personnel pour gérer ma recherche d'emploi de bout en bout — scrapers d'offres, parsing CV via LLM, suivi de candidatures, génération d'emails.",
     altForgeTagline:
       "Générateur d'alt-text par IA pour la conformité WCAG. Upload une image, récupère un alt-text descriptif en FR ou EN en quelques secondes — pensé pour l'European Accessibility Act (juin 2025).",
+    klabiTagline:
+      "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens à Vaulx-en-Velin. On voit qui sort ce soir aux 3 spots du quartier, on lance ou rejoint un appel, on enregistre sa balade GPS en direct et on partage les parcours.",
   },
   applydesk: {
     backLink: 'projets',
@@ -412,6 +417,64 @@ const fr = {
       body: "v2.2 livré et live sur altforge.pages.dev — 4 onglets (single / batch / async / stats). Repo public sur GitHub. Reste v3 (auth + billing) si besoin d'en faire un vrai SaaS public.",
     },
   },
+  klabi: {
+    backLink: 'projets',
+    statusBadge: 'Live · 2026',
+    personalBadge: 'Personnel',
+    tagline:
+      "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens à Vaulx-en-Velin. Centralise les sorties du soir (3 spots fixes + ad-hoc), l'enregistrement de balades GPS en direct et le partage des parcours. Auth JWT avec magic-link, photos sur Cloudflare R2, déploiement free-tier complet.",
+    links: {
+      demo: 'Démo live',
+      repo: 'Code source',
+    },
+    problem: {
+      eyebrow: 'Le problème',
+      title: "Pourquoi j'ai construit ça",
+      bodyBefore:
+        "Le groupe WhatsApp du quartier accumule 60 maîtres de chiens, mais l'info utile (qui sort ce soir ? à quel spot ? qui rejoint ?) se perd dans le scroll au milieu des photos et autres messages. Les gens hésitent à relancer le groupe « pour rien », et finissent par sortir seuls alors qu'on aurait pu se croiser.",
+      bodyHighlight:
+        "Klabi centralise précisément ces deux usages : se voir le soir et partager les parcours. Trois spots fixes affichent en temps réel qui s'y déplace, un membre peut lancer un appel ailleurs en deux clics, et chacun peut enregistrer sa balade GPS en direct puis la partager comme inspiration pour les autres.",
+    },
+    highlights: {
+      eyebrow: 'Highlights',
+      title: 'Ce qui est intéressant techniquement',
+      items: [
+        {
+          title: 'PWA installable avec enregistrement GPS en arrière-plan',
+          body: "Geolocation API avec watchPosition, Wake Lock API pour empêcher l'écran de s'éteindre pendant la marche, persistance localStorage avec TTL 6h pour reprendre une session interrompue (téléphone fermé, browser killed). Manifest + Service Worker pour l'installation « Ajouter à l'écran d'accueil » sur iOS et Android, le tracé reste fluide même hors-ligne.",
+        },
+        {
+          title: 'Storage abstraction R2 ↔ FS via SpEL conditional beans',
+          body: "Interface PhotoStorage avec deux implémentations sélectionnées au boot via `@ConditionalOnExpression(\"'${klabi.r2.bucket:}'.isEmpty()\")` — LocalFs en dev, Cloudflare R2 (S3-compatible, SDK AWS v2 + UrlConnectionHttpClient) en prod. Migration Flyway V25 backfille les avatars existants pour le swap, V26 redirige les photos seedées vers les URLs publiques R2.",
+        },
+        {
+          title: 'Spring Boot 3.5 sous le health-check Render free tier',
+          body: "Le tier gratuit Render coupe le déploiement si l'app ne répond pas en 60s. Spring Boot 3.5 + Hibernate + Flyway boot en ~160s à froid : activation de `spring.main.lazy-initialization=true` pour différer la création des beans non-essentiels à la première requête. Combiné à un ping UptimeRobot toutes les 5 min sur `/actuator/health`, le cold-start de 50s disparaît pour les utilisateurs.",
+        },
+        {
+          title: 'Auth JWT + magic-link via Brevo, sans Keycloak',
+          body: "Flow passwordless complet : génération d'un token aléatoire (UUID concaténé), hash SHA-256 stocké en DB avec TTL 30 min, email HTML envoyé via Brevo (300/jour gratuit), vérification + délivrance d'un JWT signé HS256. Spring Security configuré en stateless avec un filter JWT custom, CORS strict, endpoints publics whitelistés (auth, invite preview, health).",
+        },
+        {
+          title: 'Activity feed + notifications via jsonb Postgres',
+          body: "Table `notifications` avec colonne jsonb pour les payload event-specific, mappée en Hibernate 6.6 via `@JdbcTypeCode(SqlTypes.JSON)`. Le service notification factorise les events (callout lancé, balade partagée, etc.) et l'activity feed du quartier les agrège pour les afficher en chronologique avec liens vers les profils membres et les balades.",
+        },
+        {
+          title: '26 migrations Flyway sans aucune réécriture',
+          body: "De V1 (schéma initial) à V26 (R2 photo URLs), chaque évolution du schéma est une migration versionnée, avec backfill explicite quand nécessaire (V25 strip `/uploads/` des URLs avatar legacy, V23 ajoute `shared_at` sans casser les anciennes balades). Le commentaire en tête de chaque fichier explique le *why* de la migration et pas seulement le *what*.",
+        },
+      ],
+    },
+    stack: {
+      eyebrow: 'Stack',
+      title: 'Sous le capot',
+    },
+    status: {
+      eyebrow: 'Statut actuel',
+      title: 'Statut actuel',
+      body: "Lancement en cours auprès des 60 voisins maîtres de chiens du groupe WhatsApp d'origine. Beta privée d'abord, ouverture large dans la foulée. Suite envisagée avec la communauté : demande de garde, services entre voisins, recos vétos — toute fonctionnalité qui mérite d'être centralisée plutôt que de se perdre dans le scroll.",
+    },
+  },
   about: {
     eyebrow: 'À propos',
     titleLine1: 'De la recherche en vision',
@@ -514,6 +577,9 @@ const en: Dict = {
     altForgeTitle: 'AltForge — Sanae Boutarfass',
     altForgeDescription:
       'AI alt-text generator for WCAG compliance. Spring Boot + JPA + Postgres + React + Gemini, audit DB and rate limiting, deployed to production.',
+    klabiTitle: 'Klabi — Sanae Boutarfass',
+    klabiDescription:
+      'Invite-only PWA for ~60 dog owners in one Lyon neighborhood — evening dog walks, live GPS recording, route sharing. Spring Boot + React PWA + Cloudflare R2 + Neon, deployed to production.',
     aboutTitle: 'About — Sanae Boutarfass',
   },
   nav: {
@@ -772,6 +838,8 @@ const en: Dict = {
       'Personal job-search back-office to manage everything end-to-end — job scrapers, LLM CV parsing, application tracking, email generation.',
     altForgeTagline:
       'AI-powered alt-text generator for WCAG compliance. Upload an image, get a clean descriptive alt-text in French or English within seconds — built ahead of the European Accessibility Act (June 2025).',
+    klabiTagline:
+      'Invite-only PWA replacing a 60-people WhatsApp group of dog owners in Vaulx-en-Velin. See who is heading to one of the 3 neighborhood spots tonight, launch or join a call, record your walk live and share the route.',
   },
   applydesk: {
     backLink: 'projects',
@@ -883,6 +951,64 @@ const en: Dict = {
       eyebrow: 'Current status',
       title: 'Current status',
       body: 'v2.2 shipped and live on altforge.pages.dev — 4 tabs (single / batch / async / stats). Public repo on GitHub. v3 (auth + billing) is the next step if I turn this into a real public SaaS.',
+    },
+  },
+  klabi: {
+    backLink: 'projects',
+    statusBadge: 'Live · 2026',
+    personalBadge: 'Personal',
+    tagline:
+      'Invite-only PWA replacing a 60-people WhatsApp group of dog owners in Vaulx-en-Velin. Centralises evening dog walks (3 fixed spots + ad-hoc), live GPS recording, and route sharing. JWT auth with magic links, photos on Cloudflare R2, fully free-tier deployment.',
+    links: {
+      demo: 'Live demo',
+      repo: 'Source code',
+    },
+    problem: {
+      eyebrow: 'The problem',
+      title: 'Why I built it',
+      bodyBefore:
+        "The neighborhood WhatsApp group grew to 60 dog owners, but the useful signal (who is going out tonight? which spot? who is joining?) keeps getting buried under photos and chatter. People hesitate to ping the group « just to ask », and end up walking solo when they could have met up.",
+      bodyHighlight:
+        'Klabi targets exactly these two usages: meeting up in the evening and sharing routes. Three fixed spots show in real time who is heading there, any member can launch an ad-hoc spot somewhere else in two taps, and anyone can record their GPS walk live then share it as inspiration for the rest of the pack.',
+    },
+    highlights: {
+      eyebrow: 'Highlights',
+      title: 'What is technically interesting',
+      items: [
+        {
+          title: 'Installable PWA with background GPS recording',
+          body: 'Geolocation API with watchPosition, Wake Lock API to keep the screen alive while walking, localStorage persistence with a 6h TTL so an interrupted session (phone locked, browser killed) can be resumed. Manifest + Service Worker for « Add to Home Screen » install on iOS and Android, the trace stays smooth even offline.',
+        },
+        {
+          title: 'Storage abstraction R2 ↔ FS via SpEL conditional beans',
+          body: "PhotoStorage interface with two implementations picked at boot via `@ConditionalOnExpression(\"'${klabi.r2.bucket:}'.isEmpty()\")` — LocalFs in dev, Cloudflare R2 (S3-compatible, AWS SDK v2 + UrlConnectionHttpClient) in prod. Flyway V25 backfills the existing avatars for the swap, V26 redirects seeded photos to their R2 public URLs.",
+        },
+        {
+          title: 'Spring Boot 3.5 under the Render free-tier health-check window',
+          body: 'Render free-tier kills the deploy if the app does not answer in 60s. Spring Boot 3.5 + Hibernate + Flyway cold-boots in ~160s — flipping `spring.main.lazy-initialization=true` defers non-essential bean creation to first use. Combined with an UptimeRobot ping every 5 min on `/actuator/health`, the 50s cold-start disappears for end users.',
+        },
+        {
+          title: 'JWT auth + magic-link via Brevo, no Keycloak needed',
+          body: 'Full passwordless flow: random token (concatenated UUIDs), SHA-256 hash stored in DB with a 30 min TTL, HTML email shipped via Brevo (free 300/day), verify + issue an HS256-signed JWT. Spring Security in stateless mode with a custom JWT filter, strict CORS, public endpoints whitelisted (auth, invite preview, health).',
+        },
+        {
+          title: 'Activity feed + notifications via Postgres jsonb',
+          body: '`notifications` table with a jsonb column for event-specific payloads, mapped by Hibernate 6.6 through `@JdbcTypeCode(SqlTypes.JSON)`. The notification service factors out the event types (callout launched, walk shared, etc.) and the neighborhood activity feed aggregates them in reverse chronological order with deep links to member profiles and walk pages.',
+        },
+        {
+          title: '26 Flyway migrations with zero rewrites',
+          body: 'From V1 (initial schema) to V26 (R2 photo URLs), every schema change is a versioned migration with an explicit backfill when needed (V25 strips `/uploads/` from legacy avatar URLs, V23 adds `shared_at` without breaking older walks). Each file leads with a header comment explaining the *why*, not just the *what*.',
+        },
+      ],
+    },
+    stack: {
+      eyebrow: 'Stack',
+      title: 'Under the hood',
+    },
+    status: {
+      eyebrow: 'Current status',
+      title: 'Current status',
+      body: 'Rolling out to the 60 neighborhood dog owners from the original WhatsApp group. Private beta first, broader opening right after. Next features will be co-designed with the community: dog-sitting requests, neighbor-to-neighbor services, vet recommendations — anything worth centralizing instead of drowning in the WhatsApp scroll.',
     },
   },
   about: {
