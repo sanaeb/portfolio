@@ -44,7 +44,7 @@ const prefix = lang === 'fr' ? '' : '/en'
       <p class="text-lg md:text-2xl text-[var(--color-text-secondary)] leading-snug max-w-3xl mx-auto mb-10">
         {t.home.hero.subtitleBefore && <>{t.home.hero.subtitleBefore} </>}
         <span class="text-[var(--color-text)] font-medium">{t.home.hero.subtitleSenior}</span>
-        {' '}{t.home.hero.subtitleAfter}<br class="hidden md:block" />
+        {' '}{t.home.hero.subtitleAfter}
         {' '}{t.home.hero.subtitleStats}
       </p>
 
@@ -73,6 +73,7 @@ const prefix = lang === 'fr' ? '' : '/en'
       <TrustBand
         eyebrow={t.home.trustBand.eyebrow}
         items={[
+          { label: 'Okeenea', detail: 'Evelity' },
           { label: 'IEEE IPAS', detail: '2020' },
           { label: 'IEEE MCNA', detail: '2020' },
           { label: 'EUVIP', detail: '2019' },

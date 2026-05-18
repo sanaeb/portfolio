@@ -89,7 +89,7 @@ const fr = {
       cta: 'Voir mes projets',
     },
     trustBand: {
-      eyebrow: 'Published in',
+      eyebrow: 'Industrie & recherche',
     },
     now: {
       eyebrow: 'Now · Mai 2026',
@@ -125,11 +125,11 @@ const fr = {
       { value: '10', label: "années d'XP", sub: 'depuis 2015' },
       { value: '3', label: 'stacks', sub: 'Java · Python · React' },
       { value: '4', label: 'publications', sub: 'IEEE · EUVIP' },
-      { value: '8 mois', label: 'SLAM Mapping BO', sub: 'de zéro à prod' },
+      { value: '2', label: 'projets livrés en 2026', sub: 'Evelity Vision (avril) · Klabi (mai)' },
     ],
     approach: {
       eyebrow: 'Approche',
-      title: 'Comment je code.',
+      title: "Comment j'aborde le code.",
       cards: [
         {
           number: '01',
@@ -146,7 +146,7 @@ const fr = {
         {
           number: '03',
           title: 'Recherche + craft',
-          body: "Background recherche (4 publis IEEE en vision par ordinateur). J'aime les patterns sophistiqués — SLAM, ponts inter-runtimes — autant que les bonnes API REST bien typées.",
+          body: "J'aime les patterns sophistiqués — SLAM, ponts inter-runtimes — autant que les bonnes API REST bien typées. Le tout ancré dans un background recherche en vision par ordinateur.",
           icon: 'research' as const,
         },
       ],
@@ -160,7 +160,7 @@ const fr = {
     },
     contact: {
       eyebrow: 'Contact',
-      title: 'Parlons-en.',
+      title: 'On en discute ?',
       body: "Je cherche une équipe produit qui prend le code au sérieux. Lyon, ou remote France. Disponible pour un nouveau poste senior.",
       ctaEmail: 'Me contacter par email',
       ctaLinkedIn: 'LinkedIn',
@@ -629,7 +629,7 @@ const en: Dict = {
       cta: 'See my projects',
     },
     trustBand: {
-      eyebrow: 'Published in',
+      eyebrow: 'Industry & research',
     },
     now: {
       eyebrow: 'Now · May 2026',
@@ -665,11 +665,11 @@ const en: Dict = {
       { value: '10', label: 'years of XP', sub: 'since 2015' },
       { value: '3', label: 'stacks', sub: 'Java · Python · React' },
       { value: '4', label: 'publications', sub: 'IEEE · EUVIP' },
-      { value: '8 mo.', label: 'SLAM Mapping BO', sub: 'zero to prod' },
+      { value: '2', label: 'products shipped in 2026', sub: 'Evelity Vision (Apr) · Klabi (May)' },
     ],
     approach: {
       eyebrow: 'Approach',
-      title: 'How I code.',
+      title: 'How I approach code.',
       cards: [
         {
           number: '01',
@@ -686,7 +686,7 @@ const en: Dict = {
         {
           number: '03',
           title: 'Research + craft',
-          body: 'Research background (4 IEEE papers in computer vision). I enjoy sophisticated patterns — SLAM, cross-runtime bridges — as much as well-typed REST APIs.',
+          body: 'I enjoy sophisticated patterns — SLAM, cross-runtime bridges — as much as well-typed REST APIs, all grounded in a research background in computer vision.',
           icon: 'research' as const,
         },
       ],
