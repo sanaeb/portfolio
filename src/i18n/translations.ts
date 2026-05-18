@@ -45,6 +45,9 @@ const fr = {
     klabiDescription:
       "PWA invite-only pour ~60 maîtres de chiens d'un quartier — sorties du soir, balades GPS en direct, partage des parcours. Spring Boot + React PWA + Cloudflare R2 + Neon, déployé en prod.",
     aboutTitle: 'À propos — Sanae Boutarfass',
+    articlesTitle: 'Articles — Sanae Boutarfass',
+    articlesDescription:
+      "Articles techniques sur des choix d'architecture, d'intégration et de pattern UI, plus résumés de mes publications académiques en vision par ordinateur.",
   },
   nav: {
     home: 'Accueil',
@@ -294,8 +297,7 @@ const fr = {
   projects: {
     eyebrow: 'Projets',
     title: 'Ce que je construis.',
-    description:
-      'Side-projects, démos techniques et articles. Les projets pro Okeenea (Evelity, Evelity Vision) sont décrits dans /experience.',
+    description: 'Side-projects et démos techniques.',
     applyDeskTagline:
       "Back-office personnel pour gérer ma recherche d'emploi de bout en bout — scrapers d'offres (France Travail, Adzuna, HelloWork), parsing CV via Gemini, suivi de candidatures, génération d'emails et prep d'entretiens.",
     homeApplyDeskTagline:
@@ -308,6 +310,8 @@ const fr = {
       "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens à Vaulx-en-Velin. On voit qui sort ce soir aux 3 spots du quartier, on lance ou rejoint un appel, on enregistre sa balade GPS en direct et on partage les parcours.",
     homeKlabiTagline:
       "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens — sorties du soir, enregistrement GPS en direct, partage des parcours.",
+    slamMappingBoTagline:
+      "Back-office de cartographie SLAM (greenfield, end-to-end) qui transforme des vidéos 360° en plans indoor navigables. SLAM C++ piloté depuis FastAPI, visualisation Mapbox + Three.js, géoréférencement Sim(2).",
   },
   applydesk: {
     backLink: 'projets',
@@ -554,29 +558,88 @@ const fr = {
     },
     publications: {
       eyebrow: 'Publications',
-      title: 'Publications',
-      description:
+      title: 'Publications.',
+      blurb:
         '4 papiers en vision par ordinateur publiés en conférences IEEE et EUVIP entre 2018 et 2020, en co-auteure avec Bernard Besserer.',
+      linkLabel: 'Lire les résumés détaillés',
+    },
+  },
+  articles: {
+    eyebrow: 'Articles',
+    title: 'Écrits techniques.',
+    description:
+      "Retours d'expérience sur des choix d'architecture, d'intégration ou de pattern UI. Tirés de projets pro et personnels.",
+    readMore: 'Lire',
+    technical: [
+      {
+        slug: 'multi-datasource-spring-boot',
+        category: 'Architecture',
+        date: '2026-02',
+        readTime: '10 min',
+        title: 'Multi-datasource Spring Boot : 3 bases, 1 transaction',
+        lede:
+          "Comment on a séparé l'édition back-office, la lecture API mobile et l'analytique en trois bases PostgreSQL distinctes, tout en gardant des transactions atomiques entre elles. Retour d'expérience sur un back-end d'accessibilité indoor.",
+      },
+      {
+        slug: 'visual-slam-python-bridge',
+        category: 'Vision',
+        date: '2026-04',
+        readTime: '12 min',
+        title: 'Visual SLAM ↔ Python : un pont propre via sous-processus',
+        lede:
+          "Intégrer un moteur Visual SLAM C++ dans un back-end FastAPI sans bindings exotiques, puis aligner le résultat sur un plan d'étage avec deux contraintes GPS. Retour d'expérience sur un back-office de cartographie indoor.",
+      },
+      {
+        slug: 'applydesk-ai-matcher',
+        category: 'LLM',
+        date: '2026-05',
+        readTime: '9 min',
+        title: 'Matcher IA : combiner score déterministe et verdict LLM',
+        lede:
+          "Comment ApplyDesk note 100 offres en une fraction de seconde côté navigateur, et garde un budget LLM raisonnable pour un verdict argumenté seulement sur celles qui le méritent.",
+      },
+    ],
+    papers: {
+      eyebrow: 'Publications',
+      title: 'Vision par ordinateur · 2018-2020',
+      description:
+        "Quatre papiers issus de mon Master Recherche à l'Université de La Rochelle (MIA Laboratory). Présentés ici en résumés détaillés — les PDFs ne sont pas hébergés (droits IEEE).",
       items: [
         {
-          title: 'Improving CNN-based colorization of B&W photographs',
+          slug: 'cnn-colorization-improving',
           venue: 'IEEE IPAS',
           year: 2020,
+          title: "Coloriser de vraies photos d'archive : palette + scribbles",
+          keywords: ['Colorization', 'Deep learning', 'Archival', 'CNN', 'Interactive'],
+          summary:
+            "Les CNN de colorisation sont entraînés sur des photos couleur converties en N&B — inadaptés aux vraies photos d'archives (silver halide). J'améliore le résultat en combinant deux indices : palette globale automatisée + scribbles manuels là où ça compte (drapeaux, monuments).",
         },
         {
-          title: 'Colour palette as support for CNN colorization',
+          slug: 'cnn-colorization-palette',
           venue: 'IEEE MCNA',
           year: 2020,
+          title: 'Coloriser un film N&B avec une palette de couleurs saillantes',
+          keywords: ['Colorization', 'Deep learning', 'Colour palette', 'CNN', 'Movie'],
+          summary:
+            "Une palette des couleurs « saillantes » de la scène (distinctes des couleurs « mémorables » déjà apprises) injectée au CNN comme entrée additionnelle. Une palette suffit pour des centaines de frames — adapté à la colorisation de films sans scribbler par frame.",
         },
         {
-          title: 'Convolutional autoencoder for discriminating handwriting styles',
+          slug: 'handwriting-anomaly-detection',
           venue: 'EUVIP',
           year: 2019,
+          title: "Détecter des anomalies d'écriture manuscrite par autoencodeur",
+          keywords: ['Deep learning', 'Handwriting', 'Outlier detection', 'Autoencoder', 'Radon'],
+          summary:
+            "Un autoencodeur convolutionnel pour détecter — sans annotation — qu'une portion de texte a été écrite par une autre main. Tile splitting + transformée de Radon partielle. La discrimination émerge pendant l'entraînement via un shuffling batch-à-batch.",
         },
         {
-          title: 'Using Visible+NIR information for CNN face recognition',
-          venue: 'EUVIP',
+          slug: 'face-recognition-visible-nir',
+          venue: 'IEEE EUVIP',
           year: 2018,
+          title: 'Visible + NIR pour la reconnaissance faciale par CNN',
+          keywords: ['CNN', 'Face recognition', 'NIR', 'Multispectral', 'Dataset'],
+          summary:
+            "Dataset original VNIR (52 identités, 3 poses) capturé en retirant l'ICF d'une caméra grand public. Deux CNN comparés. Conclusion : le full-spectrum 3 canaux bat le 4 canaux RGB+I, et le canal bleu est le plus aidé par le NIR.",
         },
       ],
     },
@@ -607,6 +670,9 @@ const en: Dict = {
     klabiDescription:
       'Invite-only PWA for ~60 dog owners in one Lyon neighborhood — evening dog walks, live GPS recording, route sharing. Spring Boot + React PWA + Cloudflare R2 + Neon, deployed to production.',
     aboutTitle: 'About — Sanae Boutarfass',
+    articlesTitle: 'Articles — Sanae Boutarfass',
+    articlesDescription:
+      'Technical articles on architecture, integration and UI patterns, plus summaries of my computer-vision academic publications.',
   },
   nav: {
     home: 'Home',
@@ -856,8 +922,7 @@ const en: Dict = {
   projects: {
     eyebrow: 'Projects',
     title: 'What I build.',
-    description:
-      'Side-projects, technical demos and articles. Okeenea products (Evelity, Evelity Vision) are described in /experience.',
+    description: 'Side-projects and technical demos.',
     applyDeskTagline:
       "Personal job-search back-office to manage everything end-to-end — job scrapers (France Travail, Adzuna, HelloWork), LLM-powered CV parsing, application tracking, email generation and interview prep.",
     homeApplyDeskTagline:
@@ -870,6 +935,8 @@ const en: Dict = {
       'Invite-only PWA replacing a 60-people WhatsApp group of dog owners in Vaulx-en-Velin. See who is heading to one of the 3 neighborhood spots tonight, launch or join a call, record your walk live and share the route.',
     homeKlabiTagline:
       'Invite-only PWA replacing a 60-people WhatsApp group of dog owners — evening dog walks, live GPS recording, route sharing.',
+    slamMappingBoTagline:
+      'SLAM mapping back-office (greenfield, end-to-end) that turns 360° video into navigable indoor maps. C++ SLAM driven from FastAPI, Mapbox + Three.js visualisation, Sim(2) georeferencing.',
   },
   applydesk: {
     backLink: 'projects',
@@ -1116,29 +1183,88 @@ const en: Dict = {
     },
     publications: {
       eyebrow: 'Publications',
-      title: 'Publications',
-      description:
+      title: 'Publications.',
+      blurb:
         '4 computer-vision papers published in IEEE and EUVIP conferences between 2018 and 2020, co-authored with Bernard Besserer.',
+      linkLabel: 'Read the detailed summaries',
+    },
+  },
+  articles: {
+    eyebrow: 'Articles',
+    title: 'Technical writing.',
+    description:
+      'Lessons from architecture, integration or UI pattern decisions. Drawn from professional and personal projects.',
+    readMore: 'Read',
+    technical: [
+      {
+        slug: 'multi-datasource-spring-boot',
+        category: 'Architecture',
+        date: '2026-02',
+        readTime: '10 min',
+        title: 'Multi-datasource Spring Boot: 3 databases, 1 transaction',
+        lede:
+          'How we split back-office editing, mobile API reads and analytics into three distinct PostgreSQL databases while keeping atomic transactions across them. Lessons from an accessible indoor navigation back-end.',
+      },
+      {
+        slug: 'visual-slam-python-bridge',
+        category: 'Vision',
+        date: '2026-04',
+        readTime: '12 min',
+        title: 'Visual SLAM ↔ Python: a clean bridge via subprocess',
+        lede:
+          'Integrating a C++ Visual SLAM engine into a FastAPI back-end without exotic bindings, then aligning the result on a floor plan using two GPS constraints. Lessons from an indoor mapping back-office.',
+      },
+      {
+        slug: 'applydesk-ai-matcher',
+        category: 'LLM',
+        date: '2026-05',
+        readTime: '9 min',
+        title: 'AI matcher: blending a deterministic score with an LLM verdict',
+        lede:
+          "How ApplyDesk scores 100 offers in a fraction of a second in the browser, and keeps the LLM budget reasonable for a reasoned verdict only on those that deserve it.",
+      },
+    ],
+    papers: {
+      eyebrow: 'Publications',
+      title: 'Computer vision · 2018-2020',
+      description:
+        "Four papers from my research master's at the University of La Rochelle (MIA Laboratory). Detailed summaries here — PDFs are not hosted (IEEE copyright).",
       items: [
         {
-          title: 'Improving CNN-based colorization of B&W photographs',
+          slug: 'cnn-colorization-improving',
           venue: 'IEEE IPAS',
           year: 2020,
+          title: 'Colorizing genuine archival photos: palette + scribbles',
+          keywords: ['Colorization', 'Deep learning', 'Archival', 'CNN', 'Interactive'],
+          summary:
+            'CNN colorization networks are trained on colour photos converted to grayscale — ill-suited to genuine archival B&W (silver halide). I improve the output with two hints: an automated global palette + manual scribbles where it matters (flags, monuments).',
         },
         {
-          title: 'Colour palette as support for CNN colorization',
+          slug: 'cnn-colorization-palette',
           venue: 'IEEE MCNA',
           year: 2020,
+          title: 'Colorizing a B&W movie with a salient-colour palette',
+          keywords: ['Colorization', 'Deep learning', 'Colour palette', 'CNN', 'Movie'],
+          summary:
+            "A palette of 'salient' scene colours (distinct from the 'memorable' ones the network already infers well) is injected into the CNN as an additional input. One palette covers hundreds of frames — well-suited to movie colorization without per-frame scribbling.",
         },
         {
-          title: 'Convolutional autoencoder for discriminating handwriting styles',
+          slug: 'handwriting-anomaly-detection',
           venue: 'EUVIP',
           year: 2019,
+          title: 'Detecting handwriting anomalies via a convolutional autoencoder',
+          keywords: ['Deep learning', 'Handwriting', 'Outlier detection', 'Autoencoder', 'Radon'],
+          summary:
+            'A convolutional autoencoder that detects — without annotation — that a portion of text was written by another hand. Tile splitting + partial Radon transform. Discrimination emerges during training via batch-to-batch shuffling.',
         },
         {
-          title: 'Using Visible+NIR information for CNN face recognition',
-          venue: 'EUVIP',
+          slug: 'face-recognition-visible-nir',
+          venue: 'IEEE EUVIP',
           year: 2018,
+          title: 'Visible + NIR information for CNN face recognition',
+          keywords: ['CNN', 'Face recognition', 'NIR', 'Multispectral', 'Dataset'],
+          summary:
+            'An original VNIR dataset (52 identities, 3 poses) captured by removing the ICF of a consumer camera. Two CNNs compared. Finding: 3-channel full-spectrum beats 4-channel RGB+I, and the blue channel benefits the most from NIR.',
         },
       ],
     },

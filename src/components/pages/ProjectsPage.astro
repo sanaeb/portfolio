@@ -13,10 +13,6 @@ const t = getDict(lang)
 const prefix = lang === 'fr' ? '' : '/en'
 const isFr = lang === 'fr'
 
-const slamBoTagline = isFr
-  ? "Back-office de cartographie SLAM (greenfield, end-to-end) qui transforme des vidéos 360° en plans indoor navigables, pour un produit de navigation indoor accessible. SLAM C++ piloté depuis FastAPI, visualisation Mapbox + Three.js, géoréférencement Sim(2)."
-  : 'SLAM mapping back-office (greenfield, end-to-end) that turns 360° video into navigable indoor maps, for an accessible indoor navigation product. C++ SLAM driven from FastAPI, Mapbox + Three.js visualisation, Sim(2) georeferencing.'
-
 const articlesEyebrow = isFr ? 'Articles' : 'Articles'
 const articlesTitle = isFr ? 'Écrits techniques.' : 'Technical writing.'
 const articlesDescription = isFr
@@ -81,15 +77,6 @@ const articles = isFr
   <section class="pb-16 md:pb-20">
     <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-5">
       <ProjectCard
-        title="ApplyDesk"
-        tagline={t.projects.applyDeskTagline}
-        stack={['FastAPI', 'React', 'PostgreSQL', 'Gemini', 'TanStack Query', 'Tailwind']}
-        href={`${prefix}/projects/applydesk`}
-        status="wip"
-        year="2026"
-        visual="violet"
-      />
-      <ProjectCard
         title="Klabi"
         tagline={t.projects.klabiTagline}
         stack={['Spring Boot', 'React PWA', 'PostgreSQL', 'Cloudflare R2', 'Leaflet', 'JWT']}
@@ -99,13 +86,13 @@ const articles = isFr
         visual="emerald"
       />
       <ProjectCard
-        title="SLAM Mapping BO"
-        tagline={slamBoTagline}
-        stack={['FastAPI', 'React', 'Three.js', 'Mapbox GL', 'C++ SLAM', 'PostgreSQL']}
-        href={`${prefix}/projects/slam-mapping-bo`}
-        status="live"
-        year="2024-26"
-        visual="cyan"
+        title="ApplyDesk"
+        tagline={t.projects.applyDeskTagline}
+        stack={['FastAPI', 'React', 'PostgreSQL', 'Gemini', 'TanStack Query', 'Tailwind']}
+        href={`${prefix}/projects/applydesk`}
+        status="wip"
+        year="2026"
+        visual="violet"
       />
       <ProjectCard
         title="AltForge"
@@ -115,6 +102,15 @@ const articles = isFr
         status="live"
         year="2026"
         visual="amber"
+      />
+      <ProjectCard
+        title="SLAM Mapping BO"
+        tagline={t.projects.slamMappingBoTagline}
+        stack={['FastAPI', 'React', 'Three.js', 'Mapbox GL', 'C++ SLAM', 'PostgreSQL']}
+        href={`${prefix}/projects/slam-mapping-bo`}
+        status="live"
+        year="2024-26"
+        visual="cyan"
       />
     </div>
   </section>

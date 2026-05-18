@@ -12,13 +12,7 @@ const { lang } = Astro.props
 const t = getDict(lang)
 const prefix = lang === 'fr' ? '' : '/en'
 const projectsHref = `${prefix}/projects`
-
-const paperSlugs: Record<string, string> = {
-  'IEEE IPAS-2020': 'cnn-colorization-improving',
-  'IEEE MCNA-2020': 'cnn-colorization-palette',
-  'EUVIP-2019': 'handwriting-anomaly-detection',
-  'EUVIP-2018': 'face-recognition-visible-nir',
-}
+const publicationsHref = `${prefix}/articles#publications`
 ---
 
 <Layout lang={lang} title={t.meta.aboutTitle}>
@@ -126,42 +120,23 @@ const paperSlugs: Record<string, string> = {
     </div>
   </section>
 
-  {/* ===== PUBLICATIONS ===== */}
+  {/* ===== PUBLICATIONS (link out) ===== */}
   <section class="pb-20 md:pb-28">
     <div class="max-w-4xl mx-auto">
       <SectionHeader
         eyebrow={t.about.publications.eyebrow}
         title={t.about.publications.title}
-        description={t.about.publications.description}
       />
-      <div class="grid md:grid-cols-2 gap-3">
-        {t.about.publications.items.map((p) => {
-          const slug = paperSlugs[`${p.venue}-${p.year}`]
-          const cardClass = slug
-            ? 'glass-card glass-card-interactive p-5 group'
-            : 'glass-card p-5'
-          const content = (
-            <>
-              <div class="flex items-baseline justify-between gap-3 mb-2">
-                <span class="text-[11px] font-mono uppercase tracking-wider text-[var(--color-accent)]">
-                  {p.venue}
-                </span>
-                <span class="text-xs text-[var(--color-text-muted)] mono">{p.year}</span>
-              </div>
-              <h3 class="text-sm md:text-base font-medium leading-snug">{p.title}</h3>
-              {slug && (
-                <div class="text-[11px] text-[var(--color-text-muted)] mt-3 inline-flex items-center gap-1.5 group-hover:text-[var(--color-accent-soft)] transition-colors">
-                  {lang === 'fr' ? 'Lire le résumé' : 'Read summary'} <span aria-hidden="true">→</span>
-                </div>
-              )}
-            </>
-          )
-          return slug ? (
-            <a href={`${prefix}/articles/${slug}`} class={cardClass}>{content}</a>
-          ) : (
-            <div class={cardClass}>{content}</div>
-          )
-        })}
+      <div class="max-w-3xl text-base md:text-lg leading-relaxed">
+        <p class="text-[var(--color-text-secondary)] text-pretty">
+          {t.about.publications.blurb}
+        </p>
+        <a
+          href={publicationsHref}
+          class="link-underline inline-flex items-center gap-1.5 mt-4 text-[var(--color-text)]"
+        >
+          {t.about.publications.linkLabel} <span aria-hidden="true">→</span>
+        </a>
       </div>
     </div>
   </section>
