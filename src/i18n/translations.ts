@@ -95,7 +95,7 @@ const fr = {
       eyebrow: 'Now · Mai 2026',
       title: "Où j'en suis.",
       description:
-        "Ce que je construis, ce que je viens de livrer, et le poste que je cherche.",
+        "Un aperçu rapide de ce que je construis, ce que je viens de livrer, et le poste que je cherche.",
       cards: {
         building: {
           label: 'En cours',
@@ -635,7 +635,7 @@ const en: Dict = {
       eyebrow: 'Now · May 2026',
       title: 'Where I am.',
       description:
-        "What I'm building, what I just shipped, and the role I'm looking for.",
+        "A quick snapshot of what I'm building, what I just shipped, and the role I'm looking for.",
       cards: {
         building: {
           label: 'Building',
