@@ -22,6 +22,7 @@ const paperSlugs: Record<string, string> = {
 ---
 
 <Layout lang={lang} title={t.meta.aboutTitle}>
+  {/* ===== HERO ===== */}
   <section class="pt-12 md:pt-20 pb-12">
     <div class="max-w-4xl mx-auto">
       <div class="flex flex-col md:flex-row gap-8 items-start">
@@ -36,10 +37,10 @@ const paperSlugs: Record<string, string> = {
         </div>
         <div>
           <div class="eyebrow mb-3">{t.about.eyebrow}</div>
-          <h1 class="display text-4xl md:text-5xl font-semibold tracking-tight mb-4">
-            {t.about.titleLine1}<br />{t.about.titleLine2}
+          <h1 class="display text-4xl md:text-5xl font-semibold tracking-tight mb-4 text-balance">
+            {t.about.title}
           </h1>
-          <p class="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed">
+          <p class="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed text-pretty">
             {t.about.subtitle}
           </p>
         </div>
@@ -47,28 +48,65 @@ const paperSlugs: Record<string, string> = {
     </div>
   </section>
 
+  {/* ===== JOURNEY ===== */}
   <section class="pb-16 md:pb-20">
-    <div class="max-w-3xl mx-auto space-y-6 text-base md:text-lg leading-relaxed">
-      <p>
-        {t.about.bioBefore1}<span class="text-[var(--color-text)] font-medium">{t.about.bioHighlight1}</span>{t.about.bioAfter1}
-      </p>
-      <p>{t.about.bioP2}</p>
-      <p>
-        {t.about.bioP3Before}
-        <a
-          href="https://www.okeenea.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="link-underline"
-        >{t.about.bioP3LinkLabel}</a>{t.about.bioP3Middle}<span class="text-[var(--color-text)] font-medium">{t.about.bioP3Highlight1}</span>{t.about.bioP3Middle2}<span class="text-[var(--color-text)] font-medium">{t.about.bioP3Highlight2}</span>{t.about.bioP3After}
-      </p>
-      <p>{t.about.bioP4}</p>
-      <p>
-        {t.about.bioP5Before}<a href={projectsHref} class="link-underline">{t.about.bioP5Link}</a>{t.about.bioP5After}
-      </p>
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader eyebrow={t.about.journey.eyebrow} title={t.about.journey.title} />
+      <div class="max-w-3xl space-y-6 text-base md:text-lg leading-relaxed">
+        <p>
+          {t.about.journey.p1Before}<span class="text-[var(--color-text)] font-medium">{t.about.journey.p1Highlight}</span>{t.about.journey.p1After}
+        </p>
+        <p>{t.about.journey.p2}</p>
+      </div>
     </div>
   </section>
 
+  {/* ===== TODAY ===== */}
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader eyebrow={t.about.today.eyebrow} title={t.about.today.title} />
+      <div class="max-w-3xl space-y-6 text-base md:text-lg leading-relaxed">
+        <p>
+          {t.about.today.p1Before}<a
+            href="https://www.okeenea.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-underline"
+          >{t.about.today.p1LinkLabel}</a>{t.about.today.p1Middle}<span class="text-[var(--color-text)] font-medium">{t.about.today.p1Highlight}</span>{t.about.today.p1After}
+        </p>
+        <p>
+          {t.about.today.p2Before}<span class="text-[var(--color-text)] font-medium">{t.about.today.p2Highlight1}</span>{t.about.today.p2Middle}<span class="text-[var(--color-text)] font-medium">{t.about.today.p2Highlight2}</span>{t.about.today.p2After}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ===== CODE ===== */}
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader eyebrow={t.about.code.eyebrow} title={t.about.code.title} />
+      <div class="max-w-3xl space-y-6 text-base md:text-lg leading-relaxed">
+        <p>{t.about.code.p1}</p>
+        <p>
+          {t.about.code.p2Before}<a href={projectsHref} class="link-underline">{t.about.code.p2Link}</a>{t.about.code.p2After}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ===== OFF-SCREEN ===== */}
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader eyebrow={t.about.offscreen.eyebrow} title={t.about.offscreen.title} />
+      <div class="max-w-3xl space-y-6 text-base md:text-lg leading-relaxed">
+        <p>
+          {t.about.offscreen.p1Before}<span class="text-[var(--color-text)] font-medium">{t.about.offscreen.p1Highlight}</span>{t.about.offscreen.p1After}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ===== FORMATION ===== */}
   <section class="pb-16 md:pb-20">
     <div class="max-w-4xl mx-auto">
       <SectionHeader eyebrow={t.about.formation.eyebrow} title={t.about.formation.title} />
@@ -88,6 +126,7 @@ const paperSlugs: Record<string, string> = {
     </div>
   </section>
 
+  {/* ===== PUBLICATIONS ===== */}
   <section class="pb-20 md:pb-28">
     <div class="max-w-4xl mx-auto">
       <SectionHeader

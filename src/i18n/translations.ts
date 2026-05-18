@@ -481,34 +481,56 @@ const fr = {
   },
   about: {
     eyebrow: 'À propos',
-    titleLine1: 'De la recherche en vision',
-    titleLine2: 'au produit en prod.',
+    title: 'De la recherche en vision au produit en prod.',
     subtitle:
       "10 ans à coder à l'intersection de la recherche, de l'industrie et du produit.",
-    bioBefore1: "J'ai commencé en 2015 par la ",
-    bioHighlight1: 'vision par ordinateur appliquée',
-    bioAfter1:
-      " et le deep learning au sein d'un labo de recherche à La Rochelle. Mes premières publications IEEE portaient sur la colorisation d'images N&B et la reconnaissance faciale en domaine visible+infrarouge.",
-    bioP2:
-      "Au bout de 4 ans, j'ai migré progressivement vers le développement web — d'abord par curiosité, puis parce que j'aime particulièrement le rythme produit : voir un design devenir un commit, devenir une feature utilisée par des vrais gens en quelques semaines.",
-    bioP3Before: "Aujourd'hui je travaille chez ",
-    bioP3LinkLabel: 'Okeenea',
-    bioP3Middle: ' sur ',
-    bioP3Highlight1: 'Evelity',
-    bioP3Middle2:
-      ', une application d\'accessibilité urbaine pour personnes malvoyantes / sourdes / à mobilité réduite, ainsi que sur ',
-    bioP3Highlight2: 'Evelity Vision',
-    bioP3After:
-      ', un système de localisation indoor par SLAM visuel que j\'ai conçu et livré en 8 mois.',
-    bioP4:
-      "Côté technique, je suis aussi à l'aise sur du Java/Spring industriel que sur du Python data-heavy ou du C++ low-level. Côté front c'est React, TypeScript, Vite. J'aime le code testé, les revues constructives, les pipelines CI exigeants — pas par dogme, parce que ça fait gagner du temps sur la durée.",
-    bioP5Before: 'En dehors du travail, je fais beaucoup de side-projects (cf. ',
-    bioP5Link: '/projects',
-    bioP5After:
-      "), souvent comme prétexte à apprendre une techno nouvelle ou à automatiser un truc chiant.",
+    journey: {
+      eyebrow: 'Parcours',
+      title: "D'où je viens.",
+      p1Before: "J'ai commencé en 2015 par la ",
+      p1Highlight: 'vision par ordinateur appliquée',
+      p1After:
+        " et le deep learning au sein d'un labo de recherche à La Rochelle. Mes premières publications IEEE portaient sur la colorisation d'images N&B et la reconnaissance faciale en domaine visible+infrarouge.",
+      p2:
+        "Au bout de 4 ans, j'ai migré progressivement vers le développement web — d'abord par curiosité, puis parce que j'aime particulièrement le rythme produit : voir un design devenir un commit, devenir une feature utilisée par des vrais gens en quelques semaines.",
+    },
+    today: {
+      eyebrow: "Aujourd'hui",
+      title: 'Ce sur quoi je bosse.',
+      p1Before: 'Je travaille chez ',
+      p1LinkLabel: 'Okeenea',
+      p1Middle: ' sur ',
+      p1Highlight: 'Evelity',
+      p1After:
+        ", une application de guidage accessible à tous, avec un focus particulier sur les besoins des personnes malvoyantes, sourdes ou à mobilité réduite.",
+      p2Before: 'Je contribue aussi à ',
+      p2Highlight1: 'Evelity Vision',
+      p2Middle: ', le module de navigation indoor par ',
+      p2Highlight2: 'VPS',
+      p2After:
+        " : l'utilisateur prend une photo, le système retrouve sa position dans le bâtiment. Côté back-office, j'ai livré la partie qui trace la trajectoire d'un scan 360° du bâtiment sur le plan et qui géoréférence le tout.",
+    },
+    code: {
+      eyebrow: 'Mon code',
+      title: 'Comment je travaille.',
+      p1:
+        "Techniquement, je suis aussi à l'aise sur du Java/Spring industriel que sur du Python data-heavy. Côté front c'est React, TypeScript, Vite. J'aime le code testé, les revues constructives, les pipelines CI exigeants — pas par dogme, parce que ça fait gagner du temps sur la durée.",
+      p2Before: 'En dehors du travail, je fais beaucoup de side-projects (voir ',
+      p2Link: '/projects',
+      p2After:
+        "), souvent comme prétexte à apprendre une techno nouvelle ou à automatiser un truc chiant.",
+    },
+    offscreen: {
+      eyebrow: 'Hors écran',
+      title: 'Le reste.',
+      p1Before: "Je promène mon chien dans le quartier, et c'est de là qu'est né ",
+      p1Highlight: 'Klabi',
+      p1After:
+        " : une mini-appli pour qu'on se croise plus facilement entre voisins maîtres de chiens. C'est ma boussole de side-project : coder pour résoudre un truc concret de la vraie vie, pas pour faire joli sur un CV.",
+    },
     formation: {
       eyebrow: 'Formation',
-      title: 'Parcours académique',
+      title: 'Formation',
       items: [
         {
           degree: 'Master Informatique — Images et Systèmes',
@@ -532,7 +554,7 @@ const fr = {
     },
     publications: {
       eyebrow: 'Publications',
-      title: 'Recherche académique',
+      title: 'Publications',
       description:
         '4 papiers en vision par ordinateur publiés en conférences IEEE et EUVIP entre 2018 et 2020, en co-auteure avec Bernard Besserer.',
       items: [
@@ -1021,34 +1043,56 @@ const en: Dict = {
   },
   about: {
     eyebrow: 'About',
-    titleLine1: 'From vision research',
-    titleLine2: 'to product in prod.',
+    title: 'From vision research to product in prod.',
     subtitle:
       '10 years of coding at the intersection of research, industry and product.',
-    bioBefore1: 'I started in 2015 with ',
-    bioHighlight1: 'applied computer vision',
-    bioAfter1:
-      ' and deep learning at a research lab in La Rochelle. My first IEEE papers were on B&W image colorization and face recognition in the visible+infrared domain.',
-    bioP2:
-      "After 4 years, I gradually moved to web development — first out of curiosity, then because I particularly enjoy the product rhythm: watching a design become a commit, become a feature used by real people in a matter of weeks.",
-    bioP3Before: 'Today I work at ',
-    bioP3LinkLabel: 'Okeenea',
-    bioP3Middle: ' on ',
-    bioP3Highlight1: 'Evelity',
-    bioP3Middle2:
-      ", an urban accessibility app for visually impaired / deaf / mobility-restricted users, as well as on ",
-    bioP3Highlight2: 'Evelity Vision',
-    bioP3After:
-      ', a visual SLAM indoor localization system that I designed and shipped in 8 months.',
-    bioP4:
-      "Technically, I'm as comfortable with industrial Java/Spring as with data-heavy Python or low-level C++. On the front side it's React, TypeScript, Vite. I value tested code, constructive reviews, demanding CI pipelines — not as dogma, but because they save time over the long run.",
-    bioP5Before: 'Outside work, I do a lot of side-projects (see ',
-    bioP5Link: '/en/projects',
-    bioP5After:
-      '), often as an excuse to learn a new technology or automate something tedious.',
+    journey: {
+      eyebrow: 'Journey',
+      title: 'Where I come from.',
+      p1Before: 'I started in 2015 with ',
+      p1Highlight: 'applied computer vision',
+      p1After:
+        ' and deep learning at a research lab in La Rochelle. My first IEEE papers were on B&W image colorization and face recognition in the visible+infrared domain.',
+      p2:
+        "After 4 years, I gradually moved to web development — first out of curiosity, then because I particularly enjoy the product rhythm: watching a design become a commit, become a feature used by real people in a matter of weeks.",
+    },
+    today: {
+      eyebrow: 'Today',
+      title: 'What I work on.',
+      p1Before: 'I work at ',
+      p1LinkLabel: 'Okeenea',
+      p1Middle: ' on ',
+      p1Highlight: 'Evelity',
+      p1After:
+        ', a wayfinding app accessible to everyone, with a particular focus on the needs of visually impaired, deaf and mobility-impaired users.',
+      p2Before: 'I also contribute to ',
+      p2Highlight1: 'Evelity Vision',
+      p2Middle: ', the indoor navigation module powered by ',
+      p2Highlight2: 'VPS',
+      p2After:
+        ': the user takes a photo, the system locates them inside the building. On the back-office side, I shipped the part that traces the trajectory of a 360° scan of the building on the floor plan and georeferences it.',
+    },
+    code: {
+      eyebrow: 'My code',
+      title: 'How I work.',
+      p1:
+        "Technically, I'm as comfortable with industrial Java/Spring as with data-heavy Python. On the front side it's React, TypeScript, Vite. I value tested code, constructive reviews, demanding CI pipelines — not as dogma, but because they save time over the long run.",
+      p2Before: 'Outside work, I do a lot of side-projects (see ',
+      p2Link: '/en/projects',
+      p2After:
+        '), often as an excuse to learn a new technology or automate something tedious.',
+    },
+    offscreen: {
+      eyebrow: 'Off-screen',
+      title: 'The rest.',
+      p1Before: "I walk my dog around the neighborhood, and that's where ",
+      p1Highlight: 'Klabi',
+      p1After:
+        " came from: a tiny app so my dog-owner neighbors and I can run into each other more easily. It's my side-project compass: write code to solve a real-life thing, not to look pretty on a résumé.",
+    },
     formation: {
       eyebrow: 'Education',
-      title: 'Academic path',
+      title: 'Education',
       items: [
         {
           degree: "Master's in Computer Science — Images and Systems",
@@ -1072,7 +1116,7 @@ const en: Dict = {
     },
     publications: {
       eyebrow: 'Publications',
-      title: 'Academic research',
+      title: 'Publications',
       description:
         '4 computer-vision papers published in IEEE and EUVIP conferences between 2018 and 2020, co-authored with Bernard Besserer.',
       items: [
