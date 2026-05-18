@@ -95,25 +95,25 @@ const fr = {
       eyebrow: 'Now · Mai 2026',
       title: "Où j'en suis.",
       description:
-        "Building, shipped, recherche — un coup d'œil rapide à ce que je fais en ce moment.",
+        "Un aperçu rapide de ce que je construis, ce que je viens de livrer, et le poste que je cherche.",
       cards: {
         building: {
-          label: 'Building',
+          label: 'En cours',
           icon: '›',
           title: 'ApplyDesk',
           description:
             "Back-office personnel de recherche d'emploi — LLM, scrapers, suivi candidatures.",
         },
         shipped: {
-          label: 'Just shipped',
+          label: 'Tout juste livré',
           icon: '✓',
-          title: 'SLAM Mapping BO',
+          title: 'Klabi',
           titleSuffix: 'v1.0',
           description:
-            'Visual SLAM indoor localization · livré avril 2026.',
+            "PWA invite-only pour les balades de quartier · live en mai 2026.",
         },
         currently: {
-          label: 'Currently',
+          label: 'Côté pro',
           icon: '✱',
           title: 'En recherche active',
           description:
@@ -635,7 +635,7 @@ const en: Dict = {
       eyebrow: 'Now · May 2026',
       title: 'Where I am.',
       description:
-        "Building, shipped, looking — a quick look at what I'm doing right now.",
+        "A quick snapshot of what I'm building, what I just shipped, and the role I'm looking for.",
       cards: {
         building: {
           label: 'Building',
@@ -647,13 +647,13 @@ const en: Dict = {
         shipped: {
           label: 'Just shipped',
           icon: '✓',
-          title: 'SLAM Mapping BO',
+          title: 'Klabi',
           titleSuffix: 'v1.0',
           description:
-            'Visual SLAM indoor localization · shipped April 2026.',
+            'Invite-only PWA for neighborhood dog walks · live May 2026.',
         },
         currently: {
-          label: 'Currently',
+          label: 'Looking',
           icon: '✱',
           title: 'Actively looking',
           description:
