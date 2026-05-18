@@ -130,7 +130,16 @@ const prefix = lang === 'fr' ? '' : '/en'
         description={t.home.projects.description}
         cta={{ href: `${prefix}/projects`, label: t.home.projects.cta }}
       />
-      <div class="max-w-2xl mx-auto">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <ProjectCard
+          title="Klabi"
+          tagline={t.projects.homeKlabiTagline}
+          stack={['Spring Boot', 'React PWA', 'PostgreSQL', 'Cloudflare R2']}
+          href={`${prefix}/projects/klabi`}
+          status="live"
+          year="2026"
+          visual="emerald"
+        />
         <ProjectCard
           title="ApplyDesk"
           tagline={t.projects.homeApplyDeskTagline}
@@ -139,6 +148,15 @@ const prefix = lang === 'fr' ? '' : '/en'
           status="wip"
           year="2026"
           visual="violet"
+        />
+        <ProjectCard
+          title="AltForge"
+          tagline={t.projects.homeAltForgeTagline}
+          stack={['Spring Boot', 'JPA + Flyway', 'PostgreSQL', 'Gemini']}
+          href={`${prefix}/projects/altforge`}
+          status="live"
+          year="2026"
+          visual="amber"
         />
       </div>
     </div>

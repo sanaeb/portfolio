@@ -299,11 +299,15 @@ const fr = {
     applyDeskTagline:
       "Back-office personnel pour gérer ma recherche d'emploi de bout en bout — scrapers d'offres (France Travail, Adzuna, HelloWork), parsing CV via Gemini, suivi de candidatures, génération d'emails et prep d'entretiens.",
     homeApplyDeskTagline:
-      "Back-office personnel pour gérer ma recherche d'emploi de bout en bout — scrapers d'offres, parsing CV via LLM, suivi de candidatures, génération d'emails.",
+      "Back-office personnel pour gérer ma recherche d'emploi de bout en bout — scrapers d'offres, parsing CV via LLM, suivi de candidatures.",
     altForgeTagline:
       "Générateur d'alt-text par IA pour la conformité WCAG. Upload une image, récupère un alt-text descriptif en FR ou EN en quelques secondes — pensé pour l'European Accessibility Act (juin 2025).",
+    homeAltForgeTagline:
+      "Générateur d'alt-text par IA pour la conformité WCAG — upload une image, récupère une description FR ou EN en quelques secondes.",
     klabiTagline:
       "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens à Vaulx-en-Velin. On voit qui sort ce soir aux 3 spots du quartier, on lance ou rejoint un appel, on enregistre sa balade GPS en direct et on partage les parcours.",
+    homeKlabiTagline:
+      "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens — sorties du soir, enregistrement GPS en direct, partage des parcours.",
   },
   applydesk: {
     backLink: 'projets',
@@ -835,11 +839,15 @@ const en: Dict = {
     applyDeskTagline:
       "Personal job-search back-office to manage everything end-to-end — job scrapers (France Travail, Adzuna, HelloWork), LLM-powered CV parsing, application tracking, email generation and interview prep.",
     homeApplyDeskTagline:
-      'Personal job-search back-office to manage everything end-to-end — job scrapers, LLM CV parsing, application tracking, email generation.',
+      'Personal job-search back-office to manage everything end-to-end — job scrapers, LLM CV parsing, application tracking.',
     altForgeTagline:
       'AI-powered alt-text generator for WCAG compliance. Upload an image, get a clean descriptive alt-text in French or English within seconds — built ahead of the European Accessibility Act (June 2025).',
+    homeAltForgeTagline:
+      'AI alt-text generator for WCAG compliance — upload an image, get a clean French or English description within seconds.',
     klabiTagline:
       'Invite-only PWA replacing a 60-people WhatsApp group of dog owners in Vaulx-en-Velin. See who is heading to one of the 3 neighborhood spots tonight, launch or join a call, record your walk live and share the route.',
+    homeKlabiTagline:
+      'Invite-only PWA replacing a 60-people WhatsApp group of dog owners — evening dog walks, live GPS recording, route sharing.',
   },
   applydesk: {
     backLink: 'projects',
