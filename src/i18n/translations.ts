@@ -143,7 +143,7 @@ const fr = {
         {
           number: '02',
           title: 'Le produit avant la tech',
-          body: "Le back-office que je maintiens sert à construire Evelity : les plans des bâtiments, les itinéraires, toutes les infos d'un lieu. L'appli elle-même est accessible à tous, avec un focus sur les personnes en situation de handicap, en intérieur là où un GPS classique ne capte rien. Avant de coder une feature, on échange avec l'équipe pour mieux répondre au besoin réel de l'utilisateur, quitte à revoir ce qui était demandé au départ. Ça ne fait pas toujours plaisir en planning.",
+          body: "Chez Okeenea, le back-office que je maintenais servait à construire Evelity : les plans des bâtiments, les itinéraires, toutes les infos d'un lieu. L'appli elle-même est accessible à tous, avec un focus sur les personnes en situation de handicap, en intérieur là où un GPS classique ne capte rien. Avant de coder une feature, on échangeait avec l'équipe pour mieux répondre au besoin réel de l'utilisateur, quitte à revoir ce qui était demandé au départ. Ça ne faisait pas toujours plaisir en planning.",
           icon: 'product' as const,
         },
         {
@@ -185,7 +185,7 @@ const fr = {
         url: 'https://www.okeenea.com/',
         initials: 'OK',
         gradient: 'violet' as const,
-        current: true,
+        current: false,
         highlights: [
           'Développement front + back du back-office Evelity (React/Vite + Spring Boot 3), pensé pour la scalabilité, la maintenabilité et la compatibilité mobile.',
           'Architecture multi-datasource avec transactions distribuées, batch et messaging asynchrone.',
@@ -499,15 +499,15 @@ const fr = {
         "Au bout de 4 ans, j'ai migré progressivement vers le développement web. D'abord par curiosité, puis parce que j'aime particulièrement le rythme produit : un design qui devient un commit, qui devient une feature utilisée par de vraies personnes quelques semaines plus tard.",
     },
     today: {
-      eyebrow: "Aujourd'hui",
-      title: 'Mon quotidien chez Okeenea.',
-      p1Before: 'Je travaille chez ',
+      eyebrow: 'Dernier poste',
+      title: "Ce que j'ai fait chez Okeenea.",
+      p1Before: "Jusqu'en mai 2026, j'ai travaillé chez ",
       p1LinkLabel: 'Okeenea',
       p1Middle: ' sur ',
       p1Highlight: 'Evelity',
       p1After:
         ", une application de guidage accessible à tous, avec un focus particulier sur les besoins des personnes malvoyantes, sourdes ou à mobilité réduite.",
-      p2Before: 'Je contribue aussi à ',
+      p2Before: "J'ai aussi porté ",
       p2Highlight1: 'Evelity Vision',
       p2Middle: ', le module de navigation indoor par ',
       p2Highlight2: 'VPS',
@@ -768,7 +768,7 @@ const en: Dict = {
         {
           number: '02',
           title: 'Product before tech',
-          body: "The back-office I maintain feeds Evelity: building floor plans, routes, all the info about a place. The app itself is accessible to everyone, with a particular focus on people with disabilities, indoors where a regular GPS is useless. Before writing a line of code, we talk it through with the team to figure out how to actually serve the user's need, even if that means reworking what was originally asked for. That doesn't always go down well in planning.",
+          body: "At Okeenea, the back-office I maintained fed Evelity: building floor plans, routes, all the info about a place. The app itself is accessible to everyone, with a particular focus on people with disabilities, indoors where a regular GPS is useless. Before writing a line of code, we'd talk it through with the team to figure out how to actually serve the user's need, even if that meant reworking what was originally asked for. That didn't always go down well in planning.",
           icon: 'product' as const,
         },
         {
@@ -810,7 +810,7 @@ const en: Dict = {
         url: 'https://www.okeenea.com/',
         initials: 'OK',
         gradient: 'violet' as const,
-        current: true,
+        current: false,
         highlights: [
           'Shipped the Evelity back-office end-to-end (React/Vite + Spring Boot 3), focused on scalability, maintainability and mobile compatibility.',
           'Designed a multi-datasource architecture with distributed transactions, batch jobs and async messaging.',
@@ -1124,15 +1124,15 @@ const en: Dict = {
         "After 4 years, I gradually moved to web development. First out of curiosity, then because I particularly enjoy the product rhythm: a design that turns into a commit, that turns into a feature real people are using a few weeks later.",
     },
     today: {
-      eyebrow: 'Today',
-      title: 'My day-to-day at Okeenea.',
-      p1Before: 'I work at ',
+      eyebrow: 'Most recent role',
+      title: 'What I did at Okeenea.',
+      p1Before: 'Until May 2026, I worked at ',
       p1LinkLabel: 'Okeenea',
       p1Middle: ' on ',
       p1Highlight: 'Evelity',
       p1After:
         ', a wayfinding app accessible to everyone, with a particular focus on the needs of visually impaired, deaf and mobility-impaired users.',
-      p2Before: 'I also contribute to ',
+      p2Before: 'I also drove ',
       p2Highlight1: 'Evelity Vision',
       p2Middle: ', the indoor navigation module powered by ',
       p2Highlight2: 'VPS',
