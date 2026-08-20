@@ -22,12 +22,12 @@ const title = isFr
   : 'Visual SLAM ↔ Python: a clean bridge via subprocess'
 
 const lede = isFr
-  ? "Comment intégrer un moteur Visual SLAM C++ open-source dans un back-end FastAPI sans bindings exotiques, et comment aligner ensuite le résultat sur un plan d'étage avec deux contraintes GPS. Retour d'expérience sur un back-office de cartographie indoor."
-  : 'How to integrate an open-source C++ Visual SLAM engine into a FastAPI back-end without exotic bindings, then align the result on a floor plan with two GPS constraints. Lessons from an indoor mapping back-office.'
+  ? "J'ai intégré un moteur Visual SLAM C++ open-source dans un back-end FastAPI, sans bindings exotiques, pour le back-office de cartographie indoor qu'on a construit à Okeenea. La partie la plus tordue : aligner le résultat sur un plan d'étage avec seulement deux contraintes GPS."
+  : "I integrated an open-source C++ Visual SLAM engine into a FastAPI back-end, no exotic bindings, for the indoor mapping back-office we built at Okeenea. The trickiest part: aligning the result on a floor plan with only two GPS constraints."
 
 const metaTitle = isFr
-  ? 'Visual SLAM ↔ Python — Sanae Boutarfass'
-  : 'Visual SLAM ↔ Python — Sanae Boutarfass'
+  ? 'Visual SLAM ↔ Python · Sanae Boutarfass'
+  : 'Visual SLAM ↔ Python · Sanae Boutarfass'
 const metaDescription = isFr
   ? "Pont propre entre un moteur SLAM C++ et FastAPI (Python) via sous-processus + msgpack. Géoréférencement Sim(2) Umeyama, contraintes GPS, leçons d'intégration."
   : 'Clean bridge between a C++ SLAM engine and FastAPI (Python) via subprocess + msgpack. Sim(2) Umeyama georeferencing, GPS constraints, integration lessons.'
@@ -38,13 +38,13 @@ const sections = isFr
         eyebrow: 'Contexte',
         title: 'Du flot de pixels à un plan navigable',
         body: [
-          "Le projet : transformer des vidéos 360° en plans indoor navigables. La pièce centrale du pipeline, c'est le **Visual SLAM** — Simultaneous Localization And Mapping — qui reconstruit en parallèle la trajectoire 3D de la caméra et un nuage de points 3D de l'environnement.",
-          "On a choisi un **moteur SLAM open-source en C++**, construit sur OpenCV, g2o et Eigen. Notre back-end est en Python (FastAPI). La question : comment les faire dialoguer proprement ?",
+          "On m'a demandé de transformer des vidéos 360° en plans indoor navigables. Sur le papier ça tient en une phrase, en pratique la pièce qui fait tout le travail c'est le **Visual SLAM** (Simultaneous Localization And Mapping), qui reconstruit en parallèle la trajectoire 3D de la caméra et un nuage de points de l'environnement.",
+          "Le moteur qu'on a retenu est un **moteur SLAM open-source en C++**, construit sur OpenCV, g2o et Eigen. Notre back-end tourne en Python (FastAPI). Le vrai sujet de cet article, c'est comment on a fait dialoguer les deux sans que ça devienne un chantier en soi.",
         ],
       },
       decision: {
         eyebrow: 'Le choix',
-        title: 'Sous-processus, pas binding',
+        title: 'Le sous-processus plutôt que le binding',
         body: [
           "Trois options techniques sur la table :",
         ],
@@ -59,7 +59,7 @@ const sections = isFr
           },
           {
             title: 'Sous-processus + format de sérialisation neutre',
-            body: "On exécute le binaire SLAM en sous-processus depuis FastAPI, on lui passe la vidéo et la config YAML, on récupère un map.msg (msgpack) qu'on parse côté Python. Simple, observable, isolé du runtime web.",
+            body: "On exécute le binaire SLAM en sous-processus depuis FastAPI, on lui passe la vidéo et la config YAML, on récupère un map.msg (msgpack) qu'on parse côté Python. Simple et observable, isolé du runtime web.",
           },
         ],
         afterItems: [
@@ -70,7 +70,7 @@ const sections = isFr
         eyebrow: 'Pipeline',
         title: 'De la vidéo au map.msg',
         steps: [
-          { label: '1', body: 'La vidéo 360° est uploadée vers Cloud Storage via signed URL — pas de proxy backend, le client uploade directement.' },
+          { label: '1', body: 'La vidéo 360° est uploadée vers Cloud Storage via signed URL. Pas de proxy backend : le client uploade directement.' },
           { label: '2', body: "À la demande, FastAPI extrait les frames clés (OpenCV) à une cadence configurable. Pas tout d'un coup : pipeline streamé pour limiter l'IO disque." },
           { label: '3', body: 'FastAPI invoque le moteur SLAM en sous-processus avec la config (camera intrinsics, scale factor, vocabulary FBoW) et le dossier de frames.' },
           { label: '4', body: 'Le binaire écrit un fichier `map.msg` contenant keyframes (poses + descripteurs) et map points (3D + observations).' },
@@ -81,7 +81,7 @@ const sections = isFr
         eyebrow: 'Le bridge',
         title: 'Trois propriétés du sous-processus',
         body: [
-          "Côté FastAPI, le pattern est court : on lance le binaire SLAM via `asyncio.create_subprocess_exec`, on attend le `returncode`, on parse le `map.msg` produit avec la lib `msgpack`. Pas de binding, pas de FFI, pas de serveur intermédiaire — juste un process Unix et un fichier de sortie. Ce qu'on gagne :",
+          "Côté FastAPI, le pattern est court : on lance le binaire SLAM via `asyncio.create_subprocess_exec`, on attend le `returncode`, on parse le `map.msg` produit avec la lib `msgpack`. Pas de binding, pas de FFI, pas de serveur intermédiaire. Juste un process Unix et un fichier de sortie. Ce qu'on gagne :",
         ],
         afterCode: [],
         afterItems: [
@@ -104,23 +104,24 @@ const sections = isFr
           },
           {
             title: '≥2 contraintes',
-            body: "Sim(2) via l'algorithme d'**Umeyama** : on résout simultanément rotation 2D, translation et échelle qui minimisent l'erreur quadratique sur les correspondances. Closed-form, robuste, déterministe.",
+            body: "Sim(2) via l'algorithme d'**Umeyama** : on résout simultanément rotation 2D, translation et échelle qui minimisent l'erreur quadratique sur les correspondances. Closed-form et robuste, donc déterministe.",
           },
           {
             title: 'Auto-fit',
-            body: "Si on n'a qu'une contrainte mais que l'opérateur a posé les bornes du plan, on peut auto-scaler la trajectoire pour qu'elle remplisse le plan — sanity check rapide.",
+            body: "Si on n'a qu'une contrainte mais que l'opérateur a posé les bornes du plan, on peut auto-scaler la trajectoire pour qu'elle remplisse le plan (un sanity check rapide).",
           },
         ],
       },
       lessons: {
-        eyebrow: 'Lessons',
+        eyebrow: 'Bilan',
         title: 'Ce qu’on retient',
         items: [
-          "Pour intégrer une lib C++ avec une API stateful, **les sous-processus sont sous-estimés**. Ils tracent une frontière nette : un crash là-bas n'est pas un crash chez vous.",
-          "msgpack est un excellent format d'IPC : binaire, typé, multi-langage, sans la surface d'attaque de pickle.",
-          "Pour la perf 3D côté navigateur (milliers de frustums), on a utilisé Three.js directement plutôt que react-three-fiber — le coût React par frame est non négligeable à ces volumes.",
+          "Pour intégrer une lib C++ avec une API stateful, les sous-processus sont sous-estimés. Ça trace une frontière nette entre son crash et le mien, et j'aurais dû y penser plus tôt au lieu de partir sur pybind11 par réflexe.",
+          "msgpack est un excellent format d'IPC : binaire, typé et multi-langage, sans la surface d'attaque de pickle.",
+          "Pour la perf 3D côté navigateur (milliers de frustums), on a utilisé Three.js directement plutôt que react-three-fiber : le coût React par frame est non négligeable à ces volumes.",
           "Le géoréférencement Sim(2) Umeyama est en 30 lignes de NumPy. Ne pas se laisser intimider par la littérature SLAM : la plupart des briques utiles ont des solutions closed-form.",
           "Toujours tester avec une vidéo « cassée » (frame manquante, codec exotique, taille zéro). Le sous-processus doit échouer proprement, pas planter le worker.",
+          "Ce qu'on n'a pas encore résolu : l'auto-fit d'échelle est un peu fragile dès que le bâtiment a une forme tordue, on le désactive à la main sur certains sites. Pas fière de cette rustine, mais elle tient pour l'instant.",
         ],
       },
     }
@@ -129,13 +130,13 @@ const sections = isFr
         eyebrow: 'Context',
         title: 'From a stream of pixels to a navigable map',
         body: [
-          "The project: turn 360° videos into navigable indoor maps. The pipeline's centrepiece is **Visual SLAM** — Simultaneous Localization And Mapping — which jointly recovers the camera's 3D trajectory and a 3D point cloud of the environment.",
-          "We picked an **open-source C++ SLAM engine**, built on OpenCV, g2o and Eigen. Our back-end is Python (FastAPI). Question: how do we make them talk cleanly?",
+          "I was asked to turn 360° videos into navigable indoor maps. Sounds simple in one sentence, but the piece that does all the actual work is **Visual SLAM** (Simultaneous Localization And Mapping), which jointly recovers the camera's 3D trajectory and a 3D point cloud of the environment.",
+          "The engine we settled on is an **open-source C++ SLAM engine**, built on OpenCV, g2o and Eigen. Our back-end runs Python (FastAPI). The real subject of this article is how we got the two talking to each other without it turning into its own project.",
         ],
       },
       decision: {
         eyebrow: 'The call',
-        title: 'Subprocess, not bindings',
+        title: 'Subprocess over bindings',
         body: [
           'Three technical options on the table:',
         ],
@@ -150,7 +151,7 @@ const sections = isFr
           },
           {
             title: 'Subprocess + neutral serialisation',
-            body: 'We run the SLAM binary as a subprocess from FastAPI, hand it the video and the YAML config, and read back a map.msg (msgpack) on the Python side. Simple, observable, isolated from the web runtime.',
+            body: 'We run the SLAM binary as a subprocess from FastAPI, hand it the video and the YAML config, and read back a map.msg (msgpack) on the Python side. Simple and observable, isolated from the web runtime.',
           },
         ],
         afterItems: [
@@ -161,7 +162,7 @@ const sections = isFr
         eyebrow: 'Pipeline',
         title: 'From video to map.msg',
         steps: [
-          { label: '1', body: 'The 360° video is uploaded to Cloud Storage via signed URL — no backend proxy, the client uploads directly.' },
+          { label: '1', body: 'The 360° video is uploaded to Cloud Storage via signed URL. No backend proxy: the client uploads directly.' },
           { label: '2', body: "On demand, FastAPI extracts key frames (OpenCV) at a configurable cadence. Not all at once: a streamed pipeline keeps disk IO bounded." },
           { label: '3', body: 'FastAPI invokes the SLAM engine as a subprocess with the config (camera intrinsics, scale factor, FBoW vocabulary) and the frames folder.' },
           { label: '4', body: 'The binary writes a `map.msg` file containing keyframes (poses + descriptors) and landmarks (3D + observation counts).' },
@@ -172,7 +173,7 @@ const sections = isFr
         eyebrow: 'The bridge',
         title: 'Three properties of the subprocess',
         body: [
-          "On the FastAPI side, the pattern is short: spawn the SLAM binary with `asyncio.create_subprocess_exec`, await the `returncode`, parse the resulting `map.msg` with the `msgpack` library. No binding, no FFI, no intermediate server — just a Unix process and an output file. What we get:",
+          "On the FastAPI side, the pattern is short: spawn the SLAM binary with `asyncio.create_subprocess_exec`, await the `returncode`, parse the resulting `map.msg` with the `msgpack` library. No binding, no FFI, no intermediate server. Just a Unix process and an output file. What we get:",
         ],
         afterCode: [],
         afterItems: [
@@ -195,11 +196,11 @@ const sections = isFr
           },
           {
             title: '≥2 constraints',
-            body: "Sim(2) via the **Umeyama** algorithm: we jointly solve for 2D rotation, translation and scale that minimise the squared error over the correspondences. Closed-form, robust, deterministic.",
+            body: "Sim(2) via the **Umeyama** algorithm: we jointly solve for 2D rotation, translation and scale that minimise the squared error over the correspondences. Closed-form and robust, so deterministic.",
           },
           {
             title: 'Auto-fit',
-            body: "With only one constraint but the plan bounds defined, we can auto-scale the trajectory to fill the plan — quick sanity check.",
+            body: "With only one constraint but the plan bounds defined, we can auto-scale the trajectory to fill the plan (a quick sanity check).",
           },
         ],
       },
@@ -207,11 +208,12 @@ const sections = isFr
         eyebrow: 'Takeaways',
         title: 'What we keep from it',
         items: [
-          "To integrate a C++ library with a stateful API, **subprocesses are underrated**. They draw a clean boundary: a crash there is not a crash here.",
-          "msgpack is an excellent IPC format: binary, typed, multi-language, without pickle's attack surface.",
-          "For browser-side 3D perf (thousands of frustums), we used plain Three.js instead of react-three-fiber — the per-frame React cost is non-trivial at that scale.",
+          "To integrate a C++ library with a stateful API, subprocesses are underrated. They draw a clean line between its crash and mine, and I should have reached for this before defaulting to pybind11.",
+          "msgpack is an excellent IPC format: binary, typed, and multi-language, without pickle's attack surface.",
+          "For browser-side 3D perf (thousands of frustums), we used plain Three.js instead of react-three-fiber: the per-frame React cost is non-trivial at that scale.",
           "Sim(2) Umeyama georeferencing fits in 30 lines of NumPy. Don't be intimidated by the SLAM literature: most of the useful bricks have closed-form solutions.",
           "Always test with a 'broken' video (missing frame, exotic codec, zero size). The subprocess must fail cleanly, not crash the worker.",
+          "What's still unresolved: the auto-fit scaling gets flaky on oddly-shaped buildings, so we disable it by hand on a few sites. Not proud of that patch, but it holds for now.",
         ],
       },
     }

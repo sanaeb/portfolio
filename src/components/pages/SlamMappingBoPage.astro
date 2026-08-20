@@ -33,13 +33,13 @@ const tagline = isFr
 const problemEyebrow = isFr ? 'Le pipeline' : 'The pipeline'
 const problemTitle = isFr ? "De la vidéo 360° au plan exploitable" : 'From 360° video to a usable map'
 const problemBody = isFr
-  ? "Les opérateurs terrain filment les bâtiments en vidéo 360° équirectangulaire. Le back-office orchestre ensuite tout le pipeline : reconstruction 3D, géoréférencement interactif, validation par l'opérateur, export. À l'échelle de grands ERP — aéroports, gares, musées, sites industriels."
-  : 'Field operators capture buildings as equirectangular 360° video. The back-office then orchestrates the full pipeline: 3D reconstruction, interactive georeferencing, operator curation, export. At the scale of large public venues — airports, train stations, museums, industrial sites.'
+  ? "Les opérateurs terrain filment les bâtiments en vidéo 360° équirectangulaire. Le back-office orchestre ensuite tout le pipeline : reconstruction 3D, géoréférencement interactif, validation par l'opérateur, export. À l'échelle de grands ERP : aéroports, gares, musées, sites industriels."
+  : 'Field operators capture buildings as equirectangular 360° video. The back-office then orchestrates the full pipeline: 3D reconstruction, interactive georeferencing, operator curation, export. At the scale of large public venues: airports, train stations, museums, industrial sites.'
 
 const flowSteps: { title: string; body: string }[] = isFr
   ? [
       { title: '1 — Capture', body: 'Vidéo MP4 360° équirectangulaire (caméra portative), plusieurs segments par site, marche à vitesse constante.' },
-      { title: '2 — Upload', body: 'Signed URL GCS (15 min, scopée) — le client uploade directement vers le bucket, le backend ne proxifie pas le fichier.' },
+      { title: '2 — Upload', body: 'Signed URL GCS (15 min, scopée). Le client uploade directement vers le bucket, le backend ne proxifie pas le fichier.' },
       { title: '3 — SLAM', body: 'Moteur C++ piloté à distance sur un serveur dédié externe. Config YAML adaptative (indoor / outdoor). Output : binaire MSG msgpack + trajectory.txt.' },
       { title: '4 — Parsing', body: 'msgpack → keyframes JSON sérialisés dans la table de jobs. Sous la seconde pour une trajectoire typique. Map points laissés sur GCS pour debug.' },
       { title: '5 — Géoréférencement', body: "L'opérateur pose des contraintes GPS sur les keyframes. Sim(2) résolu via SVD / Umeyama dès ≥ 2 contraintes. Solve instantané, même avec une vingtaine de points." },
@@ -48,7 +48,7 @@ const flowSteps: { title: string; body: string }[] = isFr
     ]
   : [
       { title: '1 — Capture', body: 'Equirectangular 360° MP4 (handheld camera), several segments per site, walked at a steady pace.' },
-      { title: '2 — Upload', body: 'GCS signed URL (15 min, scoped) — the client uploads straight to the bucket, the backend never proxies the file.' },
+      { title: '2 — Upload', body: 'GCS signed URL (15 min, scoped). The client uploads straight to the bucket, the backend never proxies the file.' },
       { title: '3 — SLAM', body: 'C++ engine driven remotely on a dedicated external host. Adaptive YAML config (indoor / outdoor). Output: a binary MSG (msgpack) + trajectory.txt.' },
       { title: '4 — Parsing', body: 'msgpack → keyframes serialised as JSON in the jobs table. Sub-second for a typical trajectory. Map points stay on GCS for debug.' },
       { title: '5 — Georef', body: "The operator pins GPS constraints on keyframes. Sim(2) solved via SVD / Umeyama as soon as ≥ 2 constraints. Solve is instant, even with a couple dozen points." },
@@ -74,7 +74,7 @@ const highlights: { title: string; body: string }[] = isFr
       },
       {
         title: 'Upload résistant aux gros fichiers',
-        body: 'Signed URL GCS (PUT, 15 min, scopée au path) — le client envoie sa vidéo directement au bucket via XHR avec progress. Aucun fichier ne transite par le pod backend, qui reste léger en RAM.',
+        body: 'Signed URL GCS (PUT, 15 min, scopée au path). Le client envoie sa vidéo directement au bucket via XHR avec progress, aucun fichier ne transite par le pod backend qui reste léger en RAM.',
       },
       {
         title: 'Curation opérateur',
@@ -108,7 +108,7 @@ const highlights: { title: string; body: string }[] = isFr
       },
       {
         title: 'Large-file friendly upload',
-        body: 'GCS signed URL (PUT, 15 min, scoped to the exact path) — the client uploads its video straight to the bucket via XHR with progress. No file transits through the backend pod, which stays lean on RAM.',
+        body: 'GCS signed URL (PUT, 15 min, scoped to the exact path). The client uploads its video straight to the bucket via XHR with progress, no file transits through the backend pod, which stays lean on RAM.',
       },
       {
         title: 'Operator curation',
@@ -149,7 +149,7 @@ const decisions: { title: string; body: string }[] = isFr
       },
       {
         title: 'Zustand + TanStack Query, pas Redux',
-        body: 'Volume de state client limité, API plus simple. TanStack Query gère seule le cache/invalidation/refetch — pas besoin de re-coder ce pattern.',
+        body: 'Volume de state client limité, API plus simple. TanStack Query gère seule le cache, l’invalidation et le refetch, pas besoin de re-coder ce pattern.',
       },
       {
         title: 'Upload direct vers GCS, pas via proxy backend',
@@ -175,7 +175,7 @@ const decisions: { title: string; body: string }[] = isFr
       },
       {
         title: 'Zustand + TanStack Query, not Redux',
-        body: "Limited client state, simpler API. TanStack Query handles cache, invalidation and refetch on its own — no reason to re-implement that.",
+        body: "Limited client state, simpler API. TanStack Query handles cache, invalidation and refetch on its own, no reason to re-implement that.",
       },
       {
         title: 'Direct upload to GCS, not via a backend proxy',
@@ -193,11 +193,11 @@ const linkExperience = isFr ? 'Voir le poste lié sur /experience' : 'See the re
 const experienceHref = `${prefix}/experience`
 
 const metaTitle = isFr
-  ? 'Back-office cartographie SLAM — Sanae Boutarfass'
-  : 'SLAM Mapping Back-office — Sanae Boutarfass'
+  ? 'Back-office cartographie SLAM · Sanae Boutarfass'
+  : 'SLAM Mapping Back-office · Sanae Boutarfass'
 const metaDescription = isFr
-  ? "Back-office de cartographie SLAM (vidéo 360° → plan indoor) — FastAPI, React, Three.js, Mapbox GL, moteur SLAM C++. Greenfield, end-to-end."
-  : 'SLAM mapping back-office (360° video → indoor map) — FastAPI, React, Three.js, Mapbox GL, C++ SLAM engine. Greenfield, end-to-end.'
+  ? "Back-office de cartographie SLAM (vidéo 360° → plan indoor) : FastAPI, React, Three.js, Mapbox GL, moteur SLAM C++. Greenfield, end-to-end."
+  : 'SLAM mapping back-office (360° video → indoor map): FastAPI, React, Three.js, Mapbox GL, C++ SLAM engine. Greenfield, end-to-end.'
 ---
 
 <Layout lang={lang} title={metaTitle} description={metaDescription}>

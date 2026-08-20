@@ -23,12 +23,12 @@ const title = isFr
   : 'Colorizing genuine archival photographs: global palette + targeted scribbles'
 
 const lede = isFr
-  ? "Les CNN de colorisation sont entraînés sur des photos couleur converties en N&B. Mais les vraies photos d'archive (silver halide) n'ont pas les mêmes sensibilités spectrales — le réseau échoue sur les drapeaux, les monuments, les objets « connus ». J'améliore le résultat en combinant deux types d'indices : une palette automatisée + des scribbles manuels là où ça compte."
-  : "CNN colorization networks are trained on colour photos converted to grayscale. But real archival photographs (silver halide) don't share the same spectral sensitivities — the network fails on flags, monuments, well-known objects. I improve the output by combining two types of hints: an automated palette + manual scribbles where it matters."
+  ? "Les CNN de colorisation sont entraînés sur des photos couleur converties en N&B. Mais les vraies photos d'archive (silver halide) n'ont pas les mêmes sensibilités spectrales : le réseau échoue sur les drapeaux, les monuments, les objets « connus ». J'améliore le résultat en combinant deux types d'indices : une palette automatisée + des scribbles manuels là où ça compte."
+  : "CNN colorization networks are trained on colour photos converted to grayscale. But real archival photographs (silver halide) don't share the same spectral sensitivities, so the network fails on flags, monuments, well-known objects. I improve the output by combining two types of hints: an automated palette + manual scribbles where it matters."
 
 const metaTitle = isFr
-  ? "Améliorer la colorisation CNN de photos d'archive — Sanae Boutarfass"
-  : 'Improving CNN colorization of archival photographs — Sanae Boutarfass'
+  ? "Améliorer la colorisation CNN de photos d'archive · Sanae Boutarfass"
+  : 'Improving CNN colorization of archival photographs · Sanae Boutarfass'
 const metaDescription = isFr
   ? 'Méthode hybride pour coloriser des photos N&B argentiques : palette globale automatisée + scribbles manuels pour les zones critiques.'
   : 'Hybrid method to colorize silver-halide B&W photographs: automated global palette + manual scribbles for critical regions.'
@@ -40,7 +40,7 @@ const sections = isFr
         title: 'Quand le dataset trahit le réseau',
         body: [
           "**Le décalage des sensibilités spectrales** : les datasets d'entraînement (ImageNet, Places…) sont des photos numériques RGB converties en grayscale par une moyenne pondérée des canaux. Les vraies photos N&B argentiques répondent **différemment** à la lumière : silver halide ≠ luminance Y'CbCr. Les niveaux de gris ne mappent pas aux mêmes couleurs.",
-          "**Conséquence pratique** : pour une vraie photo d'archive, les couleurs prédites peuvent être plausibles **mais fausses**. Un drapeau tricolore peint en uni. Un monument peint avec la mauvaise pierre. Un uniforme militaire reconnu dans la mauvaise armée.",
+          "**Conséquence pratique** : pour une vraie photo d'archive, les couleurs prédites peuvent être plausibles **mais fausses**. Un drapeau tricolore qui finit peint en uni. La pierre d'un monument dans la mauvaise teinte, ou un uniforme militaire qu'on croirait sorti de l'armée d'en face.",
           "**Le suivi de MCNA 2020** : ma publi précédente proposait une palette globale comme hint. Bonne intuition, mais insuffisante seule pour les cas extrêmes (objets uniques, identifiables, sensibles aux erreurs).",
         ],
       },
@@ -56,7 +56,7 @@ const sections = isFr
         ],
         bullets: [
           "**Palette globale automatisée** (hérité de MCNA 2020) : palette saillante calculée par scène. Bien pour la colorisation de films, automatisable, suffisamment précis pour la plupart des scènes.",
-          "**Scribbles manuels ciblés** : pour les zones où la palette globale ne suffit pas (drapeaux, monuments, objets uniques), l'utilisateur dépose quelques taches de couleur localisées — quelques pixels suffisent.",
+          "**Scribbles manuels ciblés** : pour les zones où la palette globale ne suffit pas (drapeaux, monuments, objets uniques), l'utilisateur dépose quelques taches de couleur localisées. Quelques pixels suffisent.",
           "**Aucune modification de l'architecture** : les hints (palette + scribbles) sont injectés en input additionnel au réseau pré-entraîné. Plug-in sur les colorisateurs existants.",
           "**Stratégie d'usage** : 80 % de la colorisation est gérée par la palette, les scribbles ne sont nécessaires que sur 15 % de la surface. Le ratio bascule selon la complexité de la scène.",
         ],
@@ -79,17 +79,17 @@ const sections = isFr
           },
           {
             title: "Adapté aux silver halide",
-            body: "Le pipeline traite explicitement le domain shift entre photos numériques converties et photos N&B argentiques — souvent ignoré dans la littérature.",
+            body: "Le pipeline traite explicitement le domain shift entre photos numériques converties et photos N&B argentiques, un point que la littérature ignore le plus souvent.",
           },
         ],
       },
       contribution: {
         eyebrow: 'Ma contribution',
-        title: 'Ce que cette publication apporte',
+        title: 'Quatre apports concrets',
         items: [
           "**Identification claire du domain shift** entre datasets d'entraînement (RGB → grayscale) et photos d'archive (silver halide). C'est un trou de la littérature classique colorisation : on assume la grayscale comme proxy universelle, ce qui est faux pour l'archive.",
-          "**Méthodologie hybride palette + scribbles** : meilleur compromis entre automatisation (palette) et qualité ciblée (scribbles). Pas un choix binaire entre les deux.",
-          "**Pipeline pratique pour restaurer des photos historiques** sans devoir ré-entraîner un colorisateur dédié — applicable par des restaurateurs avec un colorisateur open-source du commerce.",
+          "**Méthodologie hybride palette + scribbles** : meilleur compromis entre automatisation (palette) et qualité ciblée (scribbles), les deux se combinent au lieu de s'exclure.",
+          "**Pipeline pratique pour restaurer des photos historiques** sans devoir ré-entraîner un colorisateur dédié : utilisable directement par des restaurateurs avec un colorisateur open-source du commerce.",
           "**Aboutissement de la série** : EUVIP 2018 (face recognition NIR), EUVIP 2019 (anomaly detection écriture), MCNA 2020 (palette colorisation), IPAS 2020 (palette + scribbles). Un fil rouge : guider les réseaux profonds avec des hints structurés.",
         ],
       },
@@ -109,7 +109,7 @@ const sections = isFr
         title: 'When the dataset betrays the network',
         body: [
           "**Spectral-sensitivity mismatch**: training datasets (ImageNet, Places…) are digital RGB photos converted to grayscale via a weighted average of channels. Genuine silver-halide B&W photos react **differently** to light: silver halide ≠ Y'CbCr luminance. Grey levels do not map to the same colours.",
-          '**Practical consequence**: for a real archival photo, the predicted colours can be plausible **but wrong**. A tricolour flag painted uniformly. A monument painted in the wrong stone. A military uniform recognised in the wrong army.',
+          '**Practical consequence**: for a real archival photo, the predicted colours can be plausible **but wrong**. A tricolour flag that ends up painted in one flat colour. A monument in the wrong stone, or a military uniform that looks like it belongs to the wrong army.',
           '**Building on MCNA 2020**: my previous paper proposed a global palette as a hint. Good intuition, but not enough alone for edge cases (unique, identifiable, error-sensitive objects).',
         ],
       },
@@ -125,7 +125,7 @@ const sections = isFr
         ],
         bullets: [
           "**Automated global palette** (inherited from MCNA 2020): a salient palette computed per scene. Good for movie colorization, automatable, precise enough for most scenes.",
-          "**Targeted manual scribbles**: for regions where the global palette is not enough (flags, monuments, unique objects), the user drops a few localised colour patches — a few pixels are enough.",
+          "**Targeted manual scribbles**: for regions where the global palette is not enough (flags, monuments, unique objects), the user drops a few localised colour patches. A few pixels are enough.",
           "**No architecture change**: hints (palette + scribbles) are injected as additional inputs to the pretrained network. Plug-in on existing colorizers.",
           '**Usage strategy**: 80% of colorization is handled by the palette, scribbles are only needed on about 15% of the surface. The ratio shifts with scene complexity.',
         ],
@@ -136,7 +136,7 @@ const sections = isFr
         cards: [
           {
             title: 'Visibly better quality',
-            body: 'On archival photos vs colorizer alone: sky, foliage, persons stay correct, AND flags, monuments, uniforms — which used to fail — now come out right.',
+            body: 'On archival photos vs colorizer alone: sky, foliage and people stay correct, and now flags, monuments and uniforms do too (the exact objects that used to fail).',
           },
           {
             title: 'Controlled interaction cost',
@@ -148,17 +148,17 @@ const sections = isFr
           },
           {
             title: 'Tailored to silver-halide imagery',
-            body: 'The pipeline explicitly addresses the domain shift between converted digital photos and genuine silver-halide B&W — a gap often ignored in the literature.',
+            body: 'The pipeline explicitly addresses the domain shift between converted digital photos and genuine silver-halide B&W, a gap the literature usually skips over.',
           },
         ],
       },
       contribution: {
         eyebrow: 'My contribution',
-        title: 'What this publication brings',
+        title: 'Four concrete contributions',
         items: [
-          '**Clear identification of the domain shift** between training datasets (RGB → grayscale) and archival photos (silver halide). A blind spot in the colorization literature, where grayscale is implicitly assumed universal — which is false for archives.',
-          '**Hybrid palette + scribbles methodology**: a better trade-off between automation (palette) and targeted quality (scribbles). Not a binary choice between the two.',
-          '**Practical pipeline for restoring historical photos** without retraining a dedicated colorizer — usable by restorers with an off-the-shelf open-source colorizer.',
+          '**Clear identification of the domain shift** between training datasets (RGB → grayscale) and archival photos (silver halide). A blind spot in the colorization literature, where grayscale is implicitly assumed universal, which is false for archives.',
+          '**Hybrid palette + scribbles methodology**: a better trade-off between automation (palette) and targeted quality (scribbles), the two work together rather than competing.',
+          '**Practical pipeline for restoring historical photos** without retraining a dedicated colorizer: usable directly by restorers with an off-the-shelf open-source colorizer.',
           '**Culmination of the series**: EUVIP 2018 (NIR face recognition), EUVIP 2019 (handwriting anomaly detection), MCNA 2020 (colorization palette), IPAS 2020 (palette + scribbles). One thread runs through all four: guiding deep networks with structured hints.',
         ],
       },

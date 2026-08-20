@@ -23,12 +23,12 @@ const title = isFr
   : 'Visible + NIR information for CNN face recognition'
 
 const lede = isFr
-  ? "Et si on rendait la caméra sensible au proche infrarouge pour mieux reconnaître les visages ? J'ai monté un dataset original VNIR (52 identités, 3 poses), entraîné deux architectures CNN, et comparé leur performance face au RGB classique. La conclusion m'a surprise : les images full-spectrum 3 canaux battent les 4 canaux RGB + I."
-  : "What if we made the camera sensitive to near-infrared to better recognise faces? I built an original VNIR dataset (52 identities, 3 poses), trained two CNN architectures, and compared their performance against plain RGB. The result surprised me: 3-channel full-spectrum images beat 4-channel RGB + I."
+  ? "Et si on rendait la caméra sensible au proche infrarouge pour mieux reconnaître les visages ? J'ai monté un dataset original VNIR (52 identités, 3 poses), puis entraîné deux architectures CNN pour voir comment elles se comportaient face au RGB classique. La conclusion m'a surprise : les images full-spectrum 3 canaux battent les 4 canaux RGB + I."
+  : "What if we made the camera sensitive to near-infrared to better recognise faces? I built an original VNIR dataset (52 identities, 3 poses), then trained two CNN architectures to see how they'd stack up against plain RGB. The result surprised me: 3-channel full-spectrum images beat 4-channel RGB + I."
 
 const metaTitle = isFr
-  ? 'Visible + NIR pour la reconnaissance faciale — Sanae Boutarfass'
-  : 'Visible + NIR for face recognition — Sanae Boutarfass'
+  ? 'Visible + NIR pour la reconnaissance faciale · Sanae Boutarfass'
+  : 'Visible + NIR for face recognition · Sanae Boutarfass'
 const metaDescription = isFr
   ? 'Reconnaissance faciale par CNN sur images full-spectrum (VNIR) : dataset original, deux architectures comparées, résultats sur le rôle du canal NIR.'
   : 'CNN-based face recognition on full-spectrum (VNIR) images: original dataset, two architectures compared, findings on the role of the NIR channel.'
@@ -39,7 +39,7 @@ const sections = isFr
         eyebrow: 'Le problème',
         title: 'Le NIR perdu en silence',
         body: [
-          "Les capteurs CCD/CMOS de **toutes** les caméras numériques sont sensibles à la fois au visible (400-700 nm) ET au proche infrarouge (700-1200 nm). Mais un filtre interne — l'ICF (Infrared Cut-off Filter) — bloque l'IR pour que les couleurs paraissent naturelles à l'œil.",
+          "Les capteurs CCD/CMOS de **toutes** les caméras numériques sont sensibles à la fois au visible (400-700 nm) ET au proche infrarouge (700-1200 nm). Mais un filtre interne, l'ICF (Infrared Cut-off Filter), bloque l'IR pour que les couleurs paraissent naturelles à l'œil.",
           "En retirant ce filtre, on récupère l'information NIR « gratuitement », mêlée aux trois canaux RGB. La peau, les yeux, les os réagissent différemment dans le NIR : la peau y est plus uniforme (moins de défauts de surface), les vaisseaux et structures sub-cutanées y deviennent visibles. **Peut-on exploiter ce signal pour reconnaître un visage de façon plus robuste ?**",
         ],
       },
@@ -65,8 +65,8 @@ const sections = isFr
         title: 'Ce qui marche, ce qui ne marche pas',
         cards: [
           {
-            title: 'Le full-spectrum 3 canaux : surprise',
-            body: "Un CNN entraîné sur RGB classique **généralise correctement** à des images full-spectrum, sans réentraînement. Le mélange visible + NIR dans les trois canaux ne perturbe pas la reconnaissance — au contraire, le taux monte.",
+            title: 'La surprise du full-spectrum 3 canaux',
+            body: "Un CNN entraîné sur RGB classique **généralise correctement** à des images full-spectrum, sans réentraînement. Le mélange visible + NIR dans les trois canaux ne perturbe pas la reconnaissance. Au contraire, le taux monte.",
           },
           {
             title: 'Le RGB + I 4 canaux : déception',
@@ -78,7 +78,7 @@ const sections = isFr
           },
           {
             title: 'Robustesse à la lumière',
-            body: "Le full-spectrum est plus stable que le RGB face aux variations d'éclairage indoor — le NIR ambiant rattrape ce que le visible perd quand la lumière baisse.",
+            body: "Le full-spectrum est plus stable que le RGB face aux variations d'éclairage indoor : le NIR ambiant rattrape ce que le visible perd quand la lumière baisse.",
           },
         ],
       },
@@ -107,7 +107,7 @@ const sections = isFr
         eyebrow: 'The problem',
         title: 'The NIR signal we silently throw away',
         body: [
-          "The CCD/CMOS sensors in **every** digital camera are sensitive both to visible light (400-700 nm) AND near-infrared (700-1200 nm). But an internal filter — the ICF (Infrared Cut-off Filter) — blocks IR so that colours look natural to the human eye.",
+          "The CCD/CMOS sensors in **every** digital camera are sensitive both to visible light (400-700 nm) AND near-infrared (700-1200 nm). But an internal filter, the ICF (Infrared Cut-off Filter), blocks IR so that colours look natural to the human eye.",
           "Remove that filter and you recover NIR information 'for free', mixed into the three RGB channels. Skin, eyes and bone respond differently in NIR: skin looks more uniform (fewer surface defects show), sub-cutaneous structures become visible. **Can we leverage that signal to recognise a face more robustly?**",
         ],
       },
@@ -133,8 +133,8 @@ const sections = isFr
         title: 'What works, what does not',
         cards: [
           {
-            title: 'Full-spectrum 3 channels: a surprise',
-            body: "A CNN trained on plain RGB **generalises well** to full-spectrum images, without any retraining. The visible + NIR mixture in the three channels does not confuse recognition — accuracy goes up.",
+            title: 'The full-spectrum 3-channel surprise',
+            body: "A CNN trained on plain RGB **generalises well** to full-spectrum images, without any retraining. The visible + NIR mixture in the three channels does not confuse recognition. In fact, accuracy goes up.",
           },
           {
             title: 'RGB + I 4 channels: a disappointment',
@@ -146,7 +146,7 @@ const sections = isFr
           },
           {
             title: 'Lighting robustness',
-            body: 'Full-spectrum is more stable than plain RGB under varying indoor lighting — ambient NIR fills in for the visible signal as light dims.',
+            body: 'Full-spectrum is more stable than plain RGB under varying indoor lighting: ambient NIR fills in for the visible signal as light dims.',
           },
         ],
       },
@@ -155,7 +155,7 @@ const sections = isFr
         title: 'What this publication brings',
         items: [
           '**First public VNIR dataset** dedicated to face recognition. Existing bases (e.g. CASIA NIR-VIS 2.0) contain RGB and NIR **separately**, not full-spectrum.',
-          '**Empirical demonstration** that a custom multi-channel architecture is not required to leverage NIR: a plain CNN on full-spectrum is enough — and actually does better.',
+          '**Empirical demonstration** that a custom multi-channel architecture is not required to leverage NIR: a plain CNN on full-spectrum is enough, and actually does better.',
           '**Reproducible capture methodology**: consumer camera + IR LEDs + filter. No lab-grade equipment needed.',
           '**Practical recommendation** for face-recognition systems exposed to variable lighting: remove the ICF rather than adding a separate NIR sensor.',
         ],

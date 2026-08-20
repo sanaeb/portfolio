@@ -23,12 +23,12 @@ const title = isFr
   : 'Detecting handwriting anomalies with a convolutional autoencoder'
 
 const lede = isFr
-  ? "Détecter qu'une portion de texte manuscrit a été écrite par une autre main — sans aucune annotation, sans set d'entraînement séparé du set de test. Plutôt que de reconnaître les caractères, j'apprends le **style** d'une écriture grâce à un autoencodeur convolutionnel, et laisse l'anomalie se trahir comme un outlier."
-  : "Detecting that a portion of handwritten text was written by another hand — without any annotation, without a separate training set. Rather than recognising characters, I learn the **style** of a writer via a convolutional autoencoder, and let anomalies betray themselves as outliers."
+  ? "Détecter qu'une portion de texte manuscrit a été écrite par une autre main, sans aucune annotation, sans set d'entraînement séparé du set de test. Plutôt que de reconnaître les caractères, j'apprends le **style** d'une écriture grâce à un autoencodeur convolutionnel, et laisse l'anomalie se trahir comme un outlier."
+  : "Detecting that a portion of handwritten text was written by another hand, without any annotation, without a separate training set. Rather than recognising characters, I learn the **style** of a writer via a convolutional autoencoder, and let anomalies betray themselves as outliers."
 
 const metaTitle = isFr
-  ? "Anomalies d'écriture manuscrite par autoencodeur — Sanae Boutarfass"
-  : 'Handwriting anomalies via convolutional autoencoder — Sanae Boutarfass'
+  ? "Anomalies d'écriture manuscrite par autoencodeur · Sanae Boutarfass"
+  : 'Handwriting anomalies via convolutional autoencoder · Sanae Boutarfass'
 const metaDescription = isFr
   ? "Détection non-supervisée d'anomalies dans des échantillons manuscrits : tile splitting, transformée de Radon partielle, autoencodeur convolutionnel, shuffling batch-à-batch."
   : 'Unsupervised handwriting anomaly detection: tile splitting, partial Radon transform, convolutional autoencoder, batch-to-batch shuffling.'
@@ -39,7 +39,7 @@ const sections = isFr
         eyebrow: 'Le problème',
         title: 'Une signature stylistique sans référentiel',
         body: [
-          "La **graphologie** repose sur des mesures fines : extension des hampes verticales au-dessus et en-dessous de la ligne de base, slope des lettres, fermeture des « o », rondeur des courbes. Mais ces critères changent d'un scripteur à l'autre — il n'y a pas de référentiel absolu.",
+          "La **graphologie** repose sur des mesures fines : extension des hampes verticales au-dessus et en-dessous de la ligne de base, slope des lettres, fermeture des « o », rondeur des courbes. Mais ces critères changent d'un scripteur à l'autre, il n'existe aucun référentiel absolu.",
           "**Le cadre du problème** : un seul échantillon de texte, potentiellement contenant une anomalie (un passage écrit par une autre main), pas d'annotation, pas de set d'entraînement séparé du set de test. C'est de la **détection d'outliers en mode totalement unsupervised**, où l'algo doit lui-même apprendre une métrique appropriée.",
         ],
       },
@@ -55,8 +55,8 @@ const sections = isFr
         ],
         bullets: [
           "**Tile splitting** : l'image du texte est découpée en tuiles à partir de la ligne de base détectée par image processing. Chaque tuile contient une portion locale d'écriture.",
-          "**Transformée de Radon partielle** sur les tuiles (range π/2) : capture les variations stylistiques (slope, épaisseur, courbure) dans un espace plus abstrait que les pixels — c'est ce qui rend la méthode robuste aux variations de taille ou de position.",
-          "**Autoencodeur convolutionnel** : apprend à reconstruire les Radon projections des tuiles. Pour les tuiles outliers, la reconstruction est moins bonne — l'erreur de reconstruction sert de score d'anomalie.",
+          "**Transformée de Radon partielle** sur les tuiles (range π/2) : capture les variations stylistiques (slope, épaisseur, courbure) dans un espace plus abstrait que les pixels, ce qui rend la méthode robuste aux variations de taille ou de position.",
+          "**Autoencodeur convolutionnel** : apprend à reconstruire les Radon projections des tuiles. Pour les tuiles outliers, la reconstruction est moins bonne, et c'est cette erreur de reconstruction qui sert de score d'anomalie.",
           "**Astuce d'entraînement** : à chaque epoch, les tuiles sont permutées entre batchs. Les outliers, qui ne se reconstruisent pas bien, sont écartés ou repérés au fil des epochs. La **discrimination émerge pendant l'entraînement**, pas après.",
         ],
       },
@@ -70,7 +70,7 @@ const sections = isFr
           },
           {
             title: 'Localisation spatiale',
-            body: "Les outliers ne sont pas seulement détectés comme « présents ou absents » : ils sont **localisés dans l'image** (quelle zone du texte est suspecte), grâce à la granularité des tuiles.",
+            body: "Grâce à la granularité des tuiles, les outliers sont **localisés dans l'image** : on sait précisément quelle zone du texte est suspecte.",
           },
           {
             title: 'Robuste aux variations bénignes',
@@ -78,17 +78,17 @@ const sections = isFr
           },
           {
             title: 'Validation sur compositions synthétiques',
-            body: "Tests sur des extraits manuscrits où on injecte des passages écrits par d'autres scripteurs — la méthode isole et localise les passages injectés.",
+            body: "Tests sur des extraits manuscrits où on injecte des passages écrits par d'autres scripteurs. La méthode isole et localise les passages injectés.",
           },
         ],
       },
       contribution: {
         eyebrow: 'Ma contribution',
-        title: 'Ce que cette publication apporte',
+        title: 'Mon rôle dans ce papier',
         items: [
           "**Reformulation du problème graphologique** : passer de mesures hand-crafted (extends, slope, closure) à une représentation **apprise** par un réseau profond.",
           "**Détournement du shuffling batch-à-batch** : le mécanisme habituel d'apprentissage devient un outil de discrimination, sans changer l'architecture.",
-          "**Détection unsupervised + localisation** : la combinaison des deux est rare en outlier detection — la plupart des méthodes donnent un score global, pas une carte.",
+          "**Détection unsupervised + localisation** : la combinaison des deux est rare en outlier detection, la plupart des méthodes se contentent d'un score global, pas d'une carte.",
           "**Méthode transposable** : applicable à d'autres tâches de détection unsupervised où l'anomalie est rare (intrusion detection, forgery detection, fraud).",
         ],
       },
@@ -107,7 +107,7 @@ const sections = isFr
         eyebrow: 'The problem',
         title: 'A stylistic signature without a ground truth',
         body: [
-          '**Graphology** relies on fine-grained measures: extent of vertical strokes above and below the baseline, letter slope, closure of "o" letters, roundness of curves. But these criteria differ from one writer to another — there is no absolute reference.',
+          '**Graphology** relies on fine-grained measures: extent of vertical strokes above and below the baseline, letter slope, closure of "o" letters, roundness of curves. But these criteria differ from one writer to another, there is no absolute reference to fall back on.',
           '**Problem setting**: one sample of text, possibly containing an anomaly (a portion written by another hand), no annotation, no separate training and test sets. This is **fully unsupervised outlier detection**, where the algorithm has to learn an appropriate metric on its own.',
         ],
       },
@@ -123,8 +123,8 @@ const sections = isFr
         ],
         bullets: [
           '**Tile splitting**: the text image is cut into tiles aligned on the baseline (detected by classic image processing). Each tile holds a local portion of writing.',
-          '**Partial Radon transform** on tiles (over a π/2 range): captures stylistic variations (slope, thickness, curvature) in a more abstract space than pixels — which makes the method robust to size and position shifts.',
-          '**Convolutional autoencoder**: learns to reconstruct the Radon projections of tiles. Outlier tiles reconstruct poorly — the reconstruction error becomes the anomaly score.',
+          '**Partial Radon transform** on tiles (over a π/2 range): captures stylistic variations (slope, thickness, curvature) in a more abstract space than pixels, which makes the method robust to size and position shifts.',
+          '**Convolutional autoencoder**: learns to reconstruct the Radon projections of tiles. Outlier tiles reconstruct poorly, and that reconstruction error is what becomes the anomaly score.',
           '**Training trick**: at every epoch, tiles are shuffled across batches. Outliers, which reconstruct poorly, are discarded or flagged as epochs progress. **Discrimination emerges during training**, not after.',
         ],
       },
@@ -138,7 +138,7 @@ const sections = isFr
           },
           {
             title: 'Spatial localisation',
-            body: 'Outliers are not just detected as "present or absent": they are **localised in the image** (which area of the text is suspicious), thanks to tile granularity.',
+            body: 'Thanks to tile granularity, outliers are **localised in the image**: you know exactly which area of the text looks suspicious.',
           },
           {
             title: 'Robust to benign variation',
@@ -146,17 +146,17 @@ const sections = isFr
           },
           {
             title: 'Validation on synthetic compositions',
-            body: 'Tested on handwritten extracts where snippets from other writers are injected — the method isolates and locates the injected portions.',
+            body: 'Tested on handwritten extracts where snippets from other writers are injected. The method isolates and locates the injected portions.',
           },
         ],
       },
       contribution: {
         eyebrow: 'My contribution',
-        title: 'What this publication brings',
+        title: 'My role in this paper',
         items: [
           '**Reframing the graphology problem**: moving from hand-crafted measures (extents, slope, closure) to a **learned** representation via a deep network.',
           '**Repurposing batch-to-batch shuffling**: a standard training mechanism turned into a discrimination tool, without changing the architecture.',
-          '**Unsupervised detection + localisation**: combining both is rare in outlier detection — most methods only output a global score, not a map.',
+          '**Unsupervised detection + localisation**: combining both is rare in outlier detection, most methods settle for a global score rather than a map.',
           '**Transferable methodology**: applicable to other unsupervised detection tasks where the anomaly is rare (intrusion detection, forgery detection, fraud).',
         ],
       },

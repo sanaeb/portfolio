@@ -10,7 +10,7 @@ export type Lang = 'fr' | 'en'
 
 /** Site-wide config that's not language-specific. */
 export const siteConfig = {
-  /** Production URL — used in sitemap, og:url, etc. Change to https://sanae.dev once the custom domain is wired. */
+  /** Production URL, used in sitemap, og:url, etc. Change to https://sanae.dev once the custom domain is wired. */
   url: 'https://sanae-portfolio.pages.dev',
   /** External links shown in header / hero. */
   linkedIn: 'https://www.linkedin.com/in/sanae-boutarfass-7186a14b',
@@ -25,27 +25,27 @@ export const siteConfig = {
 
 const fr = {
   meta: {
-    siteTitle: 'Sanae Boutarfass — Développeuse Full Stack à Lyon',
+    siteTitle: 'Sanae Boutarfass · Développeuse Full Stack à Lyon',
     siteDescription:
-      "10 ans d'expérience full stack — Java / Spring, React / TypeScript, Python. Architecture, back-end industriel, vision par ordinateur.",
-    homeTitle: 'Sanae Boutarfass — Développeuse Full Stack à Lyon',
-    experienceTitle: 'Expérience — Sanae Boutarfass',
+      "10 ans d'expérience full stack (Java / Spring, React / TypeScript, Python). Architecture, back-end industriel, vision par ordinateur.",
+    homeTitle: 'Sanae Boutarfass · Développeuse Full Stack à Lyon',
+    experienceTitle: 'Expérience · Sanae Boutarfass',
     experienceDescription:
-      "Parcours de Sanae Boutarfass — 10 ans d'expérience en développement web full-stack.",
-    projectsTitle: 'Projets — Sanae Boutarfass',
+      "Parcours de Sanae Boutarfass, 10 ans d'expérience en développement web full-stack.",
+    projectsTitle: 'Projets · Sanae Boutarfass',
     projectsDescription:
-      'Projets personnels et professionnels — code, démos, articles techniques.',
-    applyDeskTitle: 'ApplyDesk — Sanae Boutarfass',
+      'Projets personnels et professionnels : code, démos, articles techniques.',
+    applyDeskTitle: 'ApplyDesk · Sanae Boutarfass',
     applyDeskDescription:
       "Back-office personnel de recherche d'emploi : scrapers, parsing CV LLM, suivi de candidatures, génération d'emails.",
-    altForgeTitle: 'AltForge — Sanae Boutarfass',
+    altForgeTitle: 'AltForge · Sanae Boutarfass',
     altForgeDescription:
       "Générateur d'alt-text par IA pour la conformité WCAG. Spring Boot + JPA + Postgres + React + Gemini, audit DB et rate-limiting, déployé en prod.",
-    klabiTitle: 'Klabi — Sanae Boutarfass',
+    klabiTitle: 'Klabi · Sanae Boutarfass',
     klabiDescription:
-      "PWA invite-only pour ~60 maîtres de chiens d'un quartier — sorties du soir, balades GPS en direct, partage des parcours. Spring Boot + React PWA + Cloudflare R2 + Neon, déployé en prod.",
-    aboutTitle: 'À propos — Sanae Boutarfass',
-    articlesTitle: 'Articles — Sanae Boutarfass',
+      "PWA invite-only pour ~60 maîtres de chiens d'un quartier : sorties du soir, balades GPS en direct, partage des parcours. Spring Boot + React PWA + Cloudflare R2 + Neon, déployé en prod.",
+    aboutTitle: 'À propos · Sanae Boutarfass',
+    articlesTitle: 'Articles · Sanae Boutarfass',
     articlesDescription:
       "Articles techniques sur des choix d'architecture, d'intégration et de pattern UI, plus résumés de mes publications académiques en vision par ordinateur.",
   },
@@ -96,16 +96,16 @@ const fr = {
     },
     now: {
       eyebrow: 'Now · Mai 2026',
-      title: "Où j'en suis.",
+      title: "Ce qui occupe mes semaines en ce moment",
       description:
-        "Un aperçu rapide de ce que je construis, ce que je viens de livrer, et le poste que je cherche.",
+        "Un côté perso que je code, un truc que je viens de livrer, et le poste que je cherche.",
       cards: {
         building: {
           label: 'En cours',
           icon: '›',
           title: 'ApplyDesk',
           description:
-            "Back-office personnel de recherche d'emploi — LLM, scrapers, suivi candidatures.",
+            "Back-office personnel de recherche d'emploi. LLM, scrapers, suivi candidatures.",
         },
         shipped: {
           label: 'Tout juste livré',
@@ -113,14 +113,14 @@ const fr = {
           title: 'Klabi',
           titleSuffix: 'v1.0',
           description:
-            "PWA invite-only pour les balades de quartier · live en mai 2026.",
+            "PWA invite-only pour les balades de quartier, en ligne depuis mai 2026.",
         },
         currently: {
           label: 'Côté pro',
           icon: '✱',
           title: 'En recherche active',
           description:
-            'CDI senior · Lyon ou remote France · équipe produit qui prend le code au sérieux.',
+            'CDI senior, Lyon ou remote France, dans une équipe produit qui prend le code au sérieux.',
         },
       },
     },
@@ -137,19 +137,19 @@ const fr = {
         {
           number: '01',
           title: 'Du back industriel à la prod',
-          body: "Java/Spring sur des systèmes critiques, multi-datasource, transactions distribuées, batch. Python pour la data et la vision. Je code pour passer l'audit OWASP et tenir 5 ans.",
+          body: "Java/Spring sur des systèmes critiques : multi-datasource, transactions distribuées, batch. Python pour la data et la vision quand il faut. Ce qui m'intéresse le plus, c'est le code qui doit encore tourner dans 5 ans sans que personne n'ait peur d'y toucher. L'audit OWASP, c'est la partie facile.",
           icon: 'backend' as const,
         },
         {
           number: '02',
-          title: 'Produit, pas juste tech',
-          body: "Je conçois en pensant à l'utilisateur final — sur le produit accessibilité que je maintiens, ce sont des personnes malvoyantes qui dépendent du back-office pour naviguer. La qualité du code suit, pas l'inverse.",
+          title: 'Le produit avant la tech',
+          body: "Le back-office que je maintiens sert à construire Evelity : les plans des bâtiments, les itinéraires, toutes les infos d'un lieu. L'appli elle-même est accessible à tous, avec un focus sur les personnes en situation de handicap, en intérieur là où un GPS classique ne capte rien. Avant de coder une feature, on échange avec l'équipe pour mieux répondre au besoin réel de l'utilisateur, quitte à revoir ce qui était demandé au départ. Ça ne fait pas toujours plaisir en planning.",
           icon: 'product' as const,
         },
         {
           number: '03',
-          title: 'Recherche + craft',
-          body: "J'aime les patterns sophistiqués — SLAM, ponts inter-runtimes — autant que les bonnes API REST bien typées. Le tout ancré dans un background recherche en vision par ordinateur.",
+          title: 'Recherche et artisanat du code',
+          body: "J'aime autant un pattern un peu tordu (SLAM, pont entre deux runtimes) qu'une API REST bien typée. Reste de mon passé en recherche : il fallait bricoler des trucs qui n'existaient pas encore, sans trop savoir si ça allait marcher.",
           icon: 'research' as const,
         },
       ],
@@ -173,21 +173,21 @@ const fr = {
     eyebrow: 'Parcours',
     title: '10 ans de développement.',
     description:
-      "Du back-end industriel chez Okeenea à la vision par ordinateur en laboratoire — voici le détail des missions qui ont façonné mon expertise.",
+      "Du back-end industriel chez Okeenea à la vision par ordinateur en laboratoire, voici le détail des missions qui ont façonné mon expertise.",
     currentLabel: 'actuellement',
     items: [
       {
         company: 'Okeenea',
         role: 'Développeuse Full Stack',
-        period: "Avril 2023 — Aujourd'hui",
+        period: 'Avril 2023 – Mai 2026',
         context:
-          'Evelity — application mobile de guidage universel pour personnes en situation de handicap (Java / Spring)',
+          'Evelity, application mobile de guidage universel pour personnes en situation de handicap (Java / Spring)',
         url: 'https://www.okeenea.com/',
         initials: 'OK',
         gradient: 'violet' as const,
         current: true,
         highlights: [
-          'Développement front + back du back-office Evelity (React/Vite + Spring Boot 3) — scalabilité, maintenabilité, compatibilité mobile.',
+          'Développement front + back du back-office Evelity (React/Vite + Spring Boot 3), pensé pour la scalabilité, la maintenabilité et la compatibilité mobile.',
           'Architecture multi-datasource avec transactions distribuées, batch et messaging asynchrone.',
           'Industrialisation qualité : revues, tests automatisés, CI exigeante (couverture ≥ 80 %, TDD, SonarQube bloquant), déploiement GKE.',
           'Sécurité : audit OWASP traité, auth Keycloak / OAuth2 / OIDC / JWT durcie.',
@@ -208,15 +208,15 @@ const fr = {
       {
         company: 'Okeenea',
         role: 'Développeuse Full Stack',
-        period: 'Septembre 2025 — Avril 2026',
+        period: 'Septembre 2025 – Avril 2026',
         context:
-          'Evelity Vision — système de localisation indoor par SLAM visuel, livré en production en avril 2026 (Python / SLAM)',
+          'Evelity Vision, système de localisation indoor par SLAM visuel, livré en production en avril 2026 (Python / SLAM)',
         url: 'https://www.okeenea.com/',
         initials: 'EV',
         gradient: 'cyan' as const,
         current: false,
         highlights: [
-          'Conception et livraison from scratch en 8 mois — autonomie complète sur architecture, back, front et ops.',
+          'Conception et livraison from scratch en 8 mois, en autonomie complète sur architecture, back, front et ops.',
           'Pipeline end-to-end : vidéo 360° → frames → Visual SLAM → géoréférencement GPS → export.',
           'Intégration de Stella VSLAM (moteur C++ open-source) côté backend Python via pont JNI.',
           'Implémentation du géoréférencement Sim(2) / Umeyama avec détection auto des niveaux de bâtiment.',
@@ -239,7 +239,7 @@ const fr = {
       {
         company: 'Arca Computing',
         role: 'Développeuse Full Stack',
-        period: 'Mai 2022 — Mars 2023',
+        period: 'Mai 2022 – Mars 2023',
         context:
           "Missions ESN : plateforme de gestion de recherche d'emploi (Spring Boot + VueJS) et app SMS marketing (Spring Boot + Angular + MongoDB)",
         url: undefined,
@@ -255,7 +255,7 @@ const fr = {
       {
         company: 'Université de Strasbourg',
         role: 'Enseignante contractuelle en informatique',
-        period: 'Septembre 2020 — Mai 2022',
+        period: 'Septembre 2020 – Mai 2022',
         context: undefined,
         url: undefined,
         initials: 'US',
@@ -268,9 +268,9 @@ const fr = {
         stack: [],
       },
       {
-        company: 'Laboratoire MIA — La Rochelle',
+        company: 'Laboratoire MIA, La Rochelle',
         role: "Ingénieure d'études en informatique",
-        period: '2016 — 2020',
+        period: '2016 – 2020',
         context: 'Recherche appliquée en vision par ordinateur et deep learning',
         url: undefined,
         initials: 'MIA',
@@ -299,17 +299,17 @@ const fr = {
     title: 'Ce que je construis.',
     description: 'Side-projects et démos techniques.',
     applyDeskTagline:
-      "Back-office personnel pour gérer ma recherche d'emploi de bout en bout — scrapers d'offres (France Travail, Adzuna, HelloWork), parsing CV via Gemini, suivi de candidatures, génération d'emails et prep d'entretiens.",
+      "Back-office personnel pour gérer ma recherche d'emploi de bout en bout : scrapers d'offres (France Travail, Adzuna, HelloWork), parsing CV via Gemini, suivi de candidatures, génération d'emails et prep d'entretiens.",
     homeApplyDeskTagline:
-      "Back-office personnel pour gérer ma recherche d'emploi de bout en bout — scrapers d'offres, parsing CV via LLM, suivi de candidatures.",
+      "Back-office personnel pour gérer ma recherche d'emploi de bout en bout : scrapers d'offres, parsing CV via LLM, suivi de candidatures.",
     altForgeTagline:
-      "Générateur d'alt-text par IA pour la conformité WCAG. Upload une image, récupère un alt-text descriptif en FR ou EN en quelques secondes — pensé pour l'European Accessibility Act (juin 2025).",
+      "Générateur d'alt-text par IA pour la conformité WCAG. Upload une image, récupère un alt-text descriptif en FR ou EN en quelques secondes, pensé pour l'European Accessibility Act (juin 2025).",
     homeAltForgeTagline:
-      "Générateur d'alt-text par IA pour la conformité WCAG — upload une image, récupère une description FR ou EN en quelques secondes.",
+      "Générateur d'alt-text par IA pour la conformité WCAG. Upload une image, récupère une description FR ou EN en quelques secondes.",
     klabiTagline:
       "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens à Vaulx-en-Velin. On voit qui sort ce soir aux 3 spots du quartier, on lance ou rejoint un appel, on enregistre sa balade GPS en direct et on partage les parcours.",
     homeKlabiTagline:
-      "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens — sorties du soir, enregistrement GPS en direct, partage des parcours.",
+      "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens : sorties du soir, enregistrement GPS en direct, partage des parcours.",
     slamMappingBoTagline:
       "Back-office de cartographie SLAM (greenfield, end-to-end) qui transforme des vidéos 360° en plans indoor navigables. SLAM C++ piloté depuis FastAPI, visualisation Mapbox + Three.js, géoréférencement Sim(2).",
   },
@@ -318,7 +318,7 @@ const fr = {
     statusBadge: 'WIP · 2026',
     personalBadge: 'Personnel',
     tagline:
-      "Back-office personnel pour gérer ma recherche d'emploi de A à Z — scrapers, parsing LLM, suivi de candidatures, génération d'emails, préparation d'entretiens.",
+      "Back-office personnel pour gérer ma recherche d'emploi de A à Z : scrapers, parsing LLM, suivi de candidatures, génération d'emails, préparation d'entretiens.",
     problem: {
       eyebrow: 'Le problème',
       title: "Pourquoi j'ai construit ça",
@@ -341,7 +341,7 @@ const fr = {
         },
         {
           title: 'Génération LaTeX moderncv',
-          body: "Export du CV en source LaTeX éditable directement dans l'app + compilation sur Overleaf en un clic (form POST avec textarea, parce qu'input strip les newlines — petit détail qui m'a coûté une heure).",
+          body: "Export du CV en source LaTeX éditable directement dans l'app + compilation sur Overleaf en un clic (form POST avec textarea, parce qu'input strip les newlines : petit détail qui m'a coûté une heure).",
         },
         {
           title: "Scrapers d'offres",
@@ -364,7 +364,7 @@ const fr = {
     status: {
       eyebrow: 'Statut actuel',
       title: 'Statut actuel',
-      body: "Utilisé quotidiennement depuis avril 2026. Repo privé pour l'instant — je l'ouvrirai après ma recherche, une fois nettoyé des données perso.",
+      body: "Utilisé quotidiennement depuis avril 2026. Repo privé pour l'instant, je l'ouvrirai après ma recherche, une fois nettoyé des données perso.",
     },
   },
   altforge: {
@@ -391,7 +391,7 @@ const fr = {
       items: [
         {
           title: 'Audit DB Postgres avec interceptor chain',
-          body: "Chaque appel à l'API est enregistré dans `request_audits` (Spring Data JPA + Flyway, IP hashée SHA-256, latence, status, langue, modèle). Un HandlerInterceptor mesure le temps de réponse côté serveur, le controller pose les métadonnées métier via request attributes — séparation claire entre cross-cutting et logique métier.",
+          body: "Chaque appel à l'API est enregistré dans `request_audits` (Spring Data JPA + Flyway, IP hashée SHA-256, latence, status, langue, modèle). Un HandlerInterceptor mesure le temps de réponse côté serveur, le controller pose les métadonnées métier via request attributes : ça sépare proprement le cross-cutting de la logique métier.",
         },
         {
           title: 'Rate-limiting par IP sans Redis',
@@ -422,7 +422,7 @@ const fr = {
     status: {
       eyebrow: 'Statut actuel',
       title: 'Statut actuel',
-      body: "v2.2 livré et live sur altforge.pages.dev — 4 onglets (single / batch / async / stats). Repo public sur GitHub. Reste v3 (auth + billing) si besoin d'en faire un vrai SaaS public.",
+      body: "v2.2 livré et live sur altforge.pages.dev, 4 onglets (single / batch / async / stats). Repo public sur GitHub. Reste v3 (auth + billing) si besoin d'en faire un vrai SaaS public.",
     },
   },
   klabi: {
@@ -453,7 +453,7 @@ const fr = {
         },
         {
           title: 'Storage abstraction R2 ↔ FS via SpEL conditional beans',
-          body: "Interface PhotoStorage avec deux implémentations sélectionnées au boot via `@ConditionalOnExpression(\"'${klabi.r2.bucket:}'.isEmpty()\")` — LocalFs en dev, Cloudflare R2 (S3-compatible, SDK AWS v2 + UrlConnectionHttpClient) en prod. Migration Flyway V25 backfille les avatars existants pour le swap, V26 redirige les photos seedées vers les URLs publiques R2.",
+          body: "Interface PhotoStorage avec deux implémentations sélectionnées au boot via `@ConditionalOnExpression(\"'${klabi.r2.bucket:}'.isEmpty()\")` : LocalFs en dev, Cloudflare R2 (S3-compatible, SDK AWS v2 + UrlConnectionHttpClient) en prod. Migration Flyway V25 backfille les avatars existants pour le swap, V26 redirige les photos seedées vers les URLs publiques R2.",
         },
         {
           title: 'Spring Boot 3.5 sous le health-check Render free tier',
@@ -480,14 +480,14 @@ const fr = {
     status: {
       eyebrow: 'Statut actuel',
       title: 'Statut actuel',
-      body: "Lancement en cours auprès des 60 voisins maîtres de chiens du groupe WhatsApp d'origine. Beta privée d'abord, ouverture large dans la foulée. Suite envisagée avec la communauté : demande de garde, services entre voisins, recos vétos — toute fonctionnalité qui mérite d'être centralisée plutôt que de se perdre dans le scroll.",
+      body: "Lancement en cours auprès des 60 voisins maîtres de chiens du groupe WhatsApp d'origine. Beta privée d'abord, ouverture large dans la foulée. Suite envisagée avec la communauté : demande de garde, services entre voisins, recos vétos. Bref, toute fonctionnalité qui mérite d'être centralisée plutôt que de se perdre dans le scroll.",
     },
   },
   about: {
     eyebrow: 'À propos',
     title: 'De la recherche en vision au produit en prod.',
     subtitle:
-      "10 ans à coder à l'intersection de la recherche, de l'industrie et du produit.",
+      "10 ans à coder, entre recherche académique, industrie et produit.",
     journey: {
       eyebrow: 'Parcours',
       title: "D'où je viens.",
@@ -496,11 +496,11 @@ const fr = {
       p1After:
         " et le deep learning au sein d'un labo de recherche à La Rochelle. Mes premières publications IEEE portaient sur la colorisation d'images N&B et la reconnaissance faciale en domaine visible+infrarouge.",
       p2:
-        "Au bout de 4 ans, j'ai migré progressivement vers le développement web — d'abord par curiosité, puis parce que j'aime particulièrement le rythme produit : voir un design devenir un commit, devenir une feature utilisée par des vrais gens en quelques semaines.",
+        "Au bout de 4 ans, j'ai migré progressivement vers le développement web. D'abord par curiosité, puis parce que j'aime particulièrement le rythme produit : un design qui devient un commit, qui devient une feature utilisée par de vraies personnes quelques semaines plus tard.",
     },
     today: {
       eyebrow: "Aujourd'hui",
-      title: 'Ce sur quoi je bosse.',
+      title: 'Mon quotidien chez Okeenea.',
       p1Before: 'Je travaille chez ',
       p1LinkLabel: 'Okeenea',
       p1Middle: ' sur ',
@@ -516,9 +516,9 @@ const fr = {
     },
     code: {
       eyebrow: 'Mon code',
-      title: 'Comment je travaille.',
+      title: 'Le code, concrètement.',
       p1:
-        "Techniquement, je suis aussi à l'aise sur du Java/Spring industriel que sur du Python data-heavy. Côté front c'est React, TypeScript, Vite. J'aime le code testé, les revues constructives, les pipelines CI exigeants — pas par dogme, parce que ça fait gagner du temps sur la durée.",
+        "Techniquement, je suis aussi à l'aise sur du Java/Spring industriel que sur du Python data-heavy. Côté front c'est React, TypeScript, Vite. J'aime le code testé, les revues constructives, les pipelines CI exigeants, tout simplement parce que ça fait gagner du temps sur la durée.",
       p2Before: 'En dehors du travail, je fais beaucoup de side-projects (voir ',
       p2Link: '/projects',
       p2After:
@@ -537,7 +537,7 @@ const fr = {
       title: 'Formation',
       items: [
         {
-          degree: 'Master Informatique — Images et Systèmes',
+          degree: 'Master Informatique, spécialité Images et Systèmes',
           institution: "Université d'Aix-Marseille",
           specialty: 'spécialité Imagerie Numérique',
           period: '2013–2015',
@@ -578,7 +578,7 @@ const fr = {
         readTime: '10 min',
         title: 'Multi-datasource Spring Boot : 3 bases, 1 transaction',
         lede:
-          "Comment on a séparé l'édition back-office, la lecture API mobile et l'analytique en trois bases PostgreSQL distinctes, tout en gardant des transactions atomiques entre elles. Retour d'expérience sur un back-end d'accessibilité indoor.",
+          "Sur Evelity, l'édition back-office, la lecture API mobile et l'analytique tournent sur trois bases PostgreSQL distinctes, avec des transactions atomiques qui tiennent quand même entre elles.",
       },
       {
         slug: 'visual-slam-python-bridge',
@@ -587,7 +587,7 @@ const fr = {
         readTime: '12 min',
         title: 'Visual SLAM ↔ Python : un pont propre via sous-processus',
         lede:
-          "Intégrer un moteur Visual SLAM C++ dans un back-end FastAPI sans bindings exotiques, puis aligner le résultat sur un plan d'étage avec deux contraintes GPS. Retour d'expérience sur un back-office de cartographie indoor.",
+          "Intégrer un moteur Visual SLAM C++ dans un back-end FastAPI sans bindings exotiques, puis aligner le résultat sur un plan d'étage avec seulement deux contraintes GPS.",
       },
       {
         slug: 'applydesk-ai-matcher',
@@ -603,7 +603,7 @@ const fr = {
       eyebrow: 'Publications',
       title: 'Vision par ordinateur · 2018-2020',
       description:
-        "Quatre papiers issus de mon Master Recherche à l'Université de La Rochelle (MIA Laboratory). Présentés ici en résumés détaillés — les PDFs ne sont pas hébergés (droits IEEE).",
+        "Quatre papiers issus de mon Master Recherche à l'Université de La Rochelle (MIA Laboratory). Présentés ici en résumés détaillés, les PDFs ne sont pas hébergés (droits IEEE).",
       items: [
         {
           slug: 'cnn-colorization-improving',
@@ -612,7 +612,7 @@ const fr = {
           title: "Coloriser de vraies photos d'archive : palette + scribbles",
           keywords: ['Colorization', 'Deep learning', 'Archival', 'CNN', 'Interactive'],
           summary:
-            "Les CNN de colorisation sont entraînés sur des photos couleur converties en N&B — inadaptés aux vraies photos d'archives (silver halide). J'améliore le résultat en combinant deux indices : palette globale automatisée + scribbles manuels là où ça compte (drapeaux, monuments).",
+            "Les CNN de colorisation sont entraînés sur des photos couleur converties en N&B, donc mal adaptés aux vraies photos d'archives (silver halide). J'améliore le résultat en combinant deux indices : palette globale automatisée + scribbles manuels là où ça compte (drapeaux, monuments).",
         },
         {
           slug: 'cnn-colorization-palette',
@@ -621,7 +621,7 @@ const fr = {
           title: 'Coloriser un film N&B avec une palette de couleurs saillantes',
           keywords: ['Colorization', 'Deep learning', 'Colour palette', 'CNN', 'Movie'],
           summary:
-            "Une palette des couleurs « saillantes » de la scène (distinctes des couleurs « mémorables » déjà apprises) injectée au CNN comme entrée additionnelle. Une palette suffit pour des centaines de frames — adapté à la colorisation de films sans scribbler par frame.",
+            "Une palette des couleurs « saillantes » de la scène (distinctes des couleurs « mémorables » déjà apprises) injectée au CNN comme entrée additionnelle. Une palette suffit pour des centaines de frames, ce qui convient bien à la colorisation de films sans scribbler par frame.",
         },
         {
           slug: 'handwriting-anomaly-detection',
@@ -630,7 +630,7 @@ const fr = {
           title: "Détecter des anomalies d'écriture manuscrite par autoencodeur",
           keywords: ['Deep learning', 'Handwriting', 'Outlier detection', 'Autoencoder', 'Radon'],
           summary:
-            "Un autoencodeur convolutionnel pour détecter — sans annotation — qu'une portion de texte a été écrite par une autre main. Tile splitting + transformée de Radon partielle. La discrimination émerge pendant l'entraînement via un shuffling batch-à-batch.",
+            "Un autoencodeur convolutionnel qui détecte, sans annotation, qu'une portion de texte a été écrite par une autre main. Tile splitting + transformée de Radon partielle. La discrimination émerge pendant l'entraînement via un shuffling batch-à-batch.",
         },
         {
           slug: 'face-recognition-visible-nir',
@@ -650,27 +650,27 @@ export type Dict = typeof fr
 
 const en: Dict = {
   meta: {
-    siteTitle: 'Sanae Boutarfass — Senior Full Stack Developer in Lyon',
+    siteTitle: 'Sanae Boutarfass · Senior Full Stack Developer in Lyon',
     siteDescription:
-      '10 years of full stack experience — Java / Spring, React / TypeScript, Python. Architecture, industrial back-end, computer vision.',
-    homeTitle: 'Sanae Boutarfass — Senior Full Stack Developer in Lyon',
-    experienceTitle: 'Experience — Sanae Boutarfass',
+      '10 years of full stack experience (Java / Spring, React / TypeScript, Python). Architecture, industrial back-end, computer vision.',
+    homeTitle: 'Sanae Boutarfass · Senior Full Stack Developer in Lyon',
+    experienceTitle: 'Experience · Sanae Boutarfass',
     experienceDescription:
-      "Sanae Boutarfass's career path — 10 years of experience in full-stack web development.",
-    projectsTitle: 'Projects — Sanae Boutarfass',
+      "Sanae Boutarfass's career path: 10 years of experience in full-stack web development.",
+    projectsTitle: 'Projects · Sanae Boutarfass',
     projectsDescription:
-      'Personal and professional projects — code, demos, technical articles.',
-    applyDeskTitle: 'ApplyDesk — Sanae Boutarfass',
+      'Personal and professional projects: code, demos, technical articles.',
+    applyDeskTitle: 'ApplyDesk · Sanae Boutarfass',
     applyDeskDescription:
       'Personal job-search back-office: scrapers, LLM CV parsing, application tracking, email generation.',
-    altForgeTitle: 'AltForge — Sanae Boutarfass',
+    altForgeTitle: 'AltForge · Sanae Boutarfass',
     altForgeDescription:
       'AI alt-text generator for WCAG compliance. Spring Boot + JPA + Postgres + React + Gemini, audit DB and rate limiting, deployed to production.',
-    klabiTitle: 'Klabi — Sanae Boutarfass',
+    klabiTitle: 'Klabi · Sanae Boutarfass',
     klabiDescription:
-      'Invite-only PWA for ~60 dog owners in one Lyon neighborhood — evening dog walks, live GPS recording, route sharing. Spring Boot + React PWA + Cloudflare R2 + Neon, deployed to production.',
-    aboutTitle: 'About — Sanae Boutarfass',
-    articlesTitle: 'Articles — Sanae Boutarfass',
+      'Invite-only PWA for ~60 dog owners in one Lyon neighborhood: evening dog walks, live GPS recording, route sharing. Spring Boot + React PWA + Cloudflare R2 + Neon, deployed to production.',
+    aboutTitle: 'About · Sanae Boutarfass',
+    articlesTitle: 'Articles · Sanae Boutarfass',
     articlesDescription:
       'Technical articles on architecture, integration and UI patterns, plus summaries of my computer-vision academic publications.',
   },
@@ -721,16 +721,16 @@ const en: Dict = {
     },
     now: {
       eyebrow: 'Now · May 2026',
-      title: 'Where I am.',
+      title: 'What I am up to these days',
       description:
-        "A quick snapshot of what I'm building, what I just shipped, and the role I'm looking for.",
+        "A side project I'm coding, something I just shipped, and the role I'm looking for.",
       cards: {
         building: {
           label: 'Building',
           icon: '›',
           title: 'ApplyDesk',
           description:
-            'Personal job-search back-office — LLM, scrapers, application tracking.',
+            'Personal job-search back-office. LLM, scrapers, application tracking.',
         },
         shipped: {
           label: 'Just shipped',
@@ -738,14 +738,14 @@ const en: Dict = {
           title: 'Klabi',
           titleSuffix: 'v1.0',
           description:
-            'Invite-only PWA for neighborhood dog walks · live May 2026.',
+            'Invite-only PWA for neighborhood dog walks, live since May 2026.',
         },
         currently: {
           label: 'Looking',
           icon: '✱',
           title: 'Actively looking',
           description:
-            'Senior role · Lyon or remote France · product team that takes code seriously.',
+            'Senior role, Lyon or remote France, on a product team that takes code seriously.',
         },
       },
     },
@@ -762,19 +762,19 @@ const en: Dict = {
         {
           number: '01',
           title: 'From industrial back-end to prod',
-          body: 'Java/Spring on critical systems, multi-datasource, distributed transactions, batch. Python for data and computer vision. I write code that passes OWASP audits and lasts 5 years.',
+          body: "Java/Spring on critical systems: multi-datasource, distributed transactions, batch jobs. Python for data and vision when it's needed. What I care about most is code that's still running in 5 years without anyone being scared to touch it. Passing the OWASP audit is the easy part.",
           icon: 'backend' as const,
         },
         {
           number: '02',
-          title: 'Product-minded, not just tech',
-          body: "I design with the end user in mind — on the accessibility product I maintain, that's visually impaired people who depend on the back-office to navigate cities. Code quality follows from product goals, not the other way around.",
+          title: 'Product before tech',
+          body: "The back-office I maintain feeds Evelity: building floor plans, routes, all the info about a place. The app itself is accessible to everyone, with a particular focus on people with disabilities, indoors where a regular GPS is useless. Before writing a line of code, we talk it through with the team to figure out how to actually serve the user's need, even if that means reworking what was originally asked for. That doesn't always go down well in planning.",
           icon: 'product' as const,
         },
         {
           number: '03',
-          title: 'Research + craft',
-          body: 'I enjoy sophisticated patterns — SLAM, cross-runtime bridges — as much as well-typed REST APIs, all grounded in a research background in computer vision.',
+          title: 'Research habits, craft mindset',
+          body: "I enjoy a slightly gnarly pattern (SLAM, a bridge between two runtimes) about as much as a clean, well-typed REST API. Leftover habit from my research years: you had to hack together things that didn't exist yet, without always knowing if they'd work.",
           icon: 'research' as const,
         },
       ],
@@ -798,21 +798,21 @@ const en: Dict = {
     eyebrow: 'Career',
     title: '10 years of engineering.',
     description:
-      'From industrial back-end at Okeenea to computer vision research — here are the details of the projects that shaped my expertise.',
+      'From industrial back-end at Okeenea to computer vision research, here are the details of the projects that shaped my expertise.',
     currentLabel: 'current',
     items: [
       {
         company: 'Okeenea',
         role: 'Full Stack Developer',
-        period: 'April 2023 — Present',
+        period: 'April 2023 – May 2026',
         context:
-          'Evelity — universal mobile wayfinding app for people with disabilities (Java / Spring)',
+          'Evelity, universal mobile wayfinding app for people with disabilities (Java / Spring)',
         url: 'https://www.okeenea.com/',
         initials: 'OK',
         gradient: 'violet' as const,
         current: true,
         highlights: [
-          'Shipped the Evelity back-office end-to-end (React/Vite + Spring Boot 3) — focused on scalability, maintainability and mobile compatibility.',
+          'Shipped the Evelity back-office end-to-end (React/Vite + Spring Boot 3), focused on scalability, maintainability and mobile compatibility.',
           'Designed a multi-datasource architecture with distributed transactions, batch jobs and async messaging.',
           'Drove quality engineering: code reviews, automated tests, strict CI (coverage ≥ 80%, TDD, SonarQube as a blocking gate), GKE deployment.',
           'Security: closed OWASP audit findings, hardened Keycloak / OAuth2 / OIDC / JWT auth.',
@@ -833,15 +833,15 @@ const en: Dict = {
       {
         company: 'Okeenea',
         role: 'Full Stack Developer',
-        period: 'September 2025 — April 2026',
+        period: 'September 2025 – April 2026',
         context:
-          'Evelity Vision — visual SLAM indoor localization system, shipped to production in April 2026 (Python / SLAM)',
+          'Evelity Vision, visual SLAM indoor localization system, shipped to production in April 2026 (Python / SLAM)',
         url: 'https://www.okeenea.com/',
         initials: 'EV',
         gradient: 'cyan' as const,
         current: false,
         highlights: [
-          'Designed and shipped Evelity Vision from scratch in 8 months — full ownership of architecture, back, front and ops.',
+          'Designed and shipped Evelity Vision from scratch in 8 months, with full ownership of architecture, back, front and ops.',
           'End-to-end pipeline: 360° video → frames → Visual SLAM → GPS georeferencing → export.',
           'Integrated Stella VSLAM (open-source C++ engine) into a Python back-end via a JNI bridge.',
           'Implemented Sim(2) / Umeyama georeferencing with automatic building-floor detection.',
@@ -864,7 +864,7 @@ const en: Dict = {
       {
         company: 'Arca Computing',
         role: 'Full Stack Developer',
-        period: 'May 2022 — March 2023',
+        period: 'May 2022 – March 2023',
         context:
           'Consulting missions: job-search management platform (Spring Boot + VueJS) and SMS marketing app (Spring Boot + Angular + MongoDB)',
         url: undefined,
@@ -880,7 +880,7 @@ const en: Dict = {
       {
         company: 'University of Strasbourg',
         role: 'Adjunct Lecturer in Computer Science',
-        period: 'September 2020 — May 2022',
+        period: 'September 2020 – May 2022',
         context: undefined,
         url: undefined,
         initials: 'US',
@@ -893,9 +893,9 @@ const en: Dict = {
         stack: [],
       },
       {
-        company: 'MIA Lab — La Rochelle',
+        company: 'MIA Lab, La Rochelle',
         role: 'Research Engineer (Computer Science)',
-        period: '2016 — 2020',
+        period: '2016 – 2020',
         context: 'Applied research in computer vision and deep learning',
         url: undefined,
         initials: 'MIA',
@@ -924,17 +924,17 @@ const en: Dict = {
     title: 'What I build.',
     description: 'Side-projects and technical demos.',
     applyDeskTagline:
-      "Personal job-search back-office to manage everything end-to-end — job scrapers (France Travail, Adzuna, HelloWork), LLM-powered CV parsing, application tracking, email generation and interview prep.",
+      "Personal job-search back-office to manage everything end-to-end: job scrapers (France Travail, Adzuna, HelloWork), LLM-powered CV parsing, application tracking, email generation and interview prep.",
     homeApplyDeskTagline:
-      'Personal job-search back-office to manage everything end-to-end — job scrapers, LLM CV parsing, application tracking.',
+      'Personal job-search back-office to manage everything end-to-end: job scrapers, LLM CV parsing, application tracking.',
     altForgeTagline:
-      'AI-powered alt-text generator for WCAG compliance. Upload an image, get a clean descriptive alt-text in French or English within seconds — built ahead of the European Accessibility Act (June 2025).',
+      'AI-powered alt-text generator for WCAG compliance. Upload an image, get a clean descriptive alt-text in French or English within seconds, built ahead of the European Accessibility Act (June 2025).',
     homeAltForgeTagline:
-      'AI alt-text generator for WCAG compliance — upload an image, get a clean French or English description within seconds.',
+      'AI alt-text generator for WCAG compliance. Upload an image, get a clean French or English description within seconds.',
     klabiTagline:
       'Invite-only PWA replacing a 60-people WhatsApp group of dog owners in Vaulx-en-Velin. See who is heading to one of the 3 neighborhood spots tonight, launch or join a call, record your walk live and share the route.',
     homeKlabiTagline:
-      'Invite-only PWA replacing a 60-people WhatsApp group of dog owners — evening dog walks, live GPS recording, route sharing.',
+      'Invite-only PWA replacing a 60-people WhatsApp group of dog owners: evening dog walks, live GPS recording, route sharing.',
     slamMappingBoTagline:
       'SLAM mapping back-office (greenfield, end-to-end) that turns 360° video into navigable indoor maps. C++ SLAM driven from FastAPI, Mapbox + Three.js visualisation, Sim(2) georeferencing.',
   },
@@ -943,7 +943,7 @@ const en: Dict = {
     statusBadge: 'WIP · 2026',
     personalBadge: 'Personal',
     tagline:
-      'Personal job-search back-office to handle everything end-to-end — scrapers, LLM parsing, application tracking, email generation, interview prep.',
+      'Personal job-search back-office to handle everything end-to-end: scrapers, LLM parsing, application tracking, email generation, interview prep.',
     problem: {
       eyebrow: 'The problem',
       title: 'Why I built this',
@@ -966,7 +966,7 @@ const en: Dict = {
         },
         {
           title: 'moderncv LaTeX generation',
-          body: 'CV exported as editable LaTeX source directly inside the app + one-click compilation on Overleaf (form POST with textarea, because input strips newlines — a small detail that cost me an hour).',
+          body: 'CV exported as editable LaTeX source directly inside the app + one-click compilation on Overleaf (form POST with textarea, because input strips newlines: a small detail that cost me an hour).',
         },
         {
           title: 'Job-offer scrapers',
@@ -989,7 +989,7 @@ const en: Dict = {
     status: {
       eyebrow: 'Current status',
       title: 'Current status',
-      body: "Used daily since April 2026. Private repo for now — I'll open-source it after my job search, once cleaned of personal data.",
+      body: "Used daily since April 2026. Private repo for now, I'll open-source it after my job search, once cleaned of personal data.",
     },
   },
   altforge: {
@@ -1016,7 +1016,7 @@ const en: Dict = {
       items: [
         {
           title: 'Postgres audit DB with an interceptor chain',
-          body: 'Every API call is recorded in `request_audits` (Spring Data JPA + Flyway, SHA-256 hashed IP, latency, status, language, model). A HandlerInterceptor measures server-side latency; the controller posts the business metadata via request attributes — clean separation between cross-cutting concerns and business logic.',
+          body: 'Every API call is recorded in `request_audits` (Spring Data JPA + Flyway, SHA-256 hashed IP, latency, status, language, model). A HandlerInterceptor measures server-side latency; the controller posts the business metadata via request attributes, which keeps cross-cutting concerns cleanly separated from business logic.',
         },
         {
           title: 'Per-IP rate limiting without Redis',
@@ -1047,7 +1047,7 @@ const en: Dict = {
     status: {
       eyebrow: 'Current status',
       title: 'Current status',
-      body: 'v2.2 shipped and live on altforge.pages.dev — 4 tabs (single / batch / async / stats). Public repo on GitHub. v3 (auth + billing) is the next step if I turn this into a real public SaaS.',
+      body: 'v2.2 shipped and live on altforge.pages.dev, 4 tabs (single / batch / async / stats). Public repo on GitHub. v3 (auth + billing) is the next step if I turn this into a real public SaaS.',
     },
   },
   klabi: {
@@ -1078,11 +1078,11 @@ const en: Dict = {
         },
         {
           title: 'Storage abstraction R2 ↔ FS via SpEL conditional beans',
-          body: "PhotoStorage interface with two implementations picked at boot via `@ConditionalOnExpression(\"'${klabi.r2.bucket:}'.isEmpty()\")` — LocalFs in dev, Cloudflare R2 (S3-compatible, AWS SDK v2 + UrlConnectionHttpClient) in prod. Flyway V25 backfills the existing avatars for the swap, V26 redirects seeded photos to their R2 public URLs.",
+          body: "PhotoStorage interface with two implementations picked at boot via `@ConditionalOnExpression(\"'${klabi.r2.bucket:}'.isEmpty()\")`: LocalFs in dev, Cloudflare R2 (S3-compatible, AWS SDK v2 + UrlConnectionHttpClient) in prod. Flyway V25 backfills the existing avatars for the swap, V26 redirects seeded photos to their R2 public URLs.",
         },
         {
           title: 'Spring Boot 3.5 under the Render free-tier health-check window',
-          body: 'Render free-tier kills the deploy if the app does not answer in 60s. Spring Boot 3.5 + Hibernate + Flyway cold-boots in ~160s — flipping `spring.main.lazy-initialization=true` defers non-essential bean creation to first use. Combined with an UptimeRobot ping every 5 min on `/actuator/health`, the 50s cold-start disappears for end users.',
+          body: 'Render free-tier kills the deploy if the app does not answer in 60s. Spring Boot 3.5 + Hibernate + Flyway cold-boots in ~160s, so flipping `spring.main.lazy-initialization=true` defers non-essential bean creation to first use. Combined with an UptimeRobot ping every 5 min on `/actuator/health`, the 50s cold-start disappears for end users.',
         },
         {
           title: 'JWT auth + magic-link via Brevo, no Keycloak needed',
@@ -1105,14 +1105,14 @@ const en: Dict = {
     status: {
       eyebrow: 'Current status',
       title: 'Current status',
-      body: 'Rolling out to the 60 neighborhood dog owners from the original WhatsApp group. Private beta first, broader opening right after. Next features will be co-designed with the community: dog-sitting requests, neighbor-to-neighbor services, vet recommendations — anything worth centralizing instead of drowning in the WhatsApp scroll.',
+      body: 'Rolling out to the 60 neighborhood dog owners from the original WhatsApp group. Private beta first, broader opening right after. Next features will be co-designed with the community: dog-sitting requests, neighbor-to-neighbor services, vet recommendations. Basically anything worth centralizing instead of drowning in the WhatsApp scroll.',
     },
   },
   about: {
     eyebrow: 'About',
     title: 'From vision research to product in prod.',
     subtitle:
-      '10 years of coding at the intersection of research, industry and product.',
+      '10 years of coding, moving between academic research, industry and product.',
     journey: {
       eyebrow: 'Journey',
       title: 'Where I come from.',
@@ -1121,11 +1121,11 @@ const en: Dict = {
       p1After:
         ' and deep learning at a research lab in La Rochelle. My first IEEE papers were on B&W image colorization and face recognition in the visible+infrared domain.',
       p2:
-        "After 4 years, I gradually moved to web development — first out of curiosity, then because I particularly enjoy the product rhythm: watching a design become a commit, become a feature used by real people in a matter of weeks.",
+        "After 4 years, I gradually moved to web development. First out of curiosity, then because I particularly enjoy the product rhythm: a design that turns into a commit, that turns into a feature real people are using a few weeks later.",
     },
     today: {
       eyebrow: 'Today',
-      title: 'What I work on.',
+      title: 'My day-to-day at Okeenea.',
       p1Before: 'I work at ',
       p1LinkLabel: 'Okeenea',
       p1Middle: ' on ',
@@ -1141,9 +1141,9 @@ const en: Dict = {
     },
     code: {
       eyebrow: 'My code',
-      title: 'How I work.',
+      title: 'The code, in practice.',
       p1:
-        "Technically, I'm as comfortable with industrial Java/Spring as with data-heavy Python. On the front side it's React, TypeScript, Vite. I value tested code, constructive reviews, demanding CI pipelines — not as dogma, but because they save time over the long run.",
+        "Technically, I'm as comfortable with industrial Java/Spring as with data-heavy Python. On the front side it's React, TypeScript, Vite. I value tested code, constructive reviews, demanding CI pipelines, simply because they save time over the long run.",
       p2Before: 'Outside work, I do a lot of side-projects (see ',
       p2Link: '/en/projects',
       p2After:
@@ -1162,7 +1162,7 @@ const en: Dict = {
       title: 'Education',
       items: [
         {
-          degree: "Master's in Computer Science — Images and Systems",
+          degree: "Master's in Computer Science, Images and Systems track",
           institution: 'Aix-Marseille University',
           specialty: 'specialty Digital Imaging',
           period: '2013–2015',
@@ -1203,7 +1203,7 @@ const en: Dict = {
         readTime: '10 min',
         title: 'Multi-datasource Spring Boot: 3 databases, 1 transaction',
         lede:
-          'How we split back-office editing, mobile API reads and analytics into three distinct PostgreSQL databases while keeping atomic transactions across them. Lessons from an accessible indoor navigation back-end.',
+          'On Evelity, back-office editing, mobile API reads and analytics run on three distinct PostgreSQL databases, with atomic transactions that still hold across them.',
       },
       {
         slug: 'visual-slam-python-bridge',
@@ -1212,7 +1212,7 @@ const en: Dict = {
         readTime: '12 min',
         title: 'Visual SLAM ↔ Python: a clean bridge via subprocess',
         lede:
-          'Integrating a C++ Visual SLAM engine into a FastAPI back-end without exotic bindings, then aligning the result on a floor plan using two GPS constraints. Lessons from an indoor mapping back-office.',
+          'Integrating a C++ Visual SLAM engine into a FastAPI back-end without exotic bindings, then aligning the result on a floor plan with only two GPS constraints.',
       },
       {
         slug: 'applydesk-ai-matcher',
@@ -1228,7 +1228,7 @@ const en: Dict = {
       eyebrow: 'Publications',
       title: 'Computer vision · 2018-2020',
       description:
-        "Four papers from my research master's at the University of La Rochelle (MIA Laboratory). Detailed summaries here — PDFs are not hosted (IEEE copyright).",
+        "Four papers from my research master's at the University of La Rochelle (MIA Laboratory). Detailed summaries here; PDFs are not hosted (IEEE copyright).",
       items: [
         {
           slug: 'cnn-colorization-improving',
@@ -1237,7 +1237,7 @@ const en: Dict = {
           title: 'Colorizing genuine archival photos: palette + scribbles',
           keywords: ['Colorization', 'Deep learning', 'Archival', 'CNN', 'Interactive'],
           summary:
-            'CNN colorization networks are trained on colour photos converted to grayscale — ill-suited to genuine archival B&W (silver halide). I improve the output with two hints: an automated global palette + manual scribbles where it matters (flags, monuments).',
+            'CNN colorization networks are trained on colour photos converted to grayscale, which makes them ill-suited to genuine archival B&W (silver halide). I improve the output with two hints: an automated global palette + manual scribbles where it matters (flags, monuments).',
         },
         {
           slug: 'cnn-colorization-palette',
@@ -1246,7 +1246,7 @@ const en: Dict = {
           title: 'Colorizing a B&W movie with a salient-colour palette',
           keywords: ['Colorization', 'Deep learning', 'Colour palette', 'CNN', 'Movie'],
           summary:
-            "A palette of 'salient' scene colours (distinct from the 'memorable' ones the network already infers well) is injected into the CNN as an additional input. One palette covers hundreds of frames — well-suited to movie colorization without per-frame scribbling.",
+            "A palette of 'salient' scene colours (distinct from the 'memorable' ones the network already infers well) is injected into the CNN as an additional input. One palette covers hundreds of frames, which suits movie colorization without per-frame scribbling.",
         },
         {
           slug: 'handwriting-anomaly-detection',
@@ -1255,7 +1255,7 @@ const en: Dict = {
           title: 'Detecting handwriting anomalies via a convolutional autoencoder',
           keywords: ['Deep learning', 'Handwriting', 'Outlier detection', 'Autoencoder', 'Radon'],
           summary:
-            'A convolutional autoencoder that detects — without annotation — that a portion of text was written by another hand. Tile splitting + partial Radon transform. Discrimination emerges during training via batch-to-batch shuffling.',
+            'A convolutional autoencoder that detects, without annotation, that a portion of text was written by another hand. Tile splitting + partial Radon transform. Discrimination emerges during training via batch-to-batch shuffling.',
         },
         {
           slug: 'face-recognition-visible-nir',

@@ -22,12 +22,12 @@ const title = isFr
   : 'AI matcher: blending a deterministic score with an LLM verdict'
 
 const lede = isFr
-  ? "Comment ApplyDesk note 100 offres d'emploi en une fraction de seconde côté navigateur, et garde un budget LLM raisonnable pour donner un verdict argumenté seulement sur celles qui le méritent. Retour d'expérience sur un side-project perso."
-  : "How ApplyDesk scores 100 job offers in a fraction of a second in the browser, and keeps the LLM budget reasonable to deliver a reasoned verdict only on those that deserve it. Lessons from a personal side-project."
+  ? "ApplyDesk note 100 offres d'emploi en une fraction de seconde côté navigateur, et ne sort l'artillerie LLM que pour les offres qui le méritent, histoire de garder un budget raisonnable. C'est un des trucs les plus utiles que j'ai codés pour mon propre side-project."
+  : "ApplyDesk scores 100 job offers in a fraction of a second right in the browser, and only brings out the LLM for the offers that deserve it, to keep the budget sane. It's one of the more useful things I've built for my own side-project."
 
 const metaTitle = isFr
-  ? "Matcher IA d'ApplyDesk — Sanae Boutarfass"
-  : "ApplyDesk's AI matcher — Sanae Boutarfass"
+  ? "Matcher IA d'ApplyDesk · Sanae Boutarfass"
+  : "ApplyDesk's AI matcher · Sanae Boutarfass"
 const metaDescription = isFr
   ? "Pattern hybride pour scorer des offres d'emploi : score déterministe pondéré (skills/titre/lieu/fit) instantané côté front + verdict LLM async côté back pour la nuance."
   : 'Hybrid pattern to score job offers: a weighted deterministic score (skills/title/location/fit) instant on the front, plus an async LLM verdict on the back for nuance.'
@@ -38,8 +38,8 @@ const sections = isFr
         eyebrow: 'Le problème',
         title: 'Trier 100 offres par jour, sans flamber le budget LLM',
         body: [
-          "ApplyDesk scrape une centaine d'offres d'emploi par jour via 5 sources (France Travail, Adzuna, HelloWork, Remotive, WeWorkRemotely). En tant qu'utilisatrice, je veux savoir immédiatement quelles offres méritent que je m'y attarde — et je ne veux pas attendre 30 secondes par offre que l'IA réfléchisse, ni payer un appel LLM pour chaque ligne.",
-          "Deux contraintes : **rapide** (sous la seconde) et **explicable** (je dois savoir pourquoi une offre matche). L'IA seule est ni l'un ni l'autre. Une heuristique seule manque de nuance. La réponse : combiner les deux.",
+          "ApplyDesk scrape une centaine d'offres d'emploi par jour via 5 sources (France Travail, Adzuna, HelloWork, Remotive, WeWorkRemotely). En tant qu'utilisatrice, je veux savoir immédiatement quelles offres méritent que je m'y attarde. Je ne veux pas attendre 30 secondes par offre que l'IA réfléchisse, ni payer un appel LLM pour chaque ligne.",
+          "Deux contraintes : **rapide** (sous la seconde) et **explicable** (je dois savoir pourquoi une offre matche). L'IA seule ne coche aucune des deux cases, et une heuristique seule manque de nuance. La solution : combiner les deux.",
         ],
       },
       shape: {
@@ -47,11 +47,11 @@ const sections = isFr
         title: 'Deux couches, deux moments',
         list: [
           {
-            title: '1 — Score déterministe (front, synchrone)',
+            title: '1. Score déterministe (front, synchrone)',
             body: "Tourne en TypeScript dans le navigateur, sur chaque offre, à l'instant où elle s'affiche. 0 à 100 %, calcul transparent et debuggable. C'est ce qui anime les badges « 95 % », trie la liste et alimente le digest quotidien.",
           },
           {
-            title: '2 — Verdict LLM (back, async, à la demande)',
+            title: '2. Verdict LLM (back, async, à la demande)',
             body: "Quand l'utilisatrice ouvre une offre intéressante, on appelle Gemini avec un prompt structuré qui retourne un verdict ternaire (postuler / vérifier / ignorer) + 3 raisons concrètes. Caché en base : on ne re-paie pas l'appel deux fois.",
           },
         ],
@@ -90,7 +90,7 @@ const sections = isFr
         subtleties: [
           {
             title: 'Recency bias',
-            body: "Une senior qui a fait du Java pendant 8 ans puis 2 ans de Python ne « cherche » pas Java — son profil **récent** est Python. Pondérer par récence évite de scorer haut une offre qui ne parle qu'à la version d'il y a 5 ans.",
+            body: "Une senior qui a fait du Java pendant 8 ans puis 2 ans de Python ne « cherche » pas Java : son profil **récent** est Python. Pondérer par récence évite de scorer haut une offre qui ne parle qu'à la version d'il y a 5 ans.",
           },
           {
             title: 'Normalisation accent-insensitive',
@@ -104,7 +104,7 @@ const sections = isFr
       },
       verdict: {
         eyebrow: 'Le verdict',
-        title: 'Trois états, pas deux',
+        title: 'Un verdict en trois états',
         body: [
           "Côté LLM, on aurait pu demander un score continu (\"note cette offre sur 100\"). Mauvaise idée : les LLMs sont mauvais en arithmétique fine et passent leur temps à hésiter entre 73 et 78. On demande à la place un **verdict ternaire** :",
         ],
@@ -120,7 +120,7 @@ const sections = isFr
       },
       cache: {
         eyebrow: 'Cache',
-        title: 'Le verdict, c’est en base — pas dans un cache mémoire',
+        title: 'Le verdict est stocké en base',
         body: [
           "Le verdict est cher (~3-5 secondes, quelques centièmes par offre). On le persiste directement dans la table `offer` avec 3 colonnes : `verdict`, `verdict_reasons`, `verdict_generated_at`. Trois conséquences :",
         ],
@@ -131,14 +131,14 @@ const sections = isFr
         ],
       },
       lessons: {
-        eyebrow: 'Lessons',
+        eyebrow: 'Bilan',
         title: 'Ce qu’on retient',
         items: [
-          "**Ne pas demander au LLM ce qu'une fonction pure peut faire.** Compter des skills, normaliser une chaîne, comparer deux tableaux — tout ça c'est du JavaScript, pas un appel API à $0.0003 le token.",
+          "**Ne pas demander au LLM ce qu'une fonction pure peut faire.** Compter des skills, normaliser une chaîne, comparer deux tableaux : tout ça c'est du JavaScript, pas un appel API à $0.0003 le token.",
           "Le LLM brille sur **la nuance**, pas sur le calcul : « cette offre demande du Spring 6 mais ton CV s'arrête à Spring 3, ce qui peut passer si la team forme ». Aucune heuristique ne capture ça.",
           "**Structured outputs** (JSON mode + schéma) changent la fiabilité. Plus de regex, plus de retry sur du texte qui ne parse pas.",
-          "Persister le verdict en base, pas en cache mémoire — ça survit au déploiement, au crash, au logout.",
-          "Le score déterministe est **debuggable** : on voit pourquoi une offre matche en lisant le breakdown. Le LLM seul est une boîte noire — combinés, on a une explication et une nuance.",
+          "Persister le verdict en base, pas en cache mémoire : ça survit au déploiement, au crash, au logout.",
+          "Le score déterministe est **debuggable** : on voit pourquoi une offre matche en lisant le breakdown. Le LLM seul est une boîte noire. Combinés, on a une explication et une nuance.",
         ],
       },
     }
@@ -147,8 +147,8 @@ const sections = isFr
         eyebrow: 'The problem',
         title: 'Triage 100 offers a day, without burning the LLM budget',
         body: [
-          "ApplyDesk scrapes around 100 job offers a day from 5 sources (France Travail, Adzuna, HelloWork, Remotive, WeWorkRemotely). As a user, I want to immediately know which offers deserve a closer look — and I don't want to wait 30 seconds per offer for the AI to think, nor pay for an LLM call on every row.",
-          "Two constraints: **fast** (sub-second) and **explainable** (I have to see why an offer matches). The LLM alone is neither. Heuristics alone lack nuance. The answer: combine both.",
+          "ApplyDesk scrapes around 100 job offers a day from 5 sources (France Travail, Adzuna, HelloWork, Remotive, WeWorkRemotely). As a user, I want to immediately know which offers deserve a closer look. I don't want to wait 30 seconds per offer for the AI to think, nor pay for an LLM call on every row.",
+          "Two constraints: **fast** (sub-second) and **explainable** (I have to see why an offer matches). The LLM alone doesn't hit either one, and heuristics alone lack nuance, so the fix is to combine both.",
         ],
       },
       shape: {
@@ -156,11 +156,11 @@ const sections = isFr
         title: 'Two layers, two moments',
         list: [
           {
-            title: '1 — Deterministic score (front, synchronous)',
+            title: '1. Deterministic score (front, synchronous)',
             body: "Runs in TypeScript in the browser, on every offer, the moment it shows up. 0 to 100 %, transparent and debuggable. This is what powers the '95 %' badges, sorts the list, and feeds the daily digest.",
           },
           {
-            title: '2 — LLM verdict (back, async, on demand)',
+            title: '2. LLM verdict (back, async, on demand)',
             body: "When the user opens an interesting offer, we call Gemini with a structured prompt that returns a ternary verdict (apply / check / skip) plus 3 concrete reasons. Cached in the database: we never pay for the same call twice.",
           },
         ],
@@ -199,7 +199,7 @@ const sections = isFr
         subtleties: [
           {
             title: 'Recency bias',
-            body: "A senior who did 8 years of Java then 2 years of Python isn't 'looking for Java' — her **recent** profile is Python. Weighting by recency avoids scoring high an offer that only matches the 5-year-old version of her.",
+            body: "A senior who did 8 years of Java then 2 years of Python isn't 'looking for Java': her **recent** profile is Python. Weighting by recency avoids scoring high an offer that only matches the 5-year-old version of her.",
           },
           {
             title: 'Accent-insensitive normalisation',
@@ -213,7 +213,7 @@ const sections = isFr
       },
       verdict: {
         eyebrow: 'The verdict',
-        title: 'Three states, not two',
+        title: 'The verdict has three states',
         body: [
           'On the LLM side, we could have asked for a continuous score ("rate this offer 0–100"). Bad idea: LLMs are poor at fine arithmetic and spend their time wavering between 73 and 78. We ask instead for a **ternary verdict**:',
         ],
@@ -229,7 +229,7 @@ const sections = isFr
       },
       cache: {
         eyebrow: 'Cache',
-        title: "The verdict lives in the database — not in a memory cache",
+        title: "The verdict lives in the database",
         body: [
           "The verdict is expensive (~3-5 seconds, a fraction of a cent per offer). We persist it directly in the `offer` table with 3 columns: `verdict`, `verdict_reasons`, `verdict_generated_at`. Three consequences:",
         ],
@@ -243,11 +243,11 @@ const sections = isFr
         eyebrow: 'Takeaways',
         title: 'What we keep from it',
         items: [
-          "**Never ask the LLM what a pure function can do.** Counting skills, normalising a string, comparing arrays — that's JavaScript, not a $0.0003-per-token API call.",
+          "**Never ask the LLM what a pure function can do.** Counting skills, normalising a string, comparing arrays: that's JavaScript, not a $0.0003-per-token API call.",
           "The LLM shines on **nuance**, not arithmetic: 'this offer asks for Spring 6 but your CV stops at Spring 3, which is OK if the team mentors'. No heuristic captures that.",
           "**Structured outputs** (JSON mode + schema) change reliability. No more regex, no more retries on text that won't parse.",
-          'Persist the verdict in the database, not in memory cache — it survives deploys, crashes, logouts.',
-          'The deterministic score is **debuggable**: you see why an offer matches by reading the breakdown. The LLM alone is a black box — combined, you get explanation **and** nuance.',
+          'Persist the verdict in the database, not in memory cache: it survives deploys, crashes, logouts.',
+          'The deterministic score is **debuggable**: you see why an offer matches by reading the breakdown. The LLM alone is a black box. Combined, you get explanation **and** nuance.',
         ],
       },
     }

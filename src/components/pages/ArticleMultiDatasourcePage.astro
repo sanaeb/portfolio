@@ -22,15 +22,15 @@ const title = isFr
   : 'Multi-datasource Spring Boot: 3 databases, 1 transaction'
 
 const lede = isFr
-  ? "Comment on a séparé l'édition back-office, la lecture API mobile et l'analytique en trois bases PostgreSQL distinctes, tout en gardant des transactions atomiques entre elles. Retour d'expérience sur un back-end d'application d'accessibilité indoor (Java 17 / Spring Boot 3)."
-  : 'How we split back-office editing, mobile API reads and analytics into three distinct PostgreSQL databases while keeping atomic transactions across them. Lessons from an accessible indoor navigation back-end (Java 17 / Spring Boot 3).'
+  ? "Sur Evelity, on a séparé l'édition back-office, la lecture API mobile et l'analytique en trois bases PostgreSQL distinctes, sans perdre les transactions atomiques entre elles. Ça vient d'un vrai besoin de scalabilité sur une appli d'accessibilité indoor en Java 17 / Spring Boot 3."
+  : "On Evelity, we split back-office editing, mobile API reads and analytics into three distinct PostgreSQL databases without losing atomic transactions across them. It came out of a real scalability need on an indoor accessibility app running Java 17 / Spring Boot 3."
 
 const metaTitle = isFr
-  ? 'Multi-datasource Spring Boot — Sanae Boutarfass'
-  : 'Multi-datasource Spring Boot — Sanae Boutarfass'
+  ? 'Multi-datasource Spring Boot · Sanae Boutarfass'
+  : 'Multi-datasource Spring Boot · Sanae Boutarfass'
 const metaDescription = isFr
-  ? "Retour d'expérience sur une architecture Spring Boot à trois bases PostgreSQL avec transactions distribuées Atomikos JTA, workflow de publication snapshot et versioning d'API mobile."
-  : 'Lessons from a Spring Boot architecture with three PostgreSQL databases, Atomikos JTA distributed transactions, a snapshot publication workflow and mobile API versioning.'
+  ? "Architecture Spring Boot à trois bases PostgreSQL avec transactions distribuées Atomikos JTA, workflow de publication snapshot et versioning d'API mobile."
+  : 'A Spring Boot architecture with three PostgreSQL databases, Atomikos JTA distributed transactions, a snapshot publication workflow and mobile API versioning.'
 
 const sections = isFr
   ? {
@@ -71,11 +71,11 @@ const sections = isFr
         eyebrow: 'Atomicité',
         title: 'Pourquoi une transaction distribuée',
         body: [
-          "Quand un opérateur édite une entité métier, il faut écrire dans `working_data` ET dans la table d'audit en atomique. Si l'audit échoue, l'édition doit roll-back, et inversement. Une transaction locale par DB ne suffit pas — il faut une transaction **distribuée** qui s'étend sur plusieurs datasources.",
+          "Quand un opérateur édite une entité métier, il faut écrire dans `working_data` ET dans la table d'audit en atomique. Si l'audit échoue, l'édition doit roll-back, et inversement. Une transaction locale par DB ne suffit pas : il faut une transaction **distribuée** qui s'étend sur plusieurs datasources.",
           "Concrètement, un seul `@Transactional` dans le service métier englobe l'update sur `working_data` ET l'insertion d'une entrée d'audit. Le gestionnaire de transactions (Atomikos JTA, en l'occurrence) prend en charge le 2-phase commit entre les datasources.",
         ],
         afterCode: [
-          "L'alternative — XA natif PostgreSQL — était moins mature côté Hibernate à l'époque. Atomikos s'intègre proprement, mais attention : si un commit échoue partiellement, l'erreur peut être muette dans certains cas. On a appris à scruter les logs Atomikos et à ne **jamais** mélanger `@Async` et `@Transactional` (préférer un message JMS).",
+          "L'alternative (XA natif PostgreSQL) était moins mature côté Hibernate à l'époque. Atomikos s'intègre proprement, mais attention : si un commit échoue partiellement, l'erreur peut être muette dans certains cas. On a appris à scruter les logs Atomikos et à ne **jamais** mélanger `@Async` et `@Transactional` (préférer un message JMS).",
         ],
       },
       publication: {
@@ -91,12 +91,12 @@ const sections = isFr
           { label: '4', body: "Le statut bascule en `published`. Les apps mobiles lisent la nouvelle version. L'ancienne reste en base pour rollback rapide." },
         ],
         afterSteps: [
-          "Côté API mobile, l'URL prefixe la version (`/mobile/api/vN/...`). On peut publier une nouvelle version sans casser les anciennes apps — temps de grâce intégré.",
+          "Côté API mobile, l'URL prefixe la version (`/mobile/api/vN/...`). On peut publier une nouvelle version sans casser les anciennes apps, avec un vrai temps de grâce intégré au mécanisme.",
         ],
       },
       tradeoffs: {
         eyebrow: 'Choix',
-        title: 'Ce qu’on a aussi évalué',
+        title: 'Les pistes qu’on a écartées',
         items: [
           {
             title: 'Single-DB + table partitioning',
@@ -117,10 +117,10 @@ const sections = isFr
         ],
       },
       lessons: {
-        eyebrow: 'Lessons',
+        eyebrow: 'Bilan',
         title: 'Ce qu’on retient',
         items: [
-          'Trois bases dans une même app, ce n’est pas trois fois plus de complexité — c’est moins, parce que chaque base a un rôle clair et un schéma optimisé pour ce rôle.',
+          'Trois bases dans une même app, ça a l’air de tripler la complexité. En pratique c’est plutôt l’inverse : chaque base a un rôle clair et un schéma optimisé pour ce rôle.',
           "Atomikos est solide tant qu'on évite les mélanges async / transactionnel. Tester les chemins d'erreur (mock d'une DB qui tombe) est obligatoire.",
           "Le versioning URL pour l'API mobile vaut largement les en-têtes : explicite, debuggable, et permet à plusieurs versions de cohabiter sans état partagé.",
           "Spring Batch + Quartz couvre 100 % des besoins de jobs longs. Kafka aurait été overkill pour notre volume.",
@@ -148,7 +148,7 @@ const sections = isFr
           {
             name: 'working_data',
             tag: 'normalised · full audit trail',
-            body: "Back-office working data — everything operators edit. Every mutation also writes to an audit table so we keep a complete trail (who did what, when, from where).",
+            body: "Back-office working data: everything operators edit. Every mutation also writes to an audit table so we keep a complete trail (who did what, when, from where).",
           },
           {
             name: 'published_data',
@@ -166,11 +166,11 @@ const sections = isFr
         eyebrow: 'Atomicity',
         title: 'Why a distributed transaction',
         body: [
-          "When an operator edits a business entity, we have to write to `working_data` AND the audit table atomically. If audit fails, the edit rolls back, and vice versa. Local-per-database transactions aren't enough — we need a **distributed transaction** that spans multiple datasources.",
+          "When an operator edits a business entity, we have to write to `working_data` AND the audit table atomically. If audit fails, the edit rolls back, and vice versa. Local-per-database transactions aren't enough: we need a **distributed transaction** that spans multiple datasources.",
           "In practice, a single `@Transactional` on the service method wraps both the business update on `working_data` AND the audit insert. The transaction manager (Atomikos JTA here) drives the 2-phase commit across datasources.",
         ],
         afterCode: [
-          "The alternative — native PostgreSQL XA — was less mature with Hibernate at the time. Atomikos integrates cleanly, but watch out: if a commit fails partially, the error can be silent in some cases. We learned to read the Atomikos logs carefully and **never** mix `@Async` with `@Transactional` (use a JMS message instead).",
+          "The alternative (native PostgreSQL XA) was less mature with Hibernate at the time. Atomikos integrates cleanly, but watch out: if a commit fails partially, the error can be silent in some cases. We learned to read the Atomikos logs carefully and **never** mix `@Async` with `@Transactional` (use a JMS message instead).",
         ],
       },
       publication: {
@@ -186,12 +186,12 @@ const sections = isFr
           { label: '4', body: "Status switches to `published`. Mobile apps read the new version. The previous one stays in the database for fast rollback." },
         ],
         afterSteps: [
-          "On the mobile API side, the version is prefixed in the URL (`/mobile/api/vN/...`). We can publish a new version without breaking older apps — built-in grace period.",
+          "On the mobile API side, the version is prefixed in the URL (`/mobile/api/vN/...`). We can publish a new version without breaking older apps, with a grace period built right into the scheme.",
         ],
       },
       tradeoffs: {
         eyebrow: 'Calls',
-        title: 'What we also considered',
+        title: 'The options we ruled out',
         items: [
           {
             title: 'Single DB + table partitioning',
@@ -215,7 +215,7 @@ const sections = isFr
         eyebrow: 'Takeaways',
         title: 'What we keep from it',
         items: [
-          "Three databases in one app isn't three times the complexity — it's actually less, because each database has a clear role and a schema optimised for that role.",
+          "Three databases in one app sounds like three times the complexity. In practice it's the opposite: each database has a clear role and a schema optimised for that role.",
           "Atomikos is solid as long as you avoid async / transactional mixing. Testing error paths (mocking a DB going down) is mandatory.",
           'URL-prefix versioning is well worth the over-header approach: explicit, debuggable, and lets multiple versions coexist without shared state.',
           "Spring Batch + Quartz covers 100 % of long-running job needs. Kafka would have been overkill for our volume.",
@@ -341,8 +341,8 @@ const sections = isFr
 
           {/* Footer note */}
           <p class="text-[10px] md:text-[11px] font-mono text-[var(--color-text-muted)] mt-4 text-center leading-relaxed" set:html={isFr
-            ? 'L’API mobile lit uniquement <span class="text-emerald-400">published_data</span> — jamais working_data. Le job batch (Spring Batch + Quartz) copie + dénormalise au moment du publish.'
-            : 'The mobile API only reads <span class="text-emerald-400">published_data</span> — never working_data. The batch job (Spring Batch + Quartz) copies and denormalises at publish time.'}></p>
+            ? 'L’API mobile lit uniquement <span class="text-emerald-400">published_data</span>, jamais working_data. Le job batch (Spring Batch + Quartz) copie + dénormalise au moment du publish.'
+            : 'The mobile API only reads <span class="text-emerald-400">published_data</span>, never working_data. The batch job (Spring Batch + Quartz) copies and denormalises at publish time.'}></p>
         </div>
       </div>
 

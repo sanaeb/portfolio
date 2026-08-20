@@ -23,12 +23,12 @@ const title = isFr
   : 'Colorizing a B&W movie with a palette: guiding the CNN through salient colours'
 
 const lede = isFr
-  ? "Les CNN colorisent très bien les ciels, les feuillages et les visages — parce que ces objets ont des couleurs **mémorables** apprises sur de larges datasets. Mais ils peignent toutes les voitures de sport en rouge. Mon idée : donner au réseau une **palette des couleurs saillantes** de la scène, calculée une seule fois pour une collection d'images entière."
-  : "CNNs colorize skies, foliage and faces very well — because those objects have **memorable** colours learned from large training datasets. But they paint every sports car red. My idea: feed the network a **palette of salient colours** for the scene, computed once for an entire image collection."
+  ? "Les CNN colorisent très bien les ciels, les feuillages, les visages : ce sont des couleurs **mémorables**, apprises sur de larges datasets. Par contre, ils peignent toutes les voitures de sport en rouge. Mon idée : donner au réseau une **palette des couleurs saillantes** de la scène, calculée une seule fois pour une collection d'images entière."
+  : "CNNs colorize skies, foliage and faces very well: those are **memorable** colours, learned from large training datasets. But they paint every sports car red. My idea: feed the network a **palette of salient colours** for the scene, computed once for an entire image collection."
 
 const metaTitle = isFr
-  ? 'Palette de couleurs pour colorisation CNN — Sanae Boutarfass'
-  : 'Colour palette for CNN colorization — Sanae Boutarfass'
+  ? 'Palette de couleurs pour colorisation CNN · Sanae Boutarfass'
+  : 'Colour palette for CNN colorization · Sanae Boutarfass'
 const metaDescription = isFr
   ? 'Méthode de colorisation interactive : palette globale de couleurs saillantes injectée à un CNN pré-entraîné. Adapté à la colorisation de films.'
   : 'Interactive colorization method: a global palette of salient colours injected into a pretrained CNN. Suited to movie colorization.'
@@ -39,7 +39,7 @@ const sections = isFr
         eyebrow: 'Le problème',
         title: 'Les biais qu’un CNN apprend des images couleur',
         body: [
-          "**Le biais des couleurs mémorables** : un CNN colorisation entraîné sur ImageNet associe « voiture de sport » à « rouge » parce que la majorité des photos d'entraînement le sont. Pour une voiture jaune ou verte dans un film N&B, c'est un échec systématique — le réseau retombe sur sa moyenne statistique.",
+          "**Le biais des couleurs mémorables** : un CNN colorisation entraîné sur ImageNet associe « voiture de sport » à « rouge » parce que la majorité des photos d'entraînement le sont. Pour une voiture jaune ou verte dans un film N&B, c'est un échec systématique. Le réseau retombe sur sa moyenne statistique.",
           "**Le coût des scribbles manuels** : les méthodes interactives classiques (Levin et al. 2004, scribble-based) demandent à l'utilisateur de dessiner des taches de couleur sur **chaque** frame. Pour un film de 90 minutes à 24 fps, c'est de l'ordre de la centaine de milliers de frames. Inviable.",
           "**La question** : peut-on guider le réseau avec un signal **global** au lieu d'un signal **par pixel**, et obtenir des résultats fidèles tout en restant automatisé ?",
         ],
@@ -55,7 +55,7 @@ const sections = isFr
           "L'idée centrale : injecter au CNN une **palette de couleurs saillantes** comme entrée additionnelle, sans modifier l'architecture du colorisateur. Plug-and-play sur n'importe quel modèle pré-entraîné.",
         ],
         bullets: [
-          "**Calcul de la palette** : on identifie les couleurs représentatives d'une scène (ou d'un film entier) à partir d'images de référence couleur — peintures, photos contemporaines, story-boards.",
+          "**Calcul de la palette** : on identifie les couleurs représentatives d'une scène (ou d'un film entier) à partir d'images de référence couleur, par exemple des peintures, des photos contemporaines ou des story-boards.",
           "**Critère « saillant » vs « mémorable »** : la palette privilégie les couleurs **spécifiques** à la scène (la voiture jaune, le pull rouge du héros), et ignore celles que le réseau infère déjà bien (bleu du ciel, vert des feuillages).",
           "**Injection dans le CNN** : la palette est concaténée à l'image N&B en entrée. Le réseau pré-entraîné apprend à exploiter cet indice global comme contrainte douce sur ses prédictions de couleur.",
           "**Pas de ré-entraînement complet** : on ajoute juste la couche d'injection et un fine-tuning léger. Tout le savoir du colorisateur d'origine est conservé.",
@@ -67,7 +67,7 @@ const sections = isFr
         cards: [
           {
             title: 'Adapté à la colorisation vidéo',
-            body: "Une palette suffit pour des centaines de frames cohérentes — fini les scribbles par frame. Le coût d'annotation chute de l'ordre du film entier à l'ordre de la scène.",
+            body: "Une palette suffit pour des centaines de frames cohérentes. Fini les scribbles par frame : le coût d'annotation chute de l'ordre du film entier à l'ordre de la scène.",
           },
           {
             title: 'Cohérence temporelle gratuite',
@@ -85,9 +85,9 @@ const sections = isFr
       },
       contribution: {
         eyebrow: 'Ma contribution',
-        title: 'Ce que cette publication apporte',
+        title: 'Pourquoi cette approche compte',
         items: [
-          "**Distinction conceptuelle** entre couleurs **mémorables** (déjà bien colorisées par le réseau) et **saillantes** (qu'il faut signaler). Ce n'est pas anodin : c'est ce qui rend la palette utile et pas redondante avec ce que le réseau sait déjà faire.",
+          "**Distinction conceptuelle** entre couleurs **mémorables** (déjà bien colorisées par le réseau) et **saillantes** (qu'il faut signaler). Cette distinction change tout : sans elle, la palette ne ferait que répéter ce que le réseau sait déjà faire.",
           "**Approche plug-and-play** : pas besoin de ré-entraîner un colorisateur depuis zéro. On augmente un modèle pré-entraîné avec un hint global qui se branche en entrée.",
           "**Pavé la voie vers IPAS 2020** (la publication suivante), qui combine palette globale + scribbles localisés pour les cas extrêmes (drapeaux, monuments).",
           "**Coût pratique réduit** pour la restauration de films d'archives : passe d'un travail de scribble par frame à un travail de définition de palette par scène.",
@@ -108,7 +108,7 @@ const sections = isFr
         eyebrow: 'The problem',
         title: 'The biases a CNN learns from colour images',
         body: [
-          '**The memorable-colour bias**: a colorization CNN trained on ImageNet associates "sports car" with "red" because the majority of training photos are. For a yellow or green car in a B&W movie, the result fails systematically — the network falls back on its statistical mean.',
+          '**The memorable-colour bias**: a colorization CNN trained on ImageNet associates "sports car" with "red" because the majority of training photos are. For a yellow or green car in a B&W movie, the result fails systematically. The network falls back on its statistical mean.',
           '**The cost of manual scribbles**: classical interactive methods (Levin et al. 2004, scribble-based) require the user to draw colour patches on **every** frame. For a 90-minute movie at 24 fps, that is on the order of a hundred thousand frames. Unworkable.',
           '**The question**: can we guide the network with a **global** signal instead of a **per-pixel** one, and still get faithful, automated results?',
         ],
@@ -124,7 +124,7 @@ const sections = isFr
           "Core idea: feed the CNN a **palette of salient colours** as an additional input, without touching the colorizer's architecture. Plug-and-play on any pretrained model.",
         ],
         bullets: [
-          "**Palette computation**: representative colours for a scene (or a whole movie) are derived from colour references — paintings, contemporary photos, storyboards.",
+          "**Palette computation**: representative colours for a scene (or a whole movie) are derived from colour references, things like paintings, contemporary photos, or storyboards.",
           '**"Salient" vs "memorable" criterion**: the palette emphasises **scene-specific** colours (the yellow car, the hero\'s red sweater) and ignores those the network already infers well (sky blue, leaf green).',
           "**Injection into the CNN**: the palette is concatenated with the B&W image at input. The pretrained network learns to use this global hint as a soft constraint on its colour predictions.",
           '**No full retraining**: only the injection layer is added, plus light fine-tuning. The original colorizer keeps everything it learned.',
@@ -136,7 +136,7 @@ const sections = isFr
         cards: [
           {
             title: 'Suited to movie colorization',
-            body: 'One palette is enough for hundreds of consistent frames — no more per-frame scribbles. Annotation cost drops from the order of a whole movie to the order of a scene.',
+            body: 'One palette is enough for hundreds of consistent frames. No more per-frame scribbles: annotation cost drops from the order of a whole movie to the order of a scene.',
           },
           {
             title: 'Free temporal consistency',
@@ -154,9 +154,9 @@ const sections = isFr
       },
       contribution: {
         eyebrow: 'My contribution',
-        title: 'What this publication brings',
+        title: 'Why this work matters',
         items: [
-          '**Conceptual distinction** between **memorable** colours (already well predicted by the network) and **salient** ones (worth surfacing). Not trivial: it is what makes the palette useful instead of redundant with what the network already knows.',
+          '**Conceptual distinction** between **memorable** colours (already well predicted by the network) and **salient** ones (worth surfacing). That distinction matters: without it, the palette would just repeat what the network already knows.',
           '**Plug-and-play approach**: no need to retrain a colorizer from scratch. We augment a pretrained model with a global hint that plugs into the input.',
           '**Paved the way for IPAS 2020** (my next paper), which combines the global palette with targeted scribbles for hard cases (flags, monuments).',
           '**Practical cost reduction** for archival movie restoration: from scribble-per-frame work to palette-per-scene work.',
