@@ -43,7 +43,10 @@ const fr = {
       "Générateur d'alt-text par IA pour la conformité WCAG. Spring Boot + JPA + Postgres + React + Gemini, audit DB et rate-limiting, déployé en prod.",
     klabiTitle: 'Klabi · Sanae Boutarfass',
     klabiDescription:
-      "PWA invite-only pour ~60 maîtres de chiens d'un quartier : sorties du soir, balades GPS en direct, partage des parcours. Spring Boot + React PWA + Cloudflare R2 + Neon, déployé en prod.",
+      "Klabi, la meute du quartier : app iOS native (SwiftUI, CloudKit) publiée sur l'App Store, PWA Spring Boot + React et version Android en test, pour les maîtres de chiens d'un quartier.",
+    kodiaxTitle: 'Kodiax · Sanae Boutarfass',
+    kodiaxDescription:
+      "Kodiax, sport avec ton chien : app iOS publiée sur l'App Store. Chaleur heure par heure, boucles avec points d'eau, suivi en direct. SwiftUI, SwiftData, HealthKit, WeatherKit, MapKit.",
     aboutTitle: 'À propos · Sanae Boutarfass',
     articlesTitle: 'Articles · Sanae Boutarfass',
     articlesDescription:
@@ -95,25 +98,25 @@ const fr = {
       eyebrow: 'Industrie & recherche',
     },
     now: {
-      eyebrow: 'Now · Mai 2026',
+      eyebrow: 'Now · Octobre 2026',
       title: "Ce qui occupe mes semaines en ce moment",
       description:
-        "Un côté perso que je code, un truc que je viens de livrer, et le poste que je cherche.",
+        "Deux apps iOS que je viens de publier sur l'App Store, et le poste que je cherche.",
       cards: {
         building: {
-          label: 'En cours',
-          icon: '›',
-          title: 'ApplyDesk',
+          label: "Sur l'App Store",
+          icon: '✓',
+          title: 'Klabi iOS',
           description:
-            "Back-office personnel de recherche d'emploi. LLM, scrapers, suivi candidatures.",
+            "La meute du quartier en app native SwiftUI + CloudKit, publiée en octobre 2026 et notée 5/5.",
         },
         shipped: {
           label: 'Tout juste livré',
           icon: '✓',
-          title: 'Klabi',
+          title: 'Kodiax',
           titleSuffix: 'v1.0',
           description:
-            "PWA invite-only pour les balades de quartier, en ligne depuis mai 2026.",
+            "App iOS de sport avec son chien : chaleur heure par heure, boucles avec points d'eau, suivi en direct.",
         },
         currently: {
           label: 'Côté pro',
@@ -128,7 +131,7 @@ const fr = {
       { value: '10', label: "années d'XP", sub: 'depuis 2015' },
       { value: '3', label: 'stacks', sub: 'Java · Python · React' },
       { value: '4', label: 'publications', sub: 'IEEE · EUVIP' },
-      { value: '2', label: 'projets livrés en 2026', sub: 'Evelity Vision (avril) · Klabi (mai)' },
+      { value: '4', label: 'produits livrés en 2026', sub: 'Evelity Vision · Klabi PWA · Klabi iOS · Kodiax' },
     ],
     approach: {
       eyebrow: 'Approche',
@@ -307,9 +310,13 @@ const fr = {
     homeAltForgeTagline:
       "Générateur d'alt-text par IA pour la conformité WCAG. Upload une image, récupère une description FR ou EN en quelques secondes.",
     klabiTagline:
-      "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens à Vaulx-en-Velin. On voit qui sort ce soir aux 3 spots du quartier, on lance ou rejoint un appel, on enregistre sa balade GPS en direct et on partage les parcours.",
+      "L'app qui remplace un groupe WhatsApp saturé de 60 maîtres de chiens à Vaulx-en-Velin. App iOS native publiée sur l'App Store (SwiftUI, CloudKit), PWA Spring Boot + React toujours en service, version Android en test fermé.",
     homeKlabiTagline:
-      "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens : sorties du soir, enregistrement GPS en direct, partage des parcours.",
+      "La meute du quartier : app iOS publiée sur l'App Store, PWA Spring Boot + React et version Android en test. « Je sors », carte des spots, carnet du chien.",
+    kodiaxTagline:
+      "App iOS de sport avec son chien, conçue et publiée seule : chaleur heure par heure pour l'humain et le chien, boucles depuis chez soi avec points d'eau, suivi en direct sur l'écran verrouillé, plans d'entraînement. Aucune donnée collectée.",
+    homeKodiaxTagline:
+      "App iOS de sport avec son chien : chaleur heure par heure, boucles avec points d'eau, suivi en direct. Publiée sur l'App Store.",
     slamMappingBoTagline:
       "Back-office de cartographie SLAM (greenfield, end-to-end) qui transforme des vidéos 360° en plans indoor navigables. SLAM C++ piloté depuis FastAPI, visualisation Mapbox + Three.js, géoréférencement Sim(2).",
   },
@@ -427,13 +434,26 @@ const fr = {
   },
   klabi: {
     backLink: 'projets',
-    statusBadge: 'Live · 2026',
+    statusBadge: 'Live · App Store · 2026',
     personalBadge: 'Personnel',
     tagline:
-      "PWA invite-only qui remplace un groupe WhatsApp de 60 maîtres de chiens à Vaulx-en-Velin. Centralise les sorties du soir (3 spots fixes + ad-hoc), l'enregistrement de balades GPS en direct et le partage des parcours. Auth JWT avec magic-link, photos sur Cloudflare R2, déploiement free-tier complet.",
+      "L'app qui remplace un groupe WhatsApp saturé de 60 maîtres de chiens à Vaulx-en-Velin. D'abord une PWA Spring Boot + React (mai 2026), puis une app iOS native publiée sur l'App Store en octobre 2026, notée 5/5. Une version Android (Kotlin, Jetpack Compose) est en test fermé.",
     links: {
-      demo: 'Démo live',
-      repo: 'Code source',
+      appStore: "Voir sur l'App Store",
+      demo: 'PWA en ligne',
+      repo: 'Code source (PWA)',
+    },
+    ios: {
+      eyebrow: 'iOS · Octobre 2026',
+      title: "L'app native, publiée sur l'App Store",
+      body: "Conçue, développée et publiée seule en SwiftUI. Bouton « Je sors » pour prévenir les voisins, carte du quartier (spots, points d'eau, vétérinaires, dangers signalés), carnet du chien avec rappels santé, alerte chien perdu, entraide pour la garde et la promenade, défi photo hebdomadaire.",
+      privacy: "Vie privée : la position exacte n'est jamais montrée aux autres, les données sont stockées dans iCloud (CloudKit), les messages privés sont chiffrés, pas de publicité.",
+      screensLabel: "Captures de l'app iOS",
+    },
+    pwa: {
+      eyebrow: 'PWA · Mai 2026',
+      title: 'La première version, toujours en service',
+      screensLabel: 'Captures de la PWA',
     },
     problem: {
       eyebrow: 'Le problème',
@@ -480,7 +500,56 @@ const fr = {
     status: {
       eyebrow: 'Statut actuel',
       title: 'Statut actuel',
-      body: "Lancement en cours auprès des 60 voisins maîtres de chiens du groupe WhatsApp d'origine. Beta privée d'abord, ouverture large dans la foulée. Suite envisagée avec la communauté : demande de garde, services entre voisins, recos vétos. Bref, toute fonctionnalité qui mérite d'être centralisée plutôt que de se perdre dans le scroll.",
+      body: "L'app iOS est publiée sur l'App Store depuis octobre 2026 (notée 5/5). La PWA sur invitation reste en service pour les voisins sans iPhone, et la version Android (Kotlin, Jetpack Compose, Firebase) est en test fermé sur Google Play.",
+    },
+  },
+  kodiax: {
+    backLink: 'projets',
+    statusBadge: 'Live · App Store · 2026',
+    personalBadge: 'Personnel',
+    tagline:
+      "App iOS de sport avec son chien, conçue et publiée seule sur l'App Store en octobre 2026. Ni compte ni serveur : aucune donnée collectée, tout reste sur l'iPhone et dans Apple Santé.",
+    links: {
+      appStore: "Voir sur l'App Store",
+    },
+    problem: {
+      eyebrow: 'Le problème',
+      title: "Pourquoi j'ai construit ça",
+      bodyBefore:
+        "Quand on court, randonne ou roule avec son chien, la vraie question n'est pas la distance : c'est de savoir s'il fait trop chaud pour lui, et où il pourra boire.",
+      bodyHighlight:
+        "Kodiax donne la chaleur heure par heure pour l'humain et pour le chien (feu vert, prudence, à éviter) et propose des boucles depuis chez soi qui passent par des points d'eau.",
+    },
+    highlights: {
+      eyebrow: 'Fonctionnalités',
+      title: "Ce que fait l'app",
+      items: [
+        {
+          title: 'Chaleur heure par heure, côté chien',
+          body: "Prévisions WeatherKit traduites en feu vert, prudence ou à éviter, pour l'humain et pour le chien, afin de choisir le bon créneau de sortie.",
+        },
+        {
+          title: "Boucles avec points d'eau",
+          body: "Génération de boucles depuis le domicile avec MapKit, en passant par des points d'eau pour que le chien puisse boire.",
+        },
+        {
+          title: "Suivi en direct sur l'écran verrouillé",
+          body: "Enregistrement des sorties (distance, dénivelé, carte) avec une Live Activity sur l'écran verrouillé, et enregistrement dans Apple Santé via HealthKit.",
+        },
+        {
+          title: "Plans d'entraînement, widgets et Siri",
+          body: "Plans de trail, canicross et randonnée, widgets WidgetKit et raccourcis Siri. On peut gérer jusqu'à 4 chiens.",
+        },
+      ],
+    },
+    stack: {
+      eyebrow: 'Stack',
+      title: 'Sous le capot',
+    },
+    screensLabel: "Captures de l'app",
+    status: {
+      title: 'Statut actuel',
+      body: "Publiée sur l'App Store en octobre 2026. Aucune donnée collectée : pas de compte, pas de serveur, tout reste sur l'iPhone et dans Apple Santé.",
     },
   },
   about: {
@@ -668,7 +737,10 @@ const en: Dict = {
       'AI alt-text generator for WCAG compliance. Spring Boot + JPA + Postgres + React + Gemini, audit DB and rate limiting, deployed to production.',
     klabiTitle: 'Klabi · Sanae Boutarfass',
     klabiDescription:
-      'Invite-only PWA for ~60 dog owners in one Lyon neighborhood: evening dog walks, live GPS recording, route sharing. Spring Boot + React PWA + Cloudflare R2 + Neon, deployed to production.',
+      'Klabi, the neighborhood pack: native iOS app (SwiftUI, CloudKit) live on the App Store, a Spring Boot + React PWA and an Android version in testing, for dog owners in one neighborhood.',
+    kodiaxTitle: 'Kodiax · Sanae Boutarfass',
+    kodiaxDescription:
+      'Kodiax, sport with your dog: iOS app live on the App Store. Hour-by-hour heat, loops with water points, live tracking. SwiftUI, SwiftData, HealthKit, WeatherKit, MapKit.',
     aboutTitle: 'About · Sanae Boutarfass',
     articlesTitle: 'Articles · Sanae Boutarfass',
     articlesDescription:
@@ -720,25 +792,25 @@ const en: Dict = {
       eyebrow: 'Industry & research',
     },
     now: {
-      eyebrow: 'Now · May 2026',
+      eyebrow: 'Now · October 2026',
       title: 'What I am up to these days',
       description:
-        "A side project I'm coding, something I just shipped, and the role I'm looking for.",
+        "Two iOS apps I just shipped to the App Store, and the role I'm looking for.",
       cards: {
         building: {
-          label: 'Building',
-          icon: '›',
-          title: 'ApplyDesk',
+          label: 'On the App Store',
+          icon: '✓',
+          title: 'Klabi iOS',
           description:
-            'Personal job-search back-office. LLM, scrapers, application tracking.',
+            'The neighborhood pack as a native SwiftUI + CloudKit app, live since October 2026 and rated 5/5.',
         },
         shipped: {
           label: 'Just shipped',
           icon: '✓',
-          title: 'Klabi',
+          title: 'Kodiax',
           titleSuffix: 'v1.0',
           description:
-            'Invite-only PWA for neighborhood dog walks, live since May 2026.',
+            'iOS app for sport with your dog: hour-by-hour heat, loops with water points, live tracking.',
         },
         currently: {
           label: 'Looking',
@@ -753,7 +825,7 @@ const en: Dict = {
       { value: '10', label: 'years of XP', sub: 'since 2015' },
       { value: '3', label: 'stacks', sub: 'Java · Python · React' },
       { value: '4', label: 'publications', sub: 'IEEE · EUVIP' },
-      { value: '2', label: 'products shipped in 2026', sub: 'Evelity Vision (Apr) · Klabi (May)' },
+      { value: '4', label: 'products shipped in 2026', sub: 'Evelity Vision · Klabi PWA · Klabi iOS · Kodiax' },
     ],
     approach: {
       eyebrow: 'Approach',
@@ -932,9 +1004,13 @@ const en: Dict = {
     homeAltForgeTagline:
       'AI alt-text generator for WCAG compliance. Upload an image, get a clean French or English description within seconds.',
     klabiTagline:
-      'Invite-only PWA replacing a 60-people WhatsApp group of dog owners in Vaulx-en-Velin. See who is heading to one of the 3 neighborhood spots tonight, launch or join a call, record your walk live and share the route.',
+      'The app replacing an overloaded 60-people WhatsApp group of dog owners in Vaulx-en-Velin. Native iOS app live on the App Store (SwiftUI, CloudKit), Spring Boot + React PWA still running, Android version in closed testing.',
     homeKlabiTagline:
-      'Invite-only PWA replacing a 60-people WhatsApp group of dog owners: evening dog walks, live GPS recording, route sharing.',
+      'The neighborhood pack: iOS app live on the App Store, Spring Boot + React PWA and an Android version in testing. « I\'m heading out », spots map, dog health log.',
+    kodiaxTagline:
+      'iOS app for sport with your dog, designed and shipped solo: hour-by-hour heat for you and your dog, loops from home with water points, live tracking on the lock screen, training plans. No data collected.',
+    homeKodiaxTagline:
+      'iOS app for sport with your dog: hour-by-hour heat, loops with water points, live tracking. Live on the App Store.',
     slamMappingBoTagline:
       'SLAM mapping back-office (greenfield, end-to-end) that turns 360° video into navigable indoor maps. C++ SLAM driven from FastAPI, Mapbox + Three.js visualisation, Sim(2) georeferencing.',
   },
@@ -1052,13 +1128,26 @@ const en: Dict = {
   },
   klabi: {
     backLink: 'projects',
-    statusBadge: 'Live · 2026',
+    statusBadge: 'Live · App Store · 2026',
     personalBadge: 'Personal',
     tagline:
-      'Invite-only PWA replacing a 60-people WhatsApp group of dog owners in Vaulx-en-Velin. Centralises evening dog walks (3 fixed spots + ad-hoc), live GPS recording, and route sharing. JWT auth with magic links, photos on Cloudflare R2, fully free-tier deployment.',
+      'The app replacing an overloaded 60-people WhatsApp group of dog owners in Vaulx-en-Velin. First a Spring Boot + React PWA (May 2026), then a native iOS app live on the App Store since October 2026, rated 5/5. An Android version (Kotlin, Jetpack Compose) is in closed testing.',
     links: {
-      demo: 'Live demo',
-      repo: 'Source code',
+      appStore: 'View on the App Store',
+      demo: 'Live PWA',
+      repo: 'Source code (PWA)',
+    },
+    ios: {
+      eyebrow: 'iOS · October 2026',
+      title: 'The native app, live on the App Store',
+      body: 'Designed, built and shipped solo in SwiftUI. An « I\'m heading out » button to let neighbors know, a neighborhood map (spots, water points, vets, reported hazards), a dog health log with reminders, lost-dog alerts, help with dog-sitting and walks, and a weekly photo challenge.',
+      privacy: 'Privacy: exact location is never shown to others, data lives in iCloud (CloudKit), private messages are encrypted, no ads.',
+      screensLabel: 'iOS app screenshots',
+    },
+    pwa: {
+      eyebrow: 'PWA · May 2026',
+      title: 'The first version, still running',
+      screensLabel: 'PWA screenshots',
     },
     problem: {
       eyebrow: 'The problem',
@@ -1105,7 +1194,56 @@ const en: Dict = {
     status: {
       eyebrow: 'Current status',
       title: 'Current status',
-      body: 'Rolling out to the 60 neighborhood dog owners from the original WhatsApp group. Private beta first, broader opening right after. Next features will be co-designed with the community: dog-sitting requests, neighbor-to-neighbor services, vet recommendations. Basically anything worth centralizing instead of drowning in the WhatsApp scroll.',
+      body: 'The iOS app has been live on the App Store since October 2026 (rated 5/5). The invite-only PWA keeps running for neighbors without an iPhone, and the Android version (Kotlin, Jetpack Compose, Firebase) is in closed testing on Google Play.',
+    },
+  },
+  kodiax: {
+    backLink: 'projects',
+    statusBadge: 'Live · App Store · 2026',
+    personalBadge: 'Personal',
+    tagline:
+      'iOS app for sport with your dog, designed and shipped solo to the App Store in October 2026. No account, no server: no data collected, everything stays on the iPhone and in Apple Health.',
+    links: {
+      appStore: 'View on the App Store',
+    },
+    problem: {
+      eyebrow: 'The problem',
+      title: 'Why I built it',
+      bodyBefore:
+        "When you run, hike or ride with your dog, the real question isn't distance: it's whether it's too hot for them, and where they'll be able to drink.",
+      bodyHighlight:
+        'Kodiax gives hour-by-hour heat for you and for your dog (green light, caution, avoid) and suggests loops from home that go past water points.',
+    },
+    highlights: {
+      eyebrow: 'Features',
+      title: 'What the app does',
+      items: [
+        {
+          title: 'Hour-by-hour heat, from the dog\'s point of view',
+          body: 'WeatherKit forecasts turned into green light, caution or avoid, for you and for your dog, to pick the right time to head out.',
+        },
+        {
+          title: 'Loops with water points',
+          body: 'Loops generated from home with MapKit, routed past water points so the dog can drink.',
+        },
+        {
+          title: 'Live tracking on the lock screen',
+          body: 'Workouts recorded (distance, elevation, map) with a Live Activity on the lock screen, and saved to Apple Health through HealthKit.',
+        },
+        {
+          title: 'Training plans, widgets and Siri',
+          body: 'Trail, canicross and hiking plans, WidgetKit widgets and Siri shortcuts. You can manage up to 4 dogs.',
+        },
+      ],
+    },
+    stack: {
+      eyebrow: 'Stack',
+      title: 'Under the hood',
+    },
+    screensLabel: 'App screenshots',
+    status: {
+      title: 'Current status',
+      body: 'Live on the App Store since October 2026. No data collected: no account, no server, everything stays on the iPhone and in Apple Health.',
     },
   },
   about: {

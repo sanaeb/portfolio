@@ -31,6 +31,20 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://sanae-portfolio.pages.dev/projects/klabi</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://sanae-portfolio.pages.dev/projects/klabi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sanae-portfolio.pages.dev/en/projects/klabi"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanae-portfolio.pages.dev/projects/kodiax</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://sanae-portfolio.pages.dev/projects/kodiax"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sanae-portfolio.pages.dev/en/projects/kodiax"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://sanae-portfolio.pages.dev/about</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://sanae-portfolio.pages.dev/about"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://sanae-portfolio.pages.dev/en/about"/>
@@ -55,6 +69,16 @@
   </url>
   <url>
     <loc>https://sanae-portfolio.pages.dev/en/projects/applydesk</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanae-portfolio.pages.dev/en/projects/klabi</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanae-portfolio.pages.dev/en/projects/kodiax</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

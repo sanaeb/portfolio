@@ -13,6 +13,8 @@ const t = getDict(lang)
 const prefix = lang === 'fr' ? '' : '/en'
 
 const stack: Record<string, string[]> = {
+  iOS: ['Swift', 'SwiftUI', 'CloudKit', 'MapKit', 'App Store'],
+  Android: ['Kotlin', 'Jetpack Compose', 'Firebase', 'Google Play (beta)'],
   Backend: ['Java 17', 'Spring Boot 3.5', 'Spring Security', 'JWT (JJWT)', 'Spring Data JPA', 'lazy-init'],
   Frontend: ['React 18', 'TypeScript', 'Vite', 'Tailwind v4', 'React Router v7', 'Leaflet'],
   PWA: ['Service Worker', 'Web Manifest', 'Geolocation API', 'Wake Lock API', 'localStorage TTL'],
@@ -22,7 +24,19 @@ const stack: Record<string, string[]> = {
   Ops: ['Render (free tier)', 'Cloudflare Pages', 'UptimeRobot keep-warm', 'Sentry (errors)'],
 }
 
+const appStoreUrl = 'https://apps.apple.com/fr/app/klabi-la-meute-du-quartier/id6816447923'
 const demoUrl = 'https://klabi-app.pages.dev'
+const iosScreens = [
+  { src: '/images/klabi/ios-1-carte.jpg', alt: 'Klabi iOS : la carte du quartier' },
+  { src: '/images/klabi/ios-2-je-sors.jpg', alt: 'Klabi iOS : « Je sors » en deux gestes' },
+  { src: '/images/klabi/ios-4-sante.jpg', alt: 'Klabi iOS : le carnet santé du chien' },
+  { src: '/images/klabi/ios-5-passeport.jpg', alt: 'Klabi iOS : le passeport du chien' },
+  { src: '/images/klabi/ios-3-defi.jpg', alt: 'Klabi iOS : le défi photo de la semaine' },
+]
+const pwaScreens = [
+  { src: '/images/klabi/pwa-1-carte.jpg', alt: 'Klabi PWA : la carte des spots en vue satellite' },
+  { src: '/images/klabi/pwa-3-progression.jpg', alt: 'Klabi PWA : la progression et le niveau' },
+]
 const repoUrl = 'https://github.com/sanaeb/klabi'
 ---
 
@@ -71,10 +85,19 @@ const repoUrl = 'https://github.com/sanaeb/klabi'
           </p>
           <div class="flex flex-wrap gap-3">
             <a
-              href={demoUrl}
+              href={appStoreUrl}
               target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-accent)] text-white text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              {t.klabi.links.appStore}
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a
+              href={demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--color-border)] text-sm font-medium hover:border-[var(--color-accent-soft)] transition-colors"
             >
               {t.klabi.links.demo}
               <span aria-hidden="true">↗</span>
@@ -103,6 +126,54 @@ const repoUrl = 'https://github.com/sanaeb/klabi'
       <p class="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed">
         {t.klabi.problem.bodyBefore} <span class="text-[var(--color-text)]">{t.klabi.problem.bodyHighlight}</span>
       </p>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.klabi.ios.eyebrow}
+        title={t.klabi.ios.title}
+      />
+      <p class="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed mb-4">
+        {t.klabi.ios.body}
+      </p>
+      <p class="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed mb-8">
+        {t.klabi.ios.privacy}
+      </p>
+      <div class="flex gap-4 overflow-x-auto pb-3 snap-x" aria-label={t.klabi.ios.screensLabel}>
+        {iosScreens.map((img) => (
+          <img
+            src={img.src}
+            alt={img.alt}
+            width="600"
+            height="1304"
+            loading="lazy"
+            class="w-44 md:w-52 shrink-0 snap-start rounded-2xl border border-[var(--color-border)]"
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 md:pb-20">
+    <div class="max-w-4xl mx-auto">
+      <SectionHeader
+        eyebrow={t.klabi.pwa.eyebrow}
+        title={t.klabi.pwa.title}
+      />
+      <div class="flex gap-4 overflow-x-auto pb-3 snap-x" aria-label={t.klabi.pwa.screensLabel}>
+        {pwaScreens.map((img) => (
+          <img
+            src={img.src}
+            alt={img.alt}
+            width="600"
+            height="1299"
+            loading="lazy"
+            class="w-44 md:w-52 shrink-0 snap-start rounded-2xl border border-[var(--color-border)]"
+          />
+        ))}
+      </div>
     </div>
   </section>
 

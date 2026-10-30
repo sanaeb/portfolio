@@ -63,6 +63,7 @@ const prefix = lang === 'fr' ? '' : '/en'
         <TechChip name="Python · FastAPI" />
         <TechChip name="PostgreSQL" />
         <TechChip name="Visual SLAM" />
+        <TechChip name="SwiftUI" />
       </div>
     </div>
   </section>
@@ -135,11 +136,20 @@ const prefix = lang === 'fr' ? '' : '/en'
         <ProjectCard
           title="Klabi"
           tagline={t.projects.homeKlabiTagline}
-          stack={['Spring Boot', 'React PWA', 'PostgreSQL', 'Cloudflare R2']}
+          stack={['SwiftUI', 'CloudKit', 'Spring Boot', 'React PWA']}
           href={`${prefix}/projects/klabi`}
           status="live"
           year="2026"
           visual="emerald"
+        />
+        <ProjectCard
+          title="Kodiax"
+          tagline={t.projects.homeKodiaxTagline}
+          stack={['SwiftUI', 'HealthKit', 'WeatherKit', 'MapKit']}
+          href={`${prefix}/projects/kodiax`}
+          status="live"
+          year="2026"
+          visual="amber"
         />
         <ProjectCard
           title="ApplyDesk"
@@ -149,15 +159,6 @@ const prefix = lang === 'fr' ? '' : '/en'
           status="wip"
           year="2026"
           visual="violet"
-        />
-        <ProjectCard
-          title="AltForge"
-          tagline={t.projects.homeAltForgeTagline}
-          stack={['Spring Boot', 'JPA + Flyway', 'PostgreSQL', 'Gemini']}
-          href={`${prefix}/projects/altforge`}
-          status="live"
-          year="2026"
-          visual="amber"
         />
       </div>
     </div>
